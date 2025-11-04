@@ -12,7 +12,7 @@ services:
     working_dir: /var/www
     volumes:
       - ./:/var/www
-      - ./yarn-cache:/root/.cache/yarn
+      - yarn-cache:/root/.cache/yarn
     command: bash -c "yarn && yarn run web:dev"
 
   api:
@@ -26,8 +26,22 @@ services:
     working_dir: /var/www
     volumes:
       - ./:/var/www
-      - ./yarn-cache:/root/.cache/yarn
+      - yarn-cache:/root/.cache/yarn
     command: bash -c "yarn && yarn run api:start:dev"
+
+  workers:
+    image: node:22
+    container_name: h3players-workers
+    restart: unless-stopped
+    networks:
+      - internal
+    depends_on:
+      - mysql
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - yarn-cache:/root/.cache/yarn
+    command: bash -c "sleep 1000"
 
   nginx:
     image: nginx:alpine
@@ -93,4 +107,6 @@ volumes:
   redis-volume:
     driver: local
   clickhouse-volume:
+    driver: local
+  yarn-cache:
     driver: local

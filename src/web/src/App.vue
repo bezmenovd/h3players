@@ -1,8 +1,8 @@
 <template>
     <transition name="fade">
-        <Loading v-if="loading" />
+        <Loading v-if="loading.show" />
     </transition>
-    <div id="app" key="app" v-if="! loading">
+    <div id="app" key="app" v-if="! loading.is">
         <div id="headline">
             <div id="logo" @click="logoOnClick">H3PLAYERS</div>
         </div>
@@ -28,10 +28,20 @@ import { preload } from './modules/preload';
 
 const logoOnClick = () => useRouter().push('/')
 
-const loading = ref(true)
+const loading = ref({
+    is: true,
+    show: false,
+})
+
+setTimeout(() => {
+    if (loading.value.is) {
+        loading.value.show = true
+    }
+}, 400)
 
 preload(config.resources.app).then(() => {
-    loading.value = false
+    loading.value.show = false
+    loading.value.is = false
 })
 
 </script>

@@ -12,7 +12,11 @@
     "api:start:debug": "cd src/api && nest start src/api --debug --watch",
     "api:start:prod": "cd src/api && node dist/api/main",
     "web:dev": "cd src/web && vite build --watch",
-    "web:build": "cd src/web && vite build"
+    "web:build": "cd src/web && vite build",
+    "workers:convert": "tsx src/workers/convert.ts",
+    "workers:spectator:dev": "tsx src/workers/spectator.ts",
+    "workers:spectator:build": "tsup --config src/workers/spectator.tsup.config.ts --clean",
+    "workers:spectator": "node dist/workers/spectator/spectator.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -24,6 +28,7 @@
     "pinia": "^3.0.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
+    "tsup": "^8.5.0",
     "vite": "^7.1.12",
     "vue": "3",
     "vue-i18n": "^11.1.12",
