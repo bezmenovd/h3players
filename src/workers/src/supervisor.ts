@@ -1,6 +1,8 @@
-import { formatBytes } from "./bytes";
+import { formatBytes } from "./helpers/bytes";
 import { Client, ClientStatistics } from "./client";
-import { sendMessage } from "./telegram";
+import { sendMessage } from "./services/telegram";
+import timestamp from "./helpers/timestamp";
+import { internal } from "./services/clickhouse";
 
 
 enum EventType {
@@ -17,7 +19,7 @@ type Event = {
 type State = {
     connected: boolean
     log: Event[],
-    statistics: ClientStatistics,
+    lastStatistics: ClientStatistics,
 }
 
 export class Supervisor {
@@ -28,12 +30,12 @@ export class Supervisor {
         setInterval(async () => {
             if (this.clients.length === 0) return
 
-            let now = Math.floor(Date.now() / 1000)
+            let now = timestamp.now()
     
             let text = `[${process.env.APP_ENV}] clients:\n`
 
             this.clients.forEach(client => {
-                let state = this.states.get(client.name)
+                let state = this.states.get(client.name)!
 
                 let reconnections = state.log.filter(event => {
                     return event.type === EventType.Disconnected && event.timestamp + 3600*24 > now
@@ -56,6 +58,43 @@ export class Supervisor {
             sendMessage(text)
 
         }, 60_000*60*12)
+
+        setInterval(() => {
+            let diffs: ClientStatistics[] = []
+
+            this.clients.forEach(client => {
+                let state = this.states.get(client.name)!
+
+                let diff: ClientStatistics = {
+                    sent: {
+                        bytes: client.statistics.sent.bytes - state.lastStatistics.sent.bytes,
+                        messages: client.statistics.sent.messages - state.lastStatistics.sent.messages,
+                    },
+                    received: {
+                        bytes: client.statistics.received.bytes - state.lastStatistics.received.bytes,
+                        messages: client.statistics.received.messages - state.lastStatistics.received.messages,
+                    },
+                }
+
+                diffs.push(diff)
+
+                state.lastStatistics.sent.bytes = client.statistics.sent.bytes
+                state.lastStatistics.sent.messages = client.statistics.sent.messages
+                state.lastStatistics.received.bytes = client.statistics.received.bytes
+                state.lastStatistics.received.messages = client.statistics.received.messages
+            })
+
+            internal().insert({
+                table: 'statistics',
+                values: diffs.map(diff => ({
+                    sent_bytes: diff.sent.bytes,
+                    sent_messages: diff.sent.messages,
+                    received_bytes: diff.received.bytes,
+                    received_messages: diff.received.messages,
+                })),
+                format: 'JSONEachRow',
+            })
+        }, 60_000)
     }
 
     public addClient(client: Client): void {
@@ -66,7 +105,7 @@ export class Supervisor {
         this.states.set(client.name, { 
             connected: client.isConnected(), 
             log: [],
-            statistics: {
+            lastStatistics: {
                 sent: { bytes: 0, messages: 0 },
                 received: { bytes: 0, messages: 0 },
             },
@@ -75,18 +114,18 @@ export class Supervisor {
         this.clients.push(client)
 
         client.onConnect(() => {
-            this.states.get(client.name).connected = true
-            this.states.get(client.name).log.push({
-                timestamp: Math.floor(Date.now() / 1000),
+            this.states.get(client.name)!.connected = true
+            this.states.get(client.name)!.log.push({
+                timestamp: timestamp.now(),
                 type: EventType.Connected,
                 client: client.name,
             })
         })
 
         client.onDisconnect(() => {
-            this.states.get(client.name).connected = false
-            this.states.get(client.name).log.push({
-                timestamp: Math.floor(Date.now() / 1000),
+            this.states.get(client.name)!.connected = false
+            this.states.get(client.name)!.log.push({
+                timestamp: timestamp.now(),
                 type: EventType.Disconnected,
                 client: client.name,
             })

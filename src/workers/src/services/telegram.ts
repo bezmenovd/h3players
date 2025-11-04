@@ -8,7 +8,7 @@ export async function sendMessage(text: string) {
     }
     lastSend = Date.now()
 
-    let response = await fetch(`https://api.telegram.org/bot${process.env.TG_BOT_TOKEN}/sendMessage?chat_id=${process.env.TG_CHAT_ID}&text=${encodeURIComponent(text)}`)
+    let response = await fetch(`https://api.telegram.org/bot8558838967:AAF7tqVj7KrTRclY_brvhxJXfX8xsO7gdnU/sendMessage?chat_id=-1003281093075&text=${encodeURIComponent(text)}`)
     if (response.status !== 200) {
         logger.info(`supervisor error: failed to call telegram sendMessage: ${response.statusText} (${response.url})`)
     }

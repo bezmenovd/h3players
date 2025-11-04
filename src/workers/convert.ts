@@ -1,4 +1,4 @@
-import { bytesToHex } from './src/bytes'
+import { bytesToHex } from './src/helpers/bytes'
 
 
 const buffer = Buffer.alloc(4)

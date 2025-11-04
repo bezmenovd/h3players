@@ -1,4 +1,4 @@
-import { bytesToHex, readstr } from "../bytes"
+import { bytesToHex, readstr } from "../helpers/bytes"
 
 
 export class Msg {

@@ -1,6 +1,6 @@
 import net, { Socket } from 'net'
-import { logger } from './logger';
-import { bytesToHex, hexDump } from './bytes';
+import { logger } from './services/logger';
+import { bytesToHex, hexDump } from './helpers/bytes';
 import config from '../config';
 
 export type Listener = (data: Buffer) => void;
@@ -17,7 +17,7 @@ export type ClientStatistics = {
 }
 
 export class Client {
-    private authstr?: string
+    private authstr: string
     private socket?: Socket
     private connected: boolean = false
 
@@ -40,11 +40,13 @@ export class Client {
         public name: string,
         public user: string,
     ) {
-        this.authstr = config.users.find(u => u.name === user)?.authstr
+        let authstr = config.users.find(u => u.name === user)?.authstr
 
-        if (! this.authstr) {
+        if (! authstr) {
             throw new Error(`no such user: ${user}`)
         }
+
+        this.authstr = authstr
     }
 
     public async connect(): Promise<void> {
@@ -63,7 +65,7 @@ export class Client {
             })
     
             this.socket.on('connect', () => {
-                this.write(Buffer.from(this.authstr, 'hex'), false)
+                this.write(Buffer.from(this.authstr!, 'hex'), false)
             })
 
             this.socket.on('data', (data: Buffer) => {
@@ -88,8 +90,8 @@ export class Client {
             return
         }
 
-        this.socket.destroy()
-        this.socket.removeAllListeners('data')
+        this.socket!.destroy()
+        this.socket!.removeAllListeners('data')
 
         this.msgLen = 0
         this.msgLenBufferLen = 0
@@ -117,7 +119,7 @@ export class Client {
             throw new Error('not connected')
         }
 
-        this.socket.write(buffer)
+        this.socket!.write(buffer)
 
         this.statistics.sent.bytes += buffer.length
         this.statistics.sent.messages++
@@ -134,7 +136,7 @@ export class Client {
         bufferWL.writeUInt16LE(buffer.length+2, 0);
         buffer.copy(bufferWL, 2);
 
-        this.socket.write(bufferWL)
+        this.socket!.write(bufferWL)
 
         this.statistics.sent.bytes += bufferWL.length
         this.statistics.sent.messages++
@@ -206,7 +208,7 @@ export class Client {
     private onClose(): void {
         let wasConnected = this.connected
 
-        this.socket.removeAllListeners()
+        this.socket!.removeAllListeners()
         this.socket = undefined
 
         if (wasConnected) {

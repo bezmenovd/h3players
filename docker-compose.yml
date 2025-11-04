@@ -5,43 +5,39 @@ services:
     restart: unless-stopped
     ports:
       - 5173:5173
-    networks:
-      - internal
-    depends_on:
-      - mysql
     working_dir: /var/www
     volumes:
       - ./:/var/www
-      - yarn-cache:/root/.cache/yarn
+      - yarn-cache:/root/.yarn/cache
     command: bash -c "yarn && yarn run web:dev"
 
   api:
     image: node:22
     container_name: h3players-api
     restart: unless-stopped
-    networks:
-      - internal
     depends_on:
       - mysql
+      - redis
+      - clickhouse
     working_dir: /var/www
     volumes:
       - ./:/var/www
-      - yarn-cache:/root/.cache/yarn
+      - yarn-cache:/root/.yarn/cache
     command: bash -c "yarn && yarn run api:start:dev"
 
   workers:
     image: node:22
     container_name: h3players-workers
     restart: unless-stopped
-    networks:
-      - internal
     depends_on:
       - mysql
+      - redis
+      - clickhouse
     working_dir: /var/www
     volumes:
       - ./:/var/www
-      - yarn-cache:/root/.cache/yarn
-    command: bash -c "sleep 1000"
+      - yarn-cache:/root/.yarn/cache
+    command: bash -c "sleep 100000"
 
   nginx:
     image: nginx:alpine
@@ -57,8 +53,6 @@ services:
       - ./:/var/www:ro
     depends_on:
       - web
-    networks:
-      - internal
 
   mysql:
     image: mysql/mysql-server:8.0
@@ -71,8 +65,6 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
     volumes:
       - mysql-volume:/var/lib/mysql
-    networks:
-      - internal
 
   redis:
     image: redis:alpine
@@ -80,8 +72,6 @@ services:
     restart: unless-stopped
     volumes:
       - redis-volume:/data
-    networks:
-      - internal
 
   clickhouse:
     image: clickhouse/clickhouse-server:24.8
@@ -92,14 +82,12 @@ services:
     volumes:
       - clickhouse-volume:/var/lib/clickhouse
       - ./docker/clickhouse/initdb:/docker-entrypoint-initdb.d:ro
+      - ./docker/clickhouse/:/usr/src
+      - ./docker/clickhouse/listen.xml:/etc/clickhouse-server/config.d/listen.xml:ro
     ulimits:
       nofile:
         soft: 262144
         hard: 262144
-
-networks:
-  internal:
-    driver: bridge
 
 volumes:
   mysql-volume:

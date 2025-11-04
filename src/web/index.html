@@ -9,6 +9,9 @@
     <script type="module" src="/src/app.ts"></script>
 </head>
 <body>
+    <div id="invalid-resolution">
+        Screen resolution is not supported (try to zoom page)
+    </div>
     <div id="root"></div>
 </body>
 <style>
@@ -22,6 +25,39 @@
     body {
         background-color: #272c3a; 
         height: 100vh;
+    }
+    #invalid-resolution {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: none;
+        font-size: 26px;
+        font-weight: 500;
+        opacity: .7;
+        user-select: unset !important;
+    }
+
+    @media (max-width: 1279px) {
+        #invalid-resolution {
+            display: flex;
+        }
+        #root {
+            display: none;
+        }
+    }
+    @media (min-width: 2561px) {
+        #invalid-resolution {
+            display: flex;
+        }
+        #root {
+            display: none;
+        }
     }
 </style>
 </html>

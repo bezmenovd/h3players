@@ -23,11 +23,13 @@ export type Room = {
 export type State = {
     players: Map<number, Player>
     rooms: Map<number, Room>
+    lastUpdate?: number
 }
 
 export const createState = () => {
     return {
         players: new Map<number, Player>(),
-        rooms: new Map<number, Room>()
+        rooms: new Map<number, Room>(),
+        lastUpdate: undefined,
     }
 }
