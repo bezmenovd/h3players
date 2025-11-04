@@ -1,23 +1,33 @@
 {
-  "name": "web",
+  "name": "h3players",
   "version": "0.0.1",
   "description": "",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "tsc -p src/web/tsconfig.build.json",
-    "start": "cd src/web && nest start",
-    "start:dev": "cd src/web && nest start --watch",
-    "start:debug": "cd src/web && nest start src/web --debug --watch",
-    "start:prod": "cd src/web && node dist/web/main"
+    "api:build": "tsc -p src/api/tsconfig.build.json",
+    "api:start": "cd src/api && nest start",
+    "api:start:dev": "cd src/api && nest start --watch",
+    "api:start:debug": "cd src/api && nest start src/api --debug --watch",
+    "api:start:prod": "cd src/api && node dist/api/main",
+    "web:dev": "cd src/web && vite build --watch",
+    "web:build": "cd src/web && vite build"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "axios": "^1.13.1",
+    "nprogress": "^0.2.0",
+    "pinia": "^3.0.3",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "vite": "^7.1.12",
+    "vue": "3",
+    "vue-i18n": "^11.1.12",
+    "vue-router": "^4.6.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",
@@ -26,6 +36,7 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.7",
+    "@types/nprogress": "^0.2.3",
     "@types/supertest": "^6.0.2",
     "globals": "^16.0.0",
     "source-map-support": "^0.5.21",

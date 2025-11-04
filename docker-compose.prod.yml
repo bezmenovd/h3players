@@ -1,0 +1,8 @@
+services:
+  web:
+    # command: bash -c "yarn && pm2-runtime dist/web/main.js -i max"
+    command: sleep 10000
+
+  api:
+    # command: bash -c "yarn && pm2-runtime dist/web/main.js -i max"
+    command: sleep 10000
