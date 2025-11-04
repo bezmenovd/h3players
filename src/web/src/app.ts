@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import router from './router.ts'
+import router from './router'
 import i18n from './i18n'
 import axios from 'axios'
 import App from './App.vue'
@@ -16,4 +16,4 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 app.use(i18n)
-app.mount('#app')
+app.mount('#root')

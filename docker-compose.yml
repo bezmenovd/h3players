@@ -12,6 +12,7 @@ services:
     working_dir: /var/www
     volumes:
       - ./:/var/www
+      - ./yarn-cache:/root/.cache/yarn
     command: bash -c "yarn && yarn run web:dev"
 
   api:
@@ -25,6 +26,7 @@ services:
     working_dir: /var/www
     volumes:
       - ./:/var/www
+      - ./yarn-cache:/root/.cache/yarn
     command: bash -c "yarn && yarn run api:start:dev"
 
   nginx:

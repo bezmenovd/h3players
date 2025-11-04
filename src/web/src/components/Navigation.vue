@@ -37,7 +37,7 @@ onMounted(async () => {
 })
 </script>
 
-<style>
+<style scoped>
 #navigation {
     padding: 20px 0;
 }
