@@ -1,0 +1,79 @@
+services:
+  web:
+    image: node:22
+    container_name: h3players-web
+    restart: unless-stopped
+    networks:
+      - internal
+    depends_on:
+      - mysql
+    # command: bash -c "yarn && pm2-runtime dist/web/main.js -i max"
+    command: sleep 10000
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+
+  nginx:
+    image: nginx:alpine
+    container_name: h3players-nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/nginx.default:ro
+      - ./docker/nginx/fullchain.pem:/etc/nginx/nginx/fullchain.pem:ro
+      - ./docker/nginx/privkey.pem:/etc/nginx/nginx/privkey.pem:ro
+    depends_on:
+      - web
+    networks:
+      - internal
+
+  mysql:
+    image: mysql/mysql-server:8.0
+    container_name: h3players-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: jk7S91xAC5bE5l3I
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    volumes:
+      - mysql-volume:/var/lib/mysql
+    networks:
+      - internal
+
+  redis:
+    image: redis:alpine
+    container_name: h3players-redis
+    restart: unless-stopped
+    volumes:
+      - redis-volume:/data
+    networks:
+      - internal
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.8
+    container_name: h3players-clickhouse
+    restart: unless-stopped
+    environment:
+      - CLICKHOUSE_PASSWORD=xQm8LpsLOolVLryE
+    volumes:
+      - clickhouse-volume:/var/lib/clickhouse
+      - ./docker/clickhouse/initdb:/docker-entrypoint-initdb.d:ro
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  mysql-volume:
+    driver: local
+  redis-volume:
+    driver: local
+  clickhouse-volume:
+    driver: local
