@@ -1,6 +1,6 @@
 <template>
-    <transition name="fade">
-        <Loading v-if="loading.show" />
+    <transition name="loading">
+        <MainLoader v-if="loading.show" />
     </transition>
     <div id="app" key="app" v-if="! loading.is">
         <div id="headline">
@@ -11,7 +11,12 @@
                 <Navigation />
             </div>
             <div id="content">
-                <router-view />
+                <Transition
+                    name="route"
+                    mode="out-in"
+                >
+                    <router-view key="$route.fullPath" />
+                </Transition>
             </div>
         </div>
     </div>
@@ -21,7 +26,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import config from './config';
-import Loading from './components/Loading.vue';
+import MainLoader from './components/UI/MainLoader.vue';
 import Navigation from './components/Navigation.vue';
 import { preload } from './modules/preload';
 
@@ -30,14 +35,8 @@ const logoOnClick = () => useRouter().push('/')
 
 const loading = ref({
     is: true,
-    show: false,
+    show: true,
 })
-
-setTimeout(() => {
-    if (loading.value.is) {
-        loading.value.show = true
-    }
-}, 400)
 
 preload(config.resources.app).then(() => {
     loading.value.show = false
@@ -72,6 +71,9 @@ preload(config.resources.app).then(() => {
 }
 #content {
     background: #272c3a;
+    padding: 50px 80px 50px 100px;
+    overflow-y: scroll;
+    max-height: calc(100vh - 80px);
 }
 #body {
     display: grid;
@@ -90,10 +92,20 @@ preload(config.resources.app).then(() => {
     background: #4c25ab;
 }
 
-.fade-enter-active, .fade-leave-active {
+.loading-enter-active, .loading-leave-active {
   transition: opacity 0.1s ease-in-out;
 }
-.fade-enter-from, .fade-leave-to {
+.loading-enter-from, .loading-leave-to {
   opacity: 0;
+}
+::-webkit-scrollbar {
+    width: 14px;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #ffffff10;
+    border-right: 6px solid transparent;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    background-clip: padding-box;
 }
 </style>
