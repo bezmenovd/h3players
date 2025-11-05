@@ -1,5 +1,5 @@
 
 export type Online = {
-    datetime: string
+    timestamp: number
     online: number
 }

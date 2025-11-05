@@ -1,13 +1,13 @@
 
 export type Online = {
-    datetime: string
+    timestamp: number
     online: number
 }
 
-export async function online(after?: number): Promise<Online[]> {
+export async function onlineChart(after?: number): Promise<Online[]> {
     if (after) {
-        return fetch(`/api/lobby/online?after=${after}`).then(r => r.json()).then(r => r.online);
+        return fetch(`/api/lobby/onlineChart?after=${after}`).then(r => r.json());
     } else {
-        return fetch(`/api/lobby/online`).then(r => r.json()).then(r => r.online);
+        return fetch(`/api/lobby/onlineChart`).then(r => r.json());
     }
 }

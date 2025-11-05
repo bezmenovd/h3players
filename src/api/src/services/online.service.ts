@@ -4,7 +4,7 @@ import { Online } from '../types/clickhouse';
 
 @Injectable()
 export class OnlineService {
-  async getOnline(after: number): Promise<Online[]> {
+  async getOnlineChartData(after: number): Promise<Online[]> {
     let client = createClient({
         url: 'http://clickhouse:8123',
         username: 'default',
@@ -13,7 +13,13 @@ export class OnlineService {
     })
 
     let result = await (await client.query({
-      query: `select * from online where datetime > ${after} order by datetime asc`,
+      query: `
+      select 
+        toUnixTimestamp(toStartOfMinute(datetime)) as timestamp,
+        online 
+      from online 
+      where datetime > ${after} 
+      order by datetime asc`,
       format: 'JSONEachRow',
     })).json<Online>()
 

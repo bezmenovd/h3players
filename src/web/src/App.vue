@@ -1,7 +1,5 @@
 <template>
-    <transition name="loading">
-        <MainLoader v-if="loading.show" />
-    </transition>
+    <MainLoader v-if="loading.show" />
     <div id="app" key="app" v-if="! loading.is">
         <div id="headline">
             <div id="logo" @click="logoOnClick">H3PLAYERS</div>
@@ -92,12 +90,6 @@ preload(config.resources.app).then(() => {
     background: #4c25ab;
 }
 
-.loading-enter-active, .loading-leave-active {
-  transition: opacity 0.1s ease-in-out;
-}
-.loading-enter-from, .loading-leave-to {
-  opacity: 0;
-}
 ::-webkit-scrollbar {
     width: 14px;
 }
@@ -107,5 +99,31 @@ preload(config.resources.app).then(() => {
     border-top: 4px solid transparent;
     border-bottom: 4px solid transparent;
     background-clip: padding-box;
+}
+[hint] {
+    cursor: help;
+    /* border-bottom: 1px dashed #dedede; */
+    position: relative;
+}
+[hint]::after {
+    content: attr(hint);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #2e3245;
+    z-index: 1009;
+    background-color: #2e3245;
+    transform: translateY(100%);
+    font-size: 13px;
+    text-align: left;
+    white-space: nowrap;
+    padding: 4px;
+    color: #bcbcbc;
+    opacity: 0;
+}
+[hint]:hover::after {
+    opacity: 1;
+    transition: opacity .1s ease-in;
+    transition-delay: 1s;
 }
 </style>

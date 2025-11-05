@@ -7,9 +7,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-const visible = ref(false)
+const visible = ref(true)
 
-setTimeout(() => visible.value = true, 400)
+// setTimeout(() => visible.value = true, 400)
 
 </script>
 

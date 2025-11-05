@@ -5,12 +5,12 @@ import { OnlineService } from '../services/online.service';
 export class LobbyController {
   constructor(private readonly onlineService: OnlineService) {}
 
-  @Get('/online')
-  async online(@Query('after') after?: number) {
-    let online = await this.onlineService.getOnline(after ?? Math.floor(Date.now() / 1000) - 86400)
+  @Get('/onlineChart')
+  async onlineChart(@Query('after') after?: number) {
+    after = Math.max(after ?? 0, Math.floor(Date.now() / 1000) - 86400)
 
-    return {
-      online,
-    }
+    let data = await this.onlineService.getOnlineChartData(after)
+
+    return data
   }
 }
