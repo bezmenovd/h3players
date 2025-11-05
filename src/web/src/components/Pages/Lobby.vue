@@ -4,15 +4,15 @@
             <Loader v-if="loading" />
             <template v-else>
                 <div id="online-chart">
-                    <LineChart ref="chart" :width="1440" :height="240" :data="data.onlineChart.data" color="#19f0af" :max="onlineChartMax"/>
+                    <LineChart v-if="data.onlineChart.data.length > 0" ref="chart" :width="1440" :height="230" :data="data.onlineChart.data" :labels="data.onlineChart.labels" color="#19f0af" :max="onlineChartMax"/>
                 </div>
                 <div id="lobby-metrics">
                     <div class="metric">
                         <template v-if="connected">
-                            <div class="metric-value"><Light color="#19f0af" style="position: absolute; left: 22px"/>{{ onlineFormatted }}</div>
+                            <div class="metric-value"><Light id="online-light" color="#19f0af"/>{{ onlineFormatted }}</div>
                         </template>
                         <template v-else>
-                            <div class="metric-value"><Light color="#f01919" style="position: absolute; left: 22px"/>-</div>
+                            <div class="metric-value"><Light id="online-light" color="#f01919"/>-</div>
                         </template>
                         <div class="metric-name">онлайн</div>
                     </div>
@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, reactive } from 'vue'
+import { ref, onMounted, computed, reactive, onUnmounted } from 'vue'
 import Panel from './../UI/Panel.vue'
 import Light from './../UI/Light.vue'
 import {  onlineChart } from '../../api/lobby'
@@ -54,7 +54,7 @@ const data = reactive<{
 const loading = ref(true)
 
 const connected = computed<boolean>(() => {
-    return online != null
+    return online.value != null
 })
 
 const online = computed<number|null>(() => {
@@ -81,33 +81,41 @@ const onlineChartMax = computed<number>(() => {
     return Math.max(3000, Math.ceil(onlineMax.value / 1000) * 1000)
 })
 
-onlineChart().then(r => {
-    let now = timestamp.nowMinute()
-    let cur = now - (1439*60)
-    let curIndex = 0
-    let chartDataPointer = 0
+let updateInterval = null
 
-    while (cur <= now) {
-        if (chartDataPointer < r.length && r[chartDataPointer].timestamp === cur) {
-            data.onlineChart.data[curIndex] = r[chartDataPointer].online
-            data.onlineChart.labels[curIndex] = datetime.from(r[chartDataPointer].timestamp)
-            chartDataPointer++
-        } else {
-            data.onlineChart.data[curIndex] = null
+onMounted(() => {
+    onlineChart().then(r => {
+        let now = timestamp.nowMinute()
+        let cur = now - (1439*60)
+        let curIndex = 0
+        let chartDataPointer = 0
+
+        while (cur <= now) {
+            if (chartDataPointer < r.length && r[chartDataPointer].timestamp === cur) {
+                data.onlineChart.data[curIndex] = r[chartDataPointer].online
+                data.onlineChart.labels[curIndex] = datetime.from(r[chartDataPointer].timestamp)
+                chartDataPointer++
+            } else {
+                data.onlineChart.data[curIndex] = null
+            }
+            cur += 60
+            curIndex++
         }
-        cur += 60
-        curIndex++
-    }
 
-    loading.value = false
+        loading.value = false
+    })
+
+    updateInterval = setInterval(() => {
+        onlineChart(timestamp.now() - 60).then(r => {
+            data.onlineChart.data = [...data.onlineChart.data.slice(1), r[0]?.online ?? null]
+            data.onlineChart.labels = [...data.onlineChart.labels.slice(1), r[0] ? datetime.from(r[0].timestamp) : null]
+        })
+    }, 60_000)
 })
 
-setInterval(() => {
-    onlineChart(timestamp.now() - 60).then(r => {
-        data.onlineChart.data = [...data.onlineChart.data.slice(1), r[0]?.online ?? null]
-        data.onlineChart.labels = [...data.onlineChart.labels.slice(1), r[0] ? datetime.from(r[0].timestamp) : null]
-    })
-}, 60_000)
+onUnmounted(() => {
+    clearInterval(updateInterval!)
+})
 
 </script>
 
@@ -118,10 +126,17 @@ setInterval(() => {
     display: grid;
     grid-template-columns: 1fr 180px;
 }
+#online-chart {
+    padding: 5px 0px 5px 5px;
+}
 #lobby-metrics {
     padding: 10px 20px;
     display: grid;
     grid-template-rows: 1fr 1fr 1fr;
+}
+#online-light {
+    position: absolute;
+    left: 22px;
 }
 .metric {
     display: flex;
@@ -142,5 +157,23 @@ setInterval(() => {
     justify-content: center;
     opacity: .7;
     margin-top: 5px;
+}
+
+@media (max-width: 1600px) {
+    #online {
+        grid-template-columns: 1fr 140px;
+    }
+    #lobby-metrics {
+        padding: 8px 10px;
+    }
+    .metric-name {
+        font-size: 15px;
+    }
+    .metric-value {
+        font-size: 16px;
+    }
+    #online-light {
+        left: 14px;
+    }
 }
 </style>

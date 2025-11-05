@@ -13,11 +13,11 @@ export const datetime = {
         let date = new Date(timestamp * 1000)
 
         let year = date.getFullYear()
-        let month = String(date.getMonth()).padEnd(2, '0')
-        let day = String(date.getDate()).padEnd(2, '0')
+        let month = String(date.getMonth()).padStart(2, '0')
+        let day = String(date.getDate()).padStart(2, '0')
 
-        let hours = String(date.getHours()).padEnd(2, '0')
-        let minutes = String(date.getMinutes()).padEnd(2, '0')
+        let hours = String(date.getHours()).padStart(2, '0')
+        let minutes = String(date.getMinutes()).padStart(2, '0')
 
         return `${day}.${month}.${year} ${hours}:${minutes}`
     }

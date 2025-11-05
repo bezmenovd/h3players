@@ -73,6 +73,11 @@ preload(config.resources.app).then(() => {
     overflow-y: scroll;
     max-height: calc(100vh - 80px);
 }
+@media (max-width: 1600px) {
+    #content {
+        padding: 35px 30px 35px 50px;
+    }
+}
 #body {
     display: grid;
     grid-template-columns: 200px 1fr;
@@ -120,6 +125,7 @@ preload(config.resources.app).then(() => {
     padding: 4px;
     color: #bcbcbc;
     opacity: 0;
+    pointer-events: none;
 }
 [hint]:hover::after {
     opacity: 1;
