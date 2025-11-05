@@ -19,12 +19,12 @@
 .pulse-circle {
     width: 8px;
     height: 8px;
-    background-color: #19f024;
+    background-color: #19f0af;
     border-radius: 50%;
 }
 
 .pulse-ringring {
-    border: 3px solid #19f024;
+    border: 3px solid #19f0af;
     -webkit-border-radius: 30px;
     height: 20px;
     width: 20px;

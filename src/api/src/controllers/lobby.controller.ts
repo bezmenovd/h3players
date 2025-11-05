@@ -7,7 +7,7 @@ export class LobbyController {
 
   @Get('/online')
   async online(@Query('after') after?: number) {
-    let online = await this.onlineService.getOnline(after ?? Math.floor(Date.now() / 1000) - 86400*2)
+    let online = await this.onlineService.getOnline(after ?? Math.floor(Date.now() / 1000) - 86400)
 
     return {
       online,
