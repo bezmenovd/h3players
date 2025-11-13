@@ -2,6 +2,8 @@ import net, { Socket } from 'net'
 import { logger } from './services/logger';
 import { bytesToHex, hexDump, intToBytes } from './helpers/bytes';
 import config from '../config';
+import { getHdModVersion } from './version';
+import { MsgIn } from './types/msgin';
 
 export type Listener = (data: Buffer) => void;
 
@@ -39,7 +41,6 @@ export class Client {
     constructor(
         public name: string,
         public user: string,
-        public version: number,
     ) {
         let authstr = config.users.find(u => u.name === user)?.authstr
 
@@ -47,7 +48,7 @@ export class Client {
             throw new Error(`no such user: ${user}`)
         }
 
-        this.authstr = authstr.substring(0, 482) + bytesToHex(intToBytes(version), '') + authstr.substring(490)
+        this.authstr = authstr
     }
 
     public async connect(): Promise<void> {
@@ -57,6 +58,8 @@ export class Client {
         if (this.listenersOnMessage.length === 0) {
             throw new Error("no onMessage listeners")
         }
+
+        this.authstr = this.authstr.substring(0, 482) + bytesToHex(intToBytes(await getHdModVersion()), '') + this.authstr.substring(490)
 
         return new Promise((resolve) => {
             this.socket = net.createConnection({
@@ -142,7 +145,8 @@ export class Client {
         this.statistics.sent.bytes += bufferWL.length
         this.statistics.sent.messages++
 
-        // logger.info(`client(${this.name}) wrote ${bufferWL.length} bytes`)
+        logger.info(`client(${this.name}) wrote ${bufferWL.length} bytes`)
+        logger.info(`client(${this.name}) wrote ${bytesToHex(bufferWL)}`)
     }
 
     private onData(data: Buffer): void {

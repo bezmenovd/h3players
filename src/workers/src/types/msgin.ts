@@ -1,7 +1,14 @@
 import { bytesToHex, readstr } from "../helpers/bytes"
+import { Code, Msg } from "./msg"
 
 
-export class Msg {
+export abstract class MsgIn extends Msg {
+    constructor(
+        public data: Buffer
+    ) {
+        super()
+    }
+
     public toString(): string {
         let valuesStr = Object.entries(this)
             .filter(([key, value]) => key != 'data')
@@ -28,20 +35,12 @@ export class Msg {
     }
 }
 
-export class MsgIn extends Msg {
-    public data: Buffer
 
-    constructor(data: Buffer) {
-        super()
-        this.data = data
-    }
-}
-
-
-
+@Code(2)
 export class MultipleSessions extends MsgIn {}
 
 
+@Code(51)
 export class User extends MsgIn {
     public userId: number
     public userIdBuffer: Buffer
@@ -58,6 +57,7 @@ export class User extends MsgIn {
 }
 
 
+@Code(83)
 export class UserDisconnect extends MsgIn {
     public userId: number
 
@@ -74,7 +74,8 @@ export enum ChatMessageGlobalChat {
     Polish = 2,
 }
 
-export class ChatMessage extends MsgIn {
+@Code(70)
+export class ChatMessage70 extends MsgIn {
     public userId: number
     public recepientId: number
     public isPrivate: boolean
@@ -91,7 +92,11 @@ export class ChatMessage extends MsgIn {
     }
 }
 
+@Code(71)
+export class ChatMessage71 extends ChatMessage70 {}
 
+
+@Code(56)
 export class Room extends MsgIn {
     public hostId: number
     public description: string
@@ -99,7 +104,7 @@ export class Room extends MsgIn {
     public size: number
     public onRating: boolean
     public members: number[] = []
-    public relativeTimestamp: number
+    public timestamp: number
     public isStarted: boolean
     public gameId: number
 
@@ -116,49 +121,144 @@ export class Room extends MsgIn {
             this.members.push(this.data.readUInt32LE(81 + i*4))
         }
 
-        this.relativeTimestamp = this.data.readUInt32LE(113)
-        this.isStarted = this.relativeTimestamp != 0
+        this.timestamp = this.data.readUInt32LE(113)
+        this.isStarted = this.timestamp != 0
         this.gameId = this.data.readUInt32LE(117)
     }
 }
 
 
+@Code(57)
 export class RoomUpdate extends MsgIn {
     public hostId: number
-    public relativeTimestamp: number
+    public timestamp: number
     public isStarted: boolean
 
     public constructor(data: Buffer) {
         super(data)
 
         this.hostId = this.data.readUInt32LE(0)
-        this.relativeTimestamp = this.data.readUInt32LE(4)
+        this.timestamp = this.data.readUInt32LE(4)
         this.isStarted = this.data.readUInt8(12) === 0
     }
 }
 
 
+@Code(58)
 export class RoomRemove extends MsgIn {
     public hostId: number
-    public relativeTimestamp: number
+    public timestamp: number
 
     public constructor(data: Buffer) {
         super(data)
 
         this.hostId = this.data.readUInt32LE(0)
-        this.relativeTimestamp = this.data.readUInt32LE(4)
+        this.timestamp = this.data.readUInt32LE(4)
     }
 }
 
 
-export const MsgInList : Record<number, new (data: Buffer) => MsgIn> = {
-    // 2: MultipleSessions,
-    51: User,
-    56: Room,
-    57: RoomUpdate,
-    58: RoomRemove,
-    70: ChatMessage,
-    71: ChatMessage,
-    83: UserDisconnect,
-    107: UserDisconnect,
+export enum GameType {
+    Scenario,
+    RandomMap,
+}
+
+export enum GamePlayerColor {
+    Red = 0,
+    Blue = 1,
+    Tan = 2,
+    Green = 3,
+    Orange = 4,
+    Violet = 5,
+    Cyan = 6,
+    Pink = 7,
+}
+
+export enum GamePlayerTown {
+    Castle = 0,
+    Rampart = 1,
+    Tower = 2,
+    Inferno = 3,
+    Necropolis = 4,
+    Dungeon = 5,
+    Stronghold = 6,
+    Fortress = 7,
+    Conflux = 8,
+    Cove = 9,
+    Factory = 10,
+}
+
+export class Game {
+    public data: Buffer
+
+    public id: number
+    public templateId: number
+
+    public startTimestamp: number
+    public endTimestamp: number
+
+    public hostId: number
+    public hostColor: GamePlayerColor
+    public hostTown: GamePlayerTown
+    public hostHero: number
+    public hostOldRating: number
+    public hostNewRating: number
+
+    public opponentId: number
+    public opponentColor: GamePlayerColor
+    public opponentTown: GamePlayerTown
+    public opponentHero: number
+    public opponentOldRating: number
+    public opponentNewRating: number
+
+    constructor(data: Buffer) {
+        this.data = data
+        this.id = this.data.readUInt32LE(0)
+        this.templateId = this.data.readUInt32LE(4)
+
+        this.startTimestamp = this.data.readUInt32LE(19)
+        this.endTimestamp = this.data.readUInt32LE(23)
+
+        this.hostId = this.data.readUInt32LE(27)
+        this.hostColor = this.data.readUInt8(31)
+        this.hostTown = this.data.readUInt8(38)
+        this.hostHero = this.data.readUInt8(39)
+        this.hostOldRating = this.data.readUInt32LE(65)
+        this.hostNewRating = this.data.readUInt32LE(69)
+
+        this.opponentId = this.data.readUInt32LE(73)
+        this.opponentColor = this.data.readUInt8(77)
+        this.opponentTown = this.data.readUInt8(84)
+        this.opponentHero = this.data.readUInt8(85)
+        this.opponentOldRating = this.data.readUInt32LE(111)
+        this.opponentNewRating = this.data.readUInt32LE(115)
+    }
+
+    public type(): GameType {
+        if (this.templateId == 1) {
+            return GameType.Scenario
+        }
+        return GameType.RandomMap
+    }
+}
+
+@Code(152)
+export class History extends MsgIn {
+    public total: number
+    public onPage: number
+    public games: Game[] = []
+
+    public constructor(data: Buffer) {
+        super(data)
+
+        this.total = this.data.readUInt32LE(0)
+        this.onPage = this.data.readUInt16LE(4)
+
+        let gameOffset = 12;
+
+        for (let i = 0; i < this.onPage; i++) {
+            this.games.push(new Game(this.data.subarray(gameOffset, gameOffset+119)))
+            gameOffset += 119
+        }
+    }
 }

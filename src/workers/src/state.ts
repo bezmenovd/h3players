@@ -15,7 +15,7 @@ export type Room = {
         isStarted: boolean,
         hasPassword: boolean,
     },
-    relativeTimestamp?: number
+    timestamp?: number
     gameId?: number
 }
 
