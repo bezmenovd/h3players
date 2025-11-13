@@ -9,6 +9,7 @@ import { Supervisor } from './src/supervisor'
 import { sendMessage } from './src/services/telegram'
 import timestamp from './src/helpers/timestamp'
 import { lobby } from './src/services/clickhouse'
+import { getHdModVersion } from './src/version'
 
 
 process.env.TZ = 'Europe/Moscow'
@@ -22,8 +23,7 @@ process.on('uncaughtException', (err: Error) => {
 async function main() {
     const supervisor = new Supervisor()
 
-
-    const spectator = new Client('spectator', 'h3players_bot1')
+    const spectator = new Client('spectator', 'h3players_bot1', await getHdModVersion())
     
     supervisor.addClient(spectator)
     
@@ -34,23 +34,23 @@ async function main() {
         state = createState()
     })
     
-    // let counter = 0
+    let counter = 0
     
     spectator.onMessage((msg: Buffer) => {
-        // counter++
+        counter++
     
         let code = msg.readUInt16LE(0)
         let buffer = msg.subarray(2)
         
-        // fs.mkdir(`docs/server/${code}`, () => {})
-        // fs.writeFile(`docs/server/${code}/${counter}`, hexDump(buffer), () => {})
+        fs.mkdir(`output/server/${code}`, () => {})
+        fs.writeFile(`output/server/${code}/${counter}`, hexDump(buffer), () => {})
     
         if (code in MsgInList) {
             let message = new MsgInList[code](buffer)
     
             if (message instanceof User) {
                 if (! state.players.has(message.userId)) {
-                    // logger.info(`user#${message.userId}: ${message.name} (rating=${message.rating}) connected`)
+                    logger.info(`user#${message.userId}: ${message.name} (rating=${message.rating}) connected`)
                 }
     
                 state.players.set(message.userId, {
@@ -65,7 +65,7 @@ async function main() {
                     return
                 }
     
-                // logger.info(`user#${message.userId}: ${state.players.get(message.userId).name} disconnected`)
+                logger.info(`user#${message.userId}: ${state.players.get(message.userId)?.name} disconnected`)
     
                 state.players.delete(message.userId)
                 state.lastUpdate = timestamp.now()

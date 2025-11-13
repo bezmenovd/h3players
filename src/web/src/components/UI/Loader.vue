@@ -5,11 +5,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
-const visible = ref(true)
+const visible = ref(false)
 
-// setTimeout(() => visible.value = true, 400)
+onMounted(() => {
+    setTimeout(() => visible.value = true, 400)
+})
 
 </script>
 

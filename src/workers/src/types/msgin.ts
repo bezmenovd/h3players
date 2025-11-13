@@ -6,7 +6,7 @@ export class Msg {
         let valuesStr = Object.entries(this)
             .filter(([key, value]) => key != 'data')
             .map(([key, value]) => {
-                let formatValue = (value: any) => {
+                let formatValue = (value: any): string => {
                     if (Array.isArray(value)) {
                         return value.map(i => formatValue(i)).join(',')
                     } else if (typeof value === 'string') {
@@ -18,6 +18,7 @@ export class Msg {
                     } else if (typeof value === 'number') {
                         return `${value}`
                     }
+                    return JSON.stringify(value)
                 }
                 return `${key}=${formatValue(value)}`
             })

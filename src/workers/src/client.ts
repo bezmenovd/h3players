@@ -1,6 +1,6 @@
 import net, { Socket } from 'net'
 import { logger } from './services/logger';
-import { bytesToHex, hexDump } from './helpers/bytes';
+import { bytesToHex, hexDump, intToBytes } from './helpers/bytes';
 import config from '../config';
 
 export type Listener = (data: Buffer) => void;
@@ -39,6 +39,7 @@ export class Client {
     constructor(
         public name: string,
         public user: string,
+        public version: number,
     ) {
         let authstr = config.users.find(u => u.name === user)?.authstr
 
@@ -46,7 +47,7 @@ export class Client {
             throw new Error(`no such user: ${user}`)
         }
 
-        this.authstr = authstr
+        this.authstr = authstr.substring(0, 482) + bytesToHex(intToBytes(version), '') + authstr.substring(490)
     }
 
     public async connect(): Promise<void> {
@@ -65,7 +66,7 @@ export class Client {
             })
     
             this.socket.on('connect', () => {
-                this.write(Buffer.from(this.authstr!, 'hex'), false)
+                this.write(Buffer.from(this.authstr, 'hex'), false)
             })
 
             this.socket.on('data', (data: Buffer) => {

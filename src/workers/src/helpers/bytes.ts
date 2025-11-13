@@ -1,10 +1,16 @@
 import iconv from 'iconv-lite'
 
 
-export function bytesToHex(buffer: Buffer) : string {
+export function bytesToHex(buffer: Buffer, separator: string = ' ') : string {
     return Array.from(buffer)
         .map(b => b.toString(16).padStart(2, '0'))
-        .join(' ')
+        .join(separator)
+}
+
+export function intToBytes(int: number): Buffer {
+    let buffer = Buffer.alloc(4)
+    buffer.writeInt32LE(int, 0)
+    return buffer
 }
 
 export function hexDump(buffer: Buffer, bytesPerLine = 16) : string {

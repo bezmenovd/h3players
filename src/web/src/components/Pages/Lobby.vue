@@ -4,7 +4,7 @@
             <Loader v-if="loading" />
             <template v-else>
                 <div id="online-chart">
-                    <LineChart v-if="data.onlineChart.data.length > 0" ref="chart" :width="1440" :height="230" :data="data.onlineChart.data" :labels="data.onlineChart.labels" color="#19f0af" :max="onlineChartMax"/>
+                    <LineChart v-if="data.onlineChart.show" ref="chart" :width="1440" :height="230" :data="data.onlineChart.data" :labels="data.onlineChart.labels" color="#19f0af" :max="onlineChartMax"/>
                 </div>
                 <div id="lobby-metrics">
                     <div class="metric">
@@ -12,7 +12,7 @@
                             <div class="metric-value"><Light id="online-light" color="#19f0af"/>{{ onlineFormatted }}</div>
                         </template>
                         <template v-else>
-                            <div class="metric-value"><Light id="online-light" color="#f01919"/>-</div>
+                            <div class="metric-value">-</div>
                         </template>
                         <div class="metric-name">онлайн</div>
                     </div>
@@ -43,11 +43,13 @@ const data = reactive<{
     onlineChart: {
         data: (number|null)[],
         labels: (string|null)[],
+        show: boolean,
     }
 }>({
     onlineChart: {
-        data: [],
-        labels: [],
+        data: new Array<number|null>(1440),
+        labels: new Array<string|null>(1440),
+        show: false,
     },
 })
 
@@ -87,20 +89,26 @@ onMounted(() => {
     onlineChart().then(r => {
         let now = timestamp.nowMinute()
         let cur = now - (1439*60)
-        let curIndex = 0
-        let chartDataPointer = 0
+        let dIndex = 0
+        let rIndex = 0
 
         while (cur <= now) {
-            if (chartDataPointer < r.length && r[chartDataPointer].timestamp === cur) {
-                data.onlineChart.data[curIndex] = r[chartDataPointer].online
-                data.onlineChart.labels[curIndex] = datetime.from(r[chartDataPointer].timestamp)
-                chartDataPointer++
-            } else {
-                data.onlineChart.data[curIndex] = null
+            while (rIndex+1 < r.length && r[rIndex].timestamp < cur) {
+                rIndex++
             }
+            
+            if (r[rIndex].timestamp === cur) {
+                data.onlineChart.data[dIndex] = r[rIndex].online
+                data.onlineChart.labels[dIndex] = datetime.from(r[rIndex].timestamp)
+            } else {
+                data.onlineChart.data[dIndex] = null
+            }
+
             cur += 60
-            curIndex++
+            dIndex++
         }
+
+        data.onlineChart.show = true
 
         loading.value = false
     })

@@ -3,3 +3,4 @@ dist/web/*
 dist/api/*
 dist/workers/spectator/*
 yarn-cache
+output
