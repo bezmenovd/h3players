@@ -1,15 +1,15 @@
 import { Postman } from "../postman";
-import { History } from "../types/msgin";
-import { GetHistory } from "../types/msgout";
+import { Names } from "../types/msgin";
+import { GetNames } from "../types/msgout";
 
-export class HistoryAgent {
-    private resolve?: (msg: History) => void
+export class NamesAgent {
+    private resolve?: (msg: Names) => void
     private reject?: () => void
 
     constructor(
         public postman: Postman
     ) {
-        postman.on(History, (msg) => {
+        postman.on(Names, (msg) => {
             if (this.resolve) {
                 this.resolve(msg)
             }
@@ -22,24 +22,24 @@ export class HistoryAgent {
         })
     }
 
-    public async get(playerId: number, beforeTimestamp?: number): Promise<History> {
+    public async get(playerIds: number[]): Promise<Names> {
         if (this.resolve) {
             throw new Error("concurrent requests are forbidden");
         }
 
-        return new Promise<History>((resolve, reject) => {
+        return new Promise<Names>((resolve, reject) => {
             this.reject = reject
 
-            let errorTimeout =  setTimeout(this.reject, 30000)
+            let errorTimeout =  setTimeout(this.reject, 5000)
 
-            this.resolve = (msg: History) => {
+            this.resolve = (msg: Names) => {
                 clearTimeout(errorTimeout)
                 this.reject = undefined
                 this.resolve = undefined
                 resolve(msg)
             }
 
-            this.postman.send(new GetHistory(playerId, beforeTimestamp))
+            this.postman.send(new GetNames(playerIds))
         })
     }
 }

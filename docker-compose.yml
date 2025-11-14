@@ -72,6 +72,7 @@ services:
     restart: unless-stopped
     volumes:
       - redis-volume:/data
+    command: redis-server --appendonly no --dir /data --dbfilename dump.rdb --save "60 1"
 
   clickhouse:
     image: clickhouse/clickhouse-server:24.8

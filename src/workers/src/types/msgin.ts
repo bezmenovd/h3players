@@ -262,3 +262,32 @@ export class History extends MsgIn {
         }
     }
 }
+
+
+export type NamesItem = {
+    id: number
+    name: string
+}
+
+@Code(156)
+export class Names extends MsgIn {
+    public total: number
+    public items: NamesItem[] = []
+
+    public constructor(data: Buffer) {
+        super(data)
+
+        this.total = this.data.readUInt32LE(0)
+
+        let offset = 4
+
+        for (let i = 0; i < this.total; i++) {
+            this.items.push({
+                id: this.data.readUInt32LE(offset),
+                name: readstr(this.data, offset + 4 + 2, 16)
+            })
+
+            offset += 23
+        }
+    }
+}

@@ -4,15 +4,15 @@ import { Online } from '../types/clickhouse';
 
 @Injectable()
 export class OnlineService {
-  async getOnlineChartData(after: number): Promise<Online[]> {
-    let client = createClient({
-        url: 'http://clickhouse:8123',
-        username: 'default',
-        password: 'xQm8LpsLOolVLryE',
-        database: 'lobby',
-    })
+  private client = createClient({
+    url: 'http://clickhouse:8123',
+    username: 'default',
+    password: 'xQm8LpsLOolVLryE',
+    database: 'lobby',
+  })
 
-    let result = await (await client.query({
+  async getOnlineChartData(after: number): Promise<Online[]> {
+    let result = await (await this.client.query({
       query: `
       select 
         toUnixTimestamp(toStartOfMinute(datetime)) as timestamp,

@@ -36,8 +36,9 @@ export function bytesToStr(buffer: Buffer): string {
 }
 
 export function readstr(buffer: Buffer, start: number, max?: number): string {
-    const end = buffer.indexOf(0, start)
-    const sliceEnd = end === -1 ? (max ?? buffer.length) : end
+    const strEnd = buffer.indexOf(0, start)
+    const sliceEnd = strEnd === -1 ? (max ?? buffer.length) : strEnd
+    
     return bytesToStr(buffer.subarray(start, sliceEnd))
 }
 

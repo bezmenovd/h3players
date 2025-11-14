@@ -145,8 +145,7 @@ export class Client {
         this.statistics.sent.bytes += bufferWL.length
         this.statistics.sent.messages++
 
-        logger.info(`client(${this.name}) wrote ${bufferWL.length} bytes`)
-        logger.info(`client(${this.name}) wrote ${bytesToHex(bufferWL)}`)
+        // logger.info(`client(${this.name}) wrote ${bufferWL.length} bytes`)
     }
 
     private onData(data: Buffer): void {

@@ -1,35 +1,44 @@
 <template>
     <div id="navigation">
-        <div :class="{'link': true, 'active':  link.url === route.path }" v-for="link in links" @click="goto(link.url)">
+        <div :class="{'link': true, 'active': String(route.name!).startsWith(link.route.name) }" v-for="link in links" @click="goto(link)">
             <img class="link-icon" :src="link.img">
             <div class="link-text">{{ link.text }}</div>
         </div>
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRoute, useRouter } from 'vue-router';
 
-const links = ref([
-    {
-        url: '/',
-        img: '/img/lobby.png',
-        text: 'Лобби'
+type Link = {
+    route: {
+        name: string
+        params?: Record<string, any>
     },
-    {
-        url: '/players',
-        img: '/img/players.png',
-        text: 'Игроки'
-    },
-])
+    img: string
+    text: string
+}
+
+const links: Link[] = [
+  {
+    route: { name: 'lobby' },
+    img: '/img/lobby.png',
+    text: 'Лобби',
+  },
+  {
+    route: { name: 'players' },
+    img: '/img/players.png',
+    text: 'Игроки',
+  }
+]
 
 const route = useRoute()
 const router = useRouter()
 
-const goto = (url) => {
-    router.replace(url)
+const goto = (link: Link) => {
+    router.replace(link.route)
 }
 
 onMounted(async () => {

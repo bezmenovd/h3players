@@ -50,6 +50,34 @@ preload(config.resources.app).then(() => {
     font-style: normal; 
 }
 
+input {
+    background: #272c3a;
+    padding: 12px 10px;
+    outline: none;
+    border: none;
+    font-size: 17px;
+    line-height: 21px;
+}
+input:focus::placeholder {
+    color: transparent;
+}
+input:disabled {
+    background: #363c4b;
+}
+
+a {
+    padding-top: 2px;
+    text-decoration: none !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0);
+}
+a:hover {
+    border-bottom: 2px solid rgba(255, 255, 255, 0.726);
+}
+
+::selection {
+    background: #ffffff1a;
+}
+
 #root {
     height: 100%;
 }

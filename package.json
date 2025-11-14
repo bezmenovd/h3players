@@ -17,7 +17,10 @@
     "workers:convert": "tsx src/workers/convert.ts",
     "workers:spectator:dev": "tsx src/workers/spectator.ts",
     "workers:spectator:build": "tsup --config src/workers/spectator.tsup.config.ts --clean",
-    "workers:spectator": "node dist/workers/spectator/spectator.js"
+    "workers:spectator": "node dist/workers/spectator/spectator.js",
+    "workers:headhunter:dev": "tsx src/workers/headhunter.ts",
+    "workers:headhunter:build": "tsup --config src/workers/headhunter.tsup.config.ts --clean",
+    "workers:headhunter": "node dist/workers/headhunter/headhunter.js"
   },
   "dependencies": {
     "@clickhouse/client": "^1.12.1",
@@ -26,10 +29,12 @@
     "@nestjs/platform-express": "^11.0.1",
     "@vitejs/plugin-vue": "^6.0.1",
     "axios": "^1.13.1",
+    "debounce": "^3.0.0",
     "nprogress": "^0.2.0",
     "pinia": "^3.0.3",
     "pino": "^10.1.0",
     "pino-pretty": "^13.1.2",
+    "redis": "^5.9.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "tsup": "^8.5.0",

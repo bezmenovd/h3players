@@ -2,5 +2,6 @@ node_modules/
 dist/web/*
 dist/api/*
 dist/workers/spectator/*
+dist/workers/headhunter/*
 yarn-cache
 output

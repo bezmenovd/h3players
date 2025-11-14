@@ -8,10 +8,7 @@
 <script setup lang="ts">
 
 const props = defineProps<{
-    pulse: {
-        type: boolean,
-        default: false
-    },
+    pulse: boolean,
     color: string
 }>()
 

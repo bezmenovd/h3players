@@ -3,6 +3,8 @@ import NProgress from 'nprogress';
 import 'nprogress/nprogress.css'; // Import the default CSS
 import Lobby from './components/Pages/Lobby.vue'
 import Players from './components/Pages/Players.vue'
+import PlayersList from './components/Pages/Players/List.vue'
+import PlayersDetail from './components/Pages/Players/Detail.vue'
 
 const routes = [
     {
@@ -15,6 +17,16 @@ const routes = [
         name: 'players',
         component: Players
     },
+    {
+        path: '/players/list',
+        name: 'players.list',
+        component: PlayersList
+    },
+    {
+        path: '/player/:id',
+        name: 'players.detail',
+        component: PlayersDetail
+    }
 ]
 
 const router = createRouter({

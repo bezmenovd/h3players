@@ -7,9 +7,9 @@ export class LobbyController {
 
   @Get('/onlineChart')
   async onlineChart(@Query('after') after?: number) {
-    after = Math.max(after ?? 0, Math.floor(Date.now() / 1000) - 86400)
+    let a = Math.max(Number(after) || 0, Math.floor(Date.now() / 1000) - 86400)
 
-    let data = await this.onlineService.getOnlineChartData(after)
+    let data = await this.onlineService.getOnlineChartData(a)
 
     return data
   }
