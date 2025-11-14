@@ -97,18 +97,20 @@ const searchKeyDown = async function(event: KeyboardEvent) {
 }
 
 const searchKeyUp = async function(event: KeyboardEvent) {
-    searchResult.match = false
-    searchResult.notFound = false
-    searchResult.selected = -1
-
     if (searchValue.value.length === 0) {
         searchResult.items = []
+        searchResult.match = false
+        searchResult.notFound = false
+        searchResult.selected = -1
         return
     }
 
     if (searchValue.value === searchResult.lastQuery) {
         return
     }
+    searchResult.match = false
+    searchResult.notFound = false
+    searchResult.selected = -1
 
     searchResult.lastQuery = searchValue.value
     searchResult.items = await apiSearch(searchValue.value)
