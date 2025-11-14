@@ -111,10 +111,15 @@ const searchKeyUp = async function(event: KeyboardEvent) {
     searchResult.lastQuery = searchValue.value
     searchResult.items = await apiSearch(searchValue.value)
 
-    let match = searchResult.items.find(i => i.name.toUpperCase() === searchValue.value.toUpperCase())
-    if (match) {
-        searchResult.selected = searchResult.items.indexOf(match)
+    if (searchResult.items.length === 1) {
+        searchResult.selected = 0
         searchResult.match = true
+    } else {
+        let match = searchResult.items.find(i => i.name.toUpperCase() === searchValue.value.toUpperCase())
+        if (match) {
+            searchResult.selected = searchResult.items.indexOf(match)
+            searchResult.match = true
+        }
     }
 }
 
