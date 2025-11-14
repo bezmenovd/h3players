@@ -4,7 +4,7 @@
             <div id="players-search-top">
                 <span id="players-search-top-title">Найти игрока:</span>
                 <div id="players-search-input-box"
-                    :class="`${ searchResult.match ? 'match' : '' }`"
+                    :class="`${ searchResult.match ? 'match' : '' } ${ searchResult.notFound ? 'notFound' : '' }`"
                 >
                     <input 
                         type="text" id="players-search-input" spellcheck="false" maxlength="16" autocomplete="one-time-code"
@@ -54,11 +54,13 @@ const searchResult = reactive<{
     selected: number,
     lastQuery: string,
     match: boolean,
+    notFound: boolean,
 }>({
     items: [],
     selected: -1,
     lastQuery: '',
     match: false,
+    notFound: false,
 })
 
 const searchKeyDown = async function(event: KeyboardEvent) {
@@ -95,10 +97,12 @@ const searchKeyDown = async function(event: KeyboardEvent) {
 }
 
 const searchKeyUp = async function(event: KeyboardEvent) {
+    searchResult.match = false
+    searchResult.notFound = false
+    searchResult.selected = -1
+
     if (searchValue.value.length === 0) {
         searchResult.items = []
-        searchResult.selected = -1
-        searchResult.match = false
         return
     }
 
@@ -106,12 +110,12 @@ const searchKeyUp = async function(event: KeyboardEvent) {
         return
     }
 
-    searchResult.match = false
-    searchResult.selected = -1
     searchResult.lastQuery = searchValue.value
     searchResult.items = await apiSearch(searchValue.value)
 
-    if (searchResult.items.length === 1) {
+    if (searchResult.items.length === 0) {
+        searchResult.notFound = true
+    } else if (searchResult.items.length === 1) {
         searchResult.selected = 0
         searchResult.match = true
     } else {
@@ -137,7 +141,7 @@ onMounted(async () => {
 })
 </script>
 
-<style>
+<style scoped>
 #players {
     height: 100%;
 }
@@ -163,6 +167,15 @@ onMounted(async () => {
 }
 #players-search-input-box.match::after {
     content: "Enter";
+    position: absolute;
+    right: 12px;
+    color: #ffffff63;
+    font-size: 17px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+#players-search-input-box.notFound::after {
+    content: "Не найден";
     position: absolute;
     right: 12px;
     color: #ffffff63;
