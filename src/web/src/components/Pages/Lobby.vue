@@ -97,7 +97,7 @@ onMounted(() => {
                 rIndex++
             }
             
-            if (r[rIndex].timestamp === cur) {
+            if (rIndex < r.length && r[rIndex].timestamp === cur) {
                 data.onlineChart.data[dIndex] = r[rIndex].online
                 data.onlineChart.labels[dIndex] = datetime.from(r[rIndex].timestamp)
             } else {

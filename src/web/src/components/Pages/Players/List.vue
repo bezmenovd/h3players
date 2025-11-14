@@ -1,6 +1,6 @@
 <template>
     <div id="players-list">
-        <Title text="Список всех игроков"></Title>
+        <Title text="Все игроки"></Title>
         <Panel id="players-list-panel">
             <Table :rows="playersTable.rows" :columns="playersTable.columns" :loading="loading"/>
         </Panel>

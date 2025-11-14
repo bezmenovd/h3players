@@ -10,7 +10,7 @@ export function useSearchHistory() {
     const _items = ref<Map<number, StoredPlayer>>(new Map());
 
     function load() {
-        const serialized = sessionStorage.getItem('players.search-history') || '[]';
+        const serialized = localStorage.getItem('players.search-history') || '[]';
         const unserialized = JSON.parse(serialized) as StoredPlayer[];
 
         _items.value.clear();
@@ -20,7 +20,7 @@ export function useSearchHistory() {
     }
 
     function save() {
-        sessionStorage.setItem('players.search-history', JSON.stringify(Array.from(_items.value.values())));
+        localStorage.setItem('players.search-history', JSON.stringify(Array.from(_items.value.values())));
     }
 
     function add(player: Player) {
@@ -42,7 +42,7 @@ export function useSearchHistory() {
 
     function clear() {
         _items.value.clear();
-        sessionStorage.removeItem('players.search-history');
+        localStorage.removeItem('players.search-history');
     }
 
     const items = computed<Player[]>(() => {
