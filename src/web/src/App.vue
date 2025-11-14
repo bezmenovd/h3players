@@ -9,6 +9,7 @@
                 <Navigation />
             </div>
             <div id="content">
+                <Return />
                 <Transition
                     name="route"
                     mode="out-in"
@@ -26,6 +27,7 @@ import { useRouter } from 'vue-router';
 import config from './config';
 import MainLoader from './components/UI/MainLoader.vue';
 import Navigation from './components/Navigation.vue';
+import Return from './components/Return.vue';
 import { preload } from './modules/preload';
 
 
@@ -40,7 +42,6 @@ preload(config.resources.app).then(() => {
     loading.value.show = false
     loading.value.is = false
 })
-
 </script>
 
 <style>
@@ -57,6 +58,7 @@ input {
     border: none;
     font-size: 17px;
     line-height: 21px;
+    border: 1px solid #1f2334;
 }
 input:focus::placeholder {
     color: transparent;
@@ -97,13 +99,14 @@ a:hover {
 }
 #content {
     background: #272c3a;
-    padding: 50px 80px 50px 100px;
+    padding: 40px 80px 55px 100px;
     overflow-y: scroll;
     max-height: calc(100vh - 80px);
+    position: relative;
 }
 @media (max-width: 1600px) {
     #content {
-        padding: 35px 30px 35px 50px;
+        padding: 30px 30px 40px 50px;
     }
 }
 #body {

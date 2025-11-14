@@ -8,7 +8,8 @@
                 {{ column.name }}
             </th>
         </thead>
-        <tbody class="table-rows">
+        <Loader v-if="props.loading" />
+        <tbody class="table-rows" v-else>
             <tr class="table-row" v-for="row in props.rows">
                 <td class="table-cell" 
                     v-for="column in props.columns"
@@ -31,10 +32,12 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import { Column } from './table';
+import Loader from './Loader.vue';
 
 const props = defineProps<{
     rows: any[],
     columns: Column[],
+    loading: boolean,
 }>()
 
 </script>

@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param, Query } from '@nestjs/common';
 import { PlayersService } from '../services/players.service';
 
 @Controller('players')
@@ -27,5 +27,22 @@ export class PlayersController {
     let data = await this.playersService.search(q, l)
 
     return data
+  }
+
+  @Get(':id')
+  async info(@Param('id') id: string) {
+    const i = Number(id)
+
+    if (! i) {
+      return {}
+    }
+
+    let info = this.playersService.info(i)
+
+    if (! info) {
+      throw new NotFoundException()
+    }
+
+    return info
   }
 }

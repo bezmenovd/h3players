@@ -1,17 +1,22 @@
 <template>
-    <Panel id="players-list">
-        <Table :rows="playersTable.rows" :columns="playersTable.columns"/>
-    </Panel>
+    <div id="players-list">
+        <Title text="Список всех игроков"></Title>
+        <Panel id="players-list-panel">
+            <Table :rows="playersTable.rows" :columns="playersTable.columns" :loading="loading"/>
+        </Panel>
+    </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue'
+import { onMounted, onUnmounted, reactive, ref } from 'vue'
 import Panel from '../../UI/Panel.vue'
 import Table from '../../UI/Table.vue'
+import Title from '../../UI/Title.vue'
 import { getList } from '../../../api/players'
 import { Player } from '../../../api/players'
 import { Column } from '../../UI/table'
 import { getContentSize } from '../../../helpers/content'
+import { useNavigationStore } from '../../../stores/navigation'
 
 const playersTable = reactive<{
     rows: Player[],
@@ -32,17 +37,37 @@ const playersTable = reactive<{
     ]
 })
 
+const navigationStore = useNavigationStore()
+
+const loading = ref(true)
+
 onMounted(async () => {
-    const pageSize = Math.min(Math.floor((getContentSize().height - 80) / 42), 20)
+    navigationStore.setReturnPage({ name: 'players' })
+
+    const pageSize = Math.min(Math.floor((getContentSize().height - 170) / 42), 20)
 
     getList(pageSize, 0).then(list => {
         playersTable.rows = list
+        loading.value = false
     })
 })
+
+onUnmounted(async () => {
+    navigationStore.clearReturnPage()
+})
+
 </script>
 
 <style>
 #players-list {
-    
+    display: grid;
+    grid-template-rows: 50px 1fr;
+}
+
+@media (max-width: 1600px) {
+    #players-list {
+        grid-template-rows: 40px 1fr;
+        grid-gap: 14px;
+    }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div class="title">
-        <div class="title-text">{{ props.text }}</div>
-        <div class="title-right">
+        <div class="title-text" v-if="props.text">{{ props.text }}</div>
+        <div class="title-content">
             <slot />
         </div>
     </div>
@@ -11,9 +11,7 @@
 import { defineProps } from 'vue'
 
 const props = defineProps<{
-    text: {
-        type: string
-    }
+    text: string
 }>()
 
 </script>
@@ -21,11 +19,31 @@ const props = defineProps<{
 <style scoped>
 .title {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    height: 50px;
+    padding-bottom: 20px;
+    justify-content: space-between;
 }
 .title-text {
     color: white;
     font-size: 24px;
 }
+.title-content {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 1600px) {
+    .title {
+        height: 40px;
+        padding: 6px 0px;
+        margin-bottom: 14px;
+    }
+    .title-text {
+        color: white;
+        font-size: 20px;
+    }
+}
+
 </style>
