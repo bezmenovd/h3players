@@ -10,15 +10,13 @@ export class NamesAgent {
         public postman: Postman
     ) {
         postman.on(Names, (msg) => {
-            if (this.resolve) {
-                this.resolve(msg)
-            }
+            this.resolve && this.resolve(msg)
         })
 
         postman.client.onDisconnect(() => {
-            if (this.reject) {
-                this.reject()
-            }
+            this.reject && this.reject()
+            this.resolve = undefined
+            this.reject = undefined
         })
     }
 
@@ -29,8 +27,12 @@ export class NamesAgent {
 
         return new Promise<Names>((resolve, reject) => {
             this.reject = reject
-
-            let errorTimeout =  setTimeout(this.reject, 5000)
+            
+            let errorTimeout =  setTimeout(() => { 
+                this.resolve = undefined
+                this.reject = undefined
+                reject()
+            }, 6000)
 
             this.resolve = (msg: Names) => {
                 clearTimeout(errorTimeout)

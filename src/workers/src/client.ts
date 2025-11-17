@@ -53,7 +53,7 @@ export class Client {
 
     public async connect(): Promise<void> {
         if (this.connected) {
-            throw new Error('already connected');
+            return
         }
         if (this.listenersOnMessage.length === 0) {
             throw new Error("no onMessage listeners")
@@ -89,7 +89,7 @@ export class Client {
         })
     }
 
-    public disconnect(): void {
+    public async disconnect(): Promise<void> {
         if (! this.connected) {
             return
         }
@@ -100,6 +100,14 @@ export class Client {
         this.msgLen = 0
         this.msgLenBufferLen = 0
         this.msgLenExpected = 0
+
+        return new Promise(resolve => {
+            setInterval(() => {
+                if (! this.connected) {
+                    resolve()
+                }
+            }, 50)
+        })
     }
 
     public isConnected(): boolean {
@@ -146,6 +154,7 @@ export class Client {
         this.statistics.sent.messages++
 
         // logger.info(`client(${this.name}) wrote ${bufferWL.length} bytes`)
+        // logger.info(`client(${this.name}) wrote ${bytesToHex(bufferWL)}`)
     }
 
     private onData(data: Buffer): void {

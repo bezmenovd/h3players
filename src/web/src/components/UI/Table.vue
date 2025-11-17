@@ -1,32 +1,50 @@
 <template>
-    <table class="table">
-        <thead class="table-columns">
-            <th class="table-column" 
-                v-for="column in props.columns"
-                :style="`text-align: ${column.align}; width: ${column.width}`"
-            >
-                {{ column.name }}
-            </th>
-        </thead>
-        <Loader v-if="props.loading" />
-        <tbody class="table-rows" v-else>
-            <tr class="table-row" v-for="row in props.rows">
-                <td class="table-cell" 
-                    v-for="column in props.columns"
-                    :style="`text-align: ${column.align};`"
-                >
-                    <template v-if="column.link">
-                        <router-link class="-link" :to="column.link!(row)">
-                            {{ row[column.code] }}
-                        </router-link>
-                    </template>
-                    <template v-else>
-                        {{ row[column.code] }}
-                    </template>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="table-wrapper">
+        <template v-if="props.loading">
+            <table class="table">
+                <thead class="table-columns">
+                    <th class="table-column" 
+                        v-for="column in props.columns"
+                        :style="`text-align: ${column.align}; width: ${column.width}`"
+                    >
+                        {{ column.name }}
+                    </th>
+                </thead>
+            </table>
+            <div class="table-loading-block">
+                <Loader />
+            </div>
+        </template>
+        <template v-else>
+            <table class="table">
+                <thead class="table-columns">
+                    <th class="table-column" 
+                        v-for="column in props.columns"
+                        :style="`text-align: ${column.align}; width: ${column.width}`"
+                    >
+                        {{ column.name }}
+                    </th>
+                </thead>
+                <tbody class="table-rows">
+                    <tr class="table-row" v-for="row in props.rows">
+                        <td class="table-cell" 
+                            v-for="column in props.columns"
+                            :style="`text-align: ${column.align};`"
+                        >
+                            <template v-if="column.link">
+                                <router-link class="-link" :to="column.link!(row)">
+                                    {{ row[column.code] }}
+                                </router-link>
+                            </template>
+                            <template v-else>
+                                {{ row[column.code] }}
+                            </template>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </template>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -48,6 +66,10 @@ const props = defineProps<{
     border-collapse: collapse;
     border-spacing: 0;
 }
+.table-loading-block {
+    height: 80px;
+    position: relative;
+}
 .table-columns {
     background: #2e3245;
     border-bottom: 2px solid #2a2e40;
@@ -61,7 +83,6 @@ const props = defineProps<{
 }
 .table-cell > .-link {
     cursor: pointer;
-    font-weight: bold;
     text-decoration: none;
 }
 .table-cell > .-link:hover {

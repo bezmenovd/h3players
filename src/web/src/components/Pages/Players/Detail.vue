@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive, ref } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import Panel from '../../UI/Panel.vue'
 import Loader from '../../UI/Loader.vue'
 import Title from '../../UI/Title.vue'
@@ -20,9 +20,10 @@ import { useNavigationStore } from '../../../stores/navigation'
 const navigationStore = useNavigationStore()
 
 const loading = ref(true)
+const route = useRoute()
 
 const info = reactive({
-    id: parseInt(String(useRoute().params.id)),
+    id: parseInt(String(route.params.id)),
     name: '',
 })
 

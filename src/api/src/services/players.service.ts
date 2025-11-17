@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { createClient } from '@clickhouse/client';
-import { Player } from '../types/clickhouse';
+import { Player } from '../types/clickhouse/lobby';
 import { PlayerInfo } from '../types/api';
 
 @Injectable()
@@ -13,14 +13,17 @@ export class PlayersService {
     })
 
     async getList(limit: number, offset: number): Promise<Player[]> {
-
         let result = await (await this.client.query({
             query: `
                 select * 
                 from players
                 order by id desc
-                limit ${limit} offset ${offset}
+                limit {limit:UInt32} offset {offset:UInt32}
             `,
+            query_params: {
+                limit,
+                offset,
+            },
             format: 'JSONEachRow',
         })).json<Player>()
 

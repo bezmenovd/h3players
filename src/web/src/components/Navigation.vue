@@ -31,7 +31,12 @@ const links: Link[] = [
     route: { name: 'players' },
     img: '/img/players.png',
     text: 'Игроки',
-  }
+  },
+  {
+    route: { name: 'performance' },
+    img: '/img/performance.png',
+    text: 'Нагрузка',
+  },
 ]
 
 const route = useRoute()
@@ -53,7 +58,7 @@ onMounted(async () => {
 .link {
     display: grid;
     grid-template-columns: 32px 1fr;
-    gap: 10px;
+    gap: 6px;
     align-items: center;
     opacity: .4;
     padding: 14px 20px;
@@ -72,7 +77,7 @@ onMounted(async () => {
     height: 24px;
 }
 .link-text {
-    font-weight: 600;
+    font-weight: 500;
     font-size: 18px;
     color: white;
 }

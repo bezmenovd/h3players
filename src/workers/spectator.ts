@@ -1,8 +1,8 @@
 import { Client } from './src/client'
 import { createState, State } from './src/state'
-import { bytesToHex, formatBytes, hexDump } from './src/helpers/bytes'
+import { bytesToHex, formatBytes, hexDump, intToBytes } from './src/helpers/bytes'
 import fs from 'node:fs'
-import { Room, RoomRemove, RoomUpdate, User, UserDisconnect } from './src/types/msgin'
+import { Room, RoomRemove, RoomUpdate, User, User51, User52, UserDisconnect107, UserDisconnect108, UserDisconnect83 } from './src/types/msgin'
 import { logger } from './src/services/logger'
 import { Supervisor } from './src/supervisor'
 import { sendMessage } from './src/services/telegram'
@@ -12,18 +12,22 @@ import { Postman } from './src/postman'
 import config from './config'
 import { HistoryAgent } from './src/agents/history'
 import { NamesAgent } from './src/agents/names'
+import { createClient } from 'redis'
 
 
 process.env.TZ = 'Europe/Moscow'
 
 
-process.on('uncaughtException', (err: Error) => {
-    sendMessage(`${err.message}\n${err.stack}`)
-})
-
-
 async function main() {
     logger.info('starting..')
+    
+    const redis = createClient({
+        socket: {
+            host: 'redis',
+        }
+    })
+
+    redis.connect()
 
     const client = new Client('spectator', 'h3players_bot1')
     const postman = new Postman(client)
@@ -47,31 +51,72 @@ async function main() {
         
         fs.mkdir(`output/server/${code}`, { recursive: true }, () => {})
         fs.writeFile(`output/server/${code}/${counter}`, hexDump(buffer), () => {})
+
+        state.players.forEach(player => {
+            if (buffer.includes(intToBytes(player.id))) {
+                logger.info(`${player.name}: ${code}`)
+            }
+        })
     })
 
-    // postman.on(User, (msg) => {
-    //     if (! state.players.has(msg.userId)) {
-    //         // logger.info(`user#${msg.userId}: ${msg.name} (rating=${msg.rating}) connected`)
-    //     }
+    postman.on(User51, (msg) => {
+        if (! state.players.has(msg.userId)) {
+            // logger.info(`user#${msg.userId}: ${msg.name} (rating=${msg.rating}) connected`)
+        }
 
-    //     state.players.set(msg.userId, {
-    //         id: msg.userId,
-    //         name: msg.name,
-    //         rating: msg.rating
-    //     })
-    //     state.lastUpdate = timestamp.now()
-    // })
+        state.players.set(msg.userId, {
+            id: msg.userId,
+            name: msg.name,
+            rating: msg.rating
+        })
+        state.lastUpdate = timestamp.now()
+    })
 
-    // postman.on(UserDisconnect, (msg) => {
-    //     if (! state.players.has(msg.userId)) {
-    //         return
-    //     }
+    postman.on(User52, (msg) => {
+        if (! state.players.has(msg.userId)) {
+            // logger.info(`user#${msg.userId}: ${msg.name} (rating=${msg.rating}) connected`)
+        }
 
-    //     // logger.info(`user#${msg.userId}: ${state.players.get(msg.userId)?.name} disconnected`)
+        state.players.set(msg.userId, {
+            id: msg.userId,
+            name: msg.name,
+            rating: msg.rating
+        })
+        state.lastUpdate = timestamp.now()
+    })
 
-    //     state.players.delete(msg.userId)
-    //     state.lastUpdate = timestamp.now()
-    // })
+    postman.on(UserDisconnect83, (msg) => {
+        if (! state.players.has(msg.userId)) {
+            return
+        }
+
+        // logger.info(`user#${msg.userId}: ${state.players.get(msg.userId)?.name} disconnected`)
+
+        state.players.delete(msg.userId)
+        state.lastUpdate = timestamp.now()
+    })
+
+    postman.on(UserDisconnect107, (msg) => {
+        if (! state.players.has(msg.userId)) {
+            return
+        }
+
+        // logger.info(`user#${msg.userId}: ${state.players.get(msg.userId)?.name} disconnected`)
+
+        state.players.delete(msg.userId)
+        state.lastUpdate = timestamp.now()
+    })
+
+    postman.on(UserDisconnect108, (msg) => {
+        if (! state.players.has(msg.userId)) {
+            return
+        }
+
+        // logger.info(`user#${msg.userId}: ${state.players.get(msg.userId)?.name} disconnected`)
+
+        state.players.delete(msg.userId)
+        state.lastUpdate = timestamp.now()
+    })
 
     // if (message instanceof RoomRemove) {
     //     if (! state.rooms.has(message.hostId)) {
@@ -95,16 +140,22 @@ async function main() {
     // }
     
     await client.connect()
+
+    process.on('uncaughtException', async (err: Error) => {
+        sendMessage(`${err.message}\n${err.stack}`)
+        await client.disconnect()
+        await client.connect()
+    })
     
-    // setInterval(() => {
-    //     if (! state.lastUpdate || state.lastUpdate > timestamp.now() - 60) {
-    //         lobby().insert({
-    //             table: 'online',
-    //             values: [ { online: state.players.size } ],
-    //             format: 'JSONEachRow',
-    //         })
-    //     }
-    // }, 60_000)
+    setInterval(() => {
+        if (! state.lastUpdate || state.lastUpdate > timestamp.now() - 60) {
+            lobby().insert({
+                table: 'online',
+                values: [ { online: state.players.size } ],
+                format: 'JSONEachRow',
+            })
+        }
+    }, 60_000)
 
     // let historyAgent = new HistoryAgent(postman)
 
@@ -112,10 +163,13 @@ async function main() {
 
     // setTimeout(async () => {
     //     let start = Date.now()
-    //     let names = await namesAgent.get([1095408])
+    //     // let history = await historyAgent.get(1095408) // Temnotta
+    //     let history = await historyAgent.get(1019110)
     //     let diff = Date.now() - start
 
-    //     logger.info(`got names: ${bytesToHex(names.data)} ${JSON.stringify(names.items)} (${diff}ms)`)
+    //     history.games.forEach(game => {
+    //         logger.info(`game #${game.id}: ${game.status}`)
+    //     })
     // }, 2000)
 }
 

@@ -1,22 +1,17 @@
 <template>
     <MainLoader v-if="loading.show" />
     <div id="app" key="app" v-if="! loading.is">
-        <div id="headline">
-            <div id="logo" @click="logoOnClick">H3PLAYERS</div>
+        <div id="left">
+            <Navigation />
         </div>
-        <div id="body">
-            <div id="left">
-                <Navigation />
-            </div>
-            <div id="content">
-                <Return />
-                <Transition
-                    name="route"
-                    mode="out-in"
-                >
-                    <router-view key="$route.fullPath" />
-                </Transition>
-            </div>
+        <div id="content">
+            <Return />
+            <Transition
+                name="route"
+                mode="out-in"
+            >
+                <router-view key="$route.fullPath" />
+            </Transition>
         </div>
     </div>
 </template>
@@ -87,11 +82,7 @@ a:hover {
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template-rows: 80px 1fr;
-}
-#headline {
-    background: #1f2334;
-    padding: 20px;
+    grid-template-columns: 200px 1fr;
 }
 #left {
     background: #2e3245;
@@ -101,26 +92,13 @@ a:hover {
     background: #272c3a;
     padding: 40px 80px 55px 100px;
     overflow-y: scroll;
-    max-height: calc(100vh - 80px);
+    max-height: 100%;
     position: relative;
 }
 @media (max-width: 1600px) {
     #content {
         padding: 30px 30px 40px 50px;
     }
-}
-#body {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-}
-#logo {
-    color: white;
-    line-height: 40px;
-    font-weight: 700;
-    font-size: 24px;
-    cursor: pointer;
-    text-shadow: 0 0 4px #ffffff;
-    width: fit-content;
 }
 #nprogress .bar {
     background: #4c25ab;

@@ -5,12 +5,18 @@ import Lobby from './components/Pages/Lobby.vue'
 import Players from './components/Pages/Players.vue'
 import PlayersList from './components/Pages/Players/List.vue'
 import PlayersDetail from './components/Pages/Players/Detail.vue'
+import Performance from './components/Pages/Performance.vue';
 
 const routes = [
     {
         path: '/',
         name: 'lobby',
         component: Lobby
+    },
+    {
+        path: '/performance',
+        name: 'performance',
+        component: Performance
     },
     {
         path: '/players',
@@ -23,7 +29,7 @@ const routes = [
         component: PlayersList,
     },
     {
-        path: '/player/:id',
+        path: '/#:id',
         name: 'players.detail',
         component: PlayersDetail
     }

@@ -1,7 +1,7 @@
 <template>
-    <div class="title">
-        <div class="title-text" v-if="props.text">{{ props.text }}</div>
-        <div class="title-content">
+    <div class="subtitle">
+        <div class="subtitle-text" v-if="props.text">{{ props.text }}</div>
+        <div class="subtitle-content">
             <slot />
         </div>
     </div>
@@ -17,31 +17,31 @@ const props = defineProps<{
 </script>
 
 <style scoped>
-.title {
+.subtitle {
     display: flex;
     align-items: center;
     height: 50px;
     padding-bottom: 20px;
     justify-content: space-between;
 }
-.title-text {
-    color: white;
-    font-size: 24px;
+.subtitle-text {
+    color: rgb(231, 231, 231);
+    font-size: 22px;
 }
-.title-content {
+.subtitle-content {
     height: 100%;
     display: flex;
     align-items: center;
 }
 
 @media (max-width: 1600px) {
-    .title {
+    .subtitle {
         height: 40px;
         padding: 6px 0px;
         margin-bottom: 14px;
     }
-    .title-text {
-        font-size: 20px;
+    .subtitle-text {
+        font-size: 18px;
     }
 }
 

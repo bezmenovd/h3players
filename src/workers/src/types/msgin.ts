@@ -41,7 +41,24 @@ export class MultipleSessions extends MsgIn {}
 
 
 @Code(51)
-export class User extends MsgIn {
+export class User51 extends MsgIn {
+    public userId: number
+    public userIdBuffer: Buffer
+    public name: string
+    public rating: number
+
+    public constructor(data: Buffer) {
+        super(data)
+        this.userId = this.data.readUInt32LE(4)
+        this.userIdBuffer = this.data.subarray(4, 8)
+        this.name = readstr(this.data, 16)
+        this.rating = this.data.readUint16LE(8)
+    }
+}
+
+
+@Code(52)
+export class User52 extends MsgIn {
     public userId: number
     public userIdBuffer: Buffer
     public name: string
@@ -58,7 +75,29 @@ export class User extends MsgIn {
 
 
 @Code(83)
-export class UserDisconnect extends MsgIn {
+export class UserDisconnect83 extends MsgIn {
+    public userId: number
+
+    public constructor(data: Buffer) {
+        super(data)
+        this.userId = this.data.readUInt32LE(0)
+    }
+}
+
+
+@Code(107)
+export class UserDisconnect107 extends MsgIn {
+    public userId: number
+
+    public constructor(data: Buffer) {
+        super(data)
+        this.userId = this.data.readUInt32LE(0)
+    }
+}
+
+
+@Code(108)
+export class UserDisconnect108 extends MsgIn {
     public userId: number
 
     public constructor(data: Buffer) {
@@ -158,6 +197,13 @@ export class RoomRemove extends MsgIn {
 }
 
 
+export enum GameStatus {
+    HostWon = 2,
+    Draw = 4,
+    OpponentWon = 8,
+    NotFinished = 1,
+}
+
 export enum GameType {
     Scenario,
     RandomMap,
@@ -193,6 +239,8 @@ export class Game {
 
     public id: number
     public templateId: number
+    
+    public status: GameStatus
 
     public startTimestamp: number
     public endTimestamp: number
@@ -215,6 +263,8 @@ export class Game {
         this.data = data
         this.id = this.data.readUInt32LE(0)
         this.templateId = this.data.readUInt32LE(4)
+
+        this.status = this.data.readUInt8(11)
 
         this.startTimestamp = this.data.readUInt32LE(19)
         this.endTimestamp = this.data.readUInt32LE(23)

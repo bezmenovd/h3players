@@ -1,15 +1,30 @@
 <template>
     <div id="lobby">
+        <Title text="Лобби"></Title>
         <Panel id="online">
             <Loader v-if="loading" />
             <template v-else>
                 <div id="online-chart">
-                    <LineChart v-if="data.onlineChart.show" ref="chart" :width="1440" :height="230" :data="data.onlineChart.data" :labels="data.onlineChart.labels" color="#19f0af" :max="onlineChartMax"/>
+                    <LineChart 
+                        v-if="onlineChart.show" 
+                        id="chart-online" 
+                        :width="chartSize" 
+                        :height="230" 
+                        :colors="['#19f0af']" 
+                        :data="onlineChart.data" 
+                        :labels="onlineChart.labels" 
+                        :max="chartMax" 
+                        :formatters="onlineChart.formatters"
+                        :showNoData="true"
+                    />
                 </div>
                 <div id="lobby-metrics">
                     <div class="metric">
                         <template v-if="connected">
-                            <div class="metric-value"><Light id="online-light" color="#19f0af"/>{{ onlineFormatted }}</div>
+                            <div class="metric-value">
+                                <Light id="online-light" :pulse="false" color="#19f0af"/>
+                                {{ onlineFormatted }}
+                            </div>
                         </template>
                         <template v-else>
                             <div class="metric-value">-</div>
@@ -34,61 +49,73 @@
 import { ref, onMounted, computed, reactive, onUnmounted } from 'vue'
 import Panel from './../UI/Panel.vue'
 import Light from './../UI/Light.vue'
-import {  onlineChart } from '../../api/lobby'
+import Title from './../UI/Title.vue'
+import { chart } from '../../api/lobby'
 import Loader from '../UI/Loader.vue'
 import LineChart from '../UI/Charts/LineChart.vue'
 import { timestamp, datetime } from '../../helpers/timestamp'
 
-const data = reactive<{ 
-    onlineChart: {
-        data: (number|null)[],
-        labels: (string|null)[],
-        show: boolean,
-    }
+const onlineChart = reactive<{
+    data: (number[]|undefined)[],
+    labels: (string|undefined)[],
+    show: boolean,
+    formatters: ((value: number) => string)[],
 }>({
-    onlineChart: {
-        data: new Array<number|null>(1440),
-        labels: new Array<string|null>(1440),
-        show: false,
-    },
+    data: [],
+    labels: [],
+    show: false,
+    formatters: [
+        (value: number) => Intl.NumberFormat('ru-RU').format(value)
+    ]
 })
 
-const loading = ref(true)
+const loading = ref(false)
 
 const connected = computed<boolean>(() => {
-    return online.value != null
+    return online.value != undefined
 })
 
-const online = computed<number|null>(() => {
-    return data.onlineChart.data.at(-1) ?? data.onlineChart.data.at(-2) ?? null
+const online = computed<number|undefined>(() => {
+    if (onlineChart.data.at(-1)) {
+        return onlineChart.data.at(-1)![0]
+    }
+    if (onlineChart.data.at(-2)) {
+        return onlineChart.data.at(-2)![0]
+    }
+    return undefined
 })
 
 const onlineFormatted = computed<string>(() => {
     return online.value ? Intl.NumberFormat('ru-RU').format(online.value!) : '-'
 })
 
-const onlineMax = computed<number>(() => {
+const chartMax = computed<number>(() => {
     let max: number = 0
 
-    data.onlineChart.data.forEach(online => {
-        if (Number(online) > max) {
-            max = online!
+    onlineChart.data.forEach(item => {
+        if (item && Number(item![0]) > max) {
+            max = item![0]
         }
     })
-    
-    return max
+
+    return Math.max(3000, Math.ceil(max / 1000) * 1000)
 })
 
-const onlineChartMax = computed<number>(() => {
-    return Math.max(3000, Math.ceil(onlineMax.value / 1000) * 1000)
-})
+const chartSize = ref(0)
 
-let updateInterval = null
+let updateInterval
 
 onMounted(() => {
-    onlineChart().then(r => {
+    chartSize.value = Math.round(document.getElementById('online-chart')!.getBoundingClientRect().width - 5)
+    
+    loading.value = true
+
+    chart(timestamp.now() - chartSize.value*60).then(r => {
+        onlineChart.data = new Array<number[]|undefined>(chartSize.value)
+        onlineChart.labels = new Array<string|undefined>(chartSize.value)
+
         let now = timestamp.nowMinute()
-        let cur = now - (1439*60)
+        let cur = now - (chartSize.value*60)
         let dIndex = 0
         let rIndex = 0
 
@@ -98,25 +125,23 @@ onMounted(() => {
             }
             
             if (rIndex < r.length && r[rIndex].timestamp === cur) {
-                data.onlineChart.data[dIndex] = r[rIndex].online
-                data.onlineChart.labels[dIndex] = datetime.from(r[rIndex].timestamp)
-            } else {
-                data.onlineChart.data[dIndex] = null
+                onlineChart.data[dIndex] = [r[rIndex].online]
+                onlineChart.labels[dIndex] = datetime.from(r[rIndex].timestamp)
             }
 
             cur += 60
             dIndex++
         }
 
-        data.onlineChart.show = true
+        onlineChart.show = true
 
         loading.value = false
     })
 
     updateInterval = setInterval(() => {
-        onlineChart(timestamp.now() - 60).then(r => {
-            data.onlineChart.data = [...data.onlineChart.data.slice(1), r[0]?.online ?? null]
-            data.onlineChart.labels = [...data.onlineChart.labels.slice(1), r[0] ? datetime.from(r[0].timestamp) : null]
+        chart(timestamp.now() - 60).then(r => {
+            onlineChart.data = [...onlineChart.data.slice(1), r[0] ? [r[0].online] : undefined]
+            onlineChart.labels = [...onlineChart.labels.slice(1), r[0] ? datetime.from(r[0].timestamp) : undefined]
         })
     }, 60_000)
 })

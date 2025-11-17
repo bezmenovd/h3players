@@ -60,12 +60,13 @@ export class Supervisor {
         }, 60_000*60*12)
 
         setInterval(() => {
-            let diffs: ClientStatistics[] = []
+            let diffs: (ClientStatistics & { client: string })[] = []
 
             this.clients.forEach(client => {
                 let state = this.states.get(client.name)!
 
-                let diff: ClientStatistics = {
+                let diff: (ClientStatistics & { client: string }) = {
+                    client: client.name,
                     sent: {
                         bytes: client.statistics.sent.bytes - state.lastStatistics.sent.bytes,
                         messages: client.statistics.sent.messages - state.lastStatistics.sent.messages,
@@ -77,7 +78,6 @@ export class Supervisor {
                 }
 
                 diffs.push(diff)
-
                 state.lastStatistics.sent.bytes = client.statistics.sent.bytes
                 state.lastStatistics.sent.messages = client.statistics.sent.messages
                 state.lastStatistics.received.bytes = client.statistics.received.bytes
@@ -87,6 +87,7 @@ export class Supervisor {
             internal().insert({
                 table: 'statistics',
                 values: diffs.map(diff => ({
+                    name: diff.client,
                     sent_bytes: diff.sent.bytes,
                     sent_messages: diff.sent.messages,
                     received_bytes: diff.received.bytes,

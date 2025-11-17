@@ -44,7 +44,7 @@ const loading = ref(true)
 onMounted(async () => {
     navigationStore.setReturnPage({ name: 'players' })
 
-    const pageSize = Math.min(Math.floor((getContentSize().height - 170) / 42), 20)
+    const pageSize = Math.min(Math.floor((getContentSize().height - 152) / 44), 20)
 
     getList(pageSize, 0).then(list => {
         playersTable.rows = list

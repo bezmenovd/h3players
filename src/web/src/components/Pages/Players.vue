@@ -52,7 +52,7 @@ const searchSelect = (item: SearchItem) => {
         searchHistory.add({ id: item.id, name: item.text })
     }, 200)
     setTimeout(() => {
-        router.push({ name: 'players.detail', params: { id: item.id }})
+        router.push({ name: 'players.detail', params: item })
     }, 100)
 }
 

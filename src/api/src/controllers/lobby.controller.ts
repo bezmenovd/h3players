@@ -1,15 +1,15 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { OnlineService } from '../services/online.service';
+import { LobbyService } from '../services/lobby.service';
 
 @Controller('lobby')
 export class LobbyController {
-  constructor(private readonly onlineService: OnlineService) {}
+  constructor(private readonly lobbyService: LobbyService) {}
 
-  @Get('/onlineChart')
-  async onlineChart(@Query('after') after?: number) {
-    let a = Math.max(Number(after) || 0, Math.floor(Date.now() / 1000) - 86400)
+  @Get('/chart')
+  async chart(@Query('after') after?: number) {
+    let a = Math.round(Math.max(Number(after) || 0, Math.floor(Date.now() / 1000) - 86400*2))
 
-    let data = await this.onlineService.getOnlineChartData(a)
+    let data = await this.lobbyService.getChartData(a)
 
     return data
   }

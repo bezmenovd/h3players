@@ -190,7 +190,7 @@ const selectItem = function(item: SearchItem) {
     position: absolute;
     top: 100%;
     width: 100%;
-    background: #272c3a69;
+    background: #272c3a;
 }
 .search-top-title {
     margin-right: 20px;
