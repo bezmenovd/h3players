@@ -36,6 +36,21 @@ services:
       - yarn-cache:/root/.yarn/cache
     command: bash -c "sleep 100000"
 
+  wss:
+    image: node:22
+    container_name: h3players-wss
+    depends_on:
+      - mysql
+      - redis
+      - clickhouse
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - yarn-cache:/root/.yarn/cache
+    ports:
+      - 8000:8000
+    command: bash -c "sleep 100000"
+
   nginx:
     image: nginx:alpine
     container_name: h3players-nginx

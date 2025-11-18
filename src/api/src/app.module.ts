@@ -5,6 +5,7 @@ import { LobbyService } from './services/lobby.service';
 import { PlayersController } from './controllers/players.controller';
 import { PlayersService } from './services/players.service';
 import { PerformanceService } from './services/performance.service';
+import { FunctionsController } from './controllers/functions.controller';
 
 @Module({
   imports: [],
@@ -12,6 +13,7 @@ import { PerformanceService } from './services/performance.service';
     LobbyController,
     PlayersController,
     PerformanceController,
+    FunctionsController,
   ],
   providers: [
     LobbyService,

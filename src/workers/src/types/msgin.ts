@@ -41,7 +41,7 @@ export class MultipleSessions extends MsgIn {}
 
 
 @Code(51)
-export class User51 extends MsgIn {
+export class User extends MsgIn {
     public userId: number
     public userIdBuffer: Buffer
     public name: string
@@ -58,7 +58,7 @@ export class User51 extends MsgIn {
 
 
 @Code(52)
-export class User52 extends MsgIn {
+export class UserCurrent extends MsgIn {
     public userId: number
     public userIdBuffer: Buffer
     public name: string

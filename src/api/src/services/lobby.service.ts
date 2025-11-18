@@ -1,18 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { createClient } from '@clickhouse/client';
 import { Online } from '../types/clickhouse/lobby';
+import { createClient as createClientRedis } from 'redis'
+import { timestamp, date } from '../helpers/timestamp'
 
 @Injectable()
 export class LobbyService {
-    private client = createClient({
+    private clickhouse = createClient({
         url: 'http://clickhouse:8123',
         username: 'default',
         password: 'xQm8LpsLOolVLryE',
         database: 'lobby',
     })
 
+    private redis = createClientRedis({
+        socket: {
+            host: 'redis',
+        }
+    })
+
+    async onModuleInit() {
+        await this.redis.connect()
+    }
+
+    async onModuleDestroy() {
+        this.redis.destroy()
+    }
+
     async getChartData(after: number): Promise<Online[]> {
-        let result = await (await this.client.query({
+        let result = await (await this.clickhouse.query({
             query: `
             select 
                 toUnixTimestamp(toStartOfMinute(datetime)) as timestamp,
@@ -26,6 +42,10 @@ export class LobbyService {
             format: 'JSONEachRow',
         })).json<Online>()
 
-      return result
+        return result
+    }
+
+    async getVisitors(): Promise<number> {
+        return this.redis.sCard(`spectator:daily-visitors:${date.from(timestamp.now())}`)
     }
 }

@@ -13,4 +13,13 @@ export class LobbyController {
 
     return data
   }
+
+  @Get('/visitors')
+  async visitors() {
+    let visitors = await this.lobbyService.getVisitors()
+    
+    return {
+      value: visitors
+    }
+  }
 }

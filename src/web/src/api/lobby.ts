@@ -1,3 +1,4 @@
+import axios from "axios";
 
 export type Online = {
     timestamp: number
@@ -5,5 +6,13 @@ export type Online = {
 }
 
 export async function chart(after?: number): Promise<Online[]> {
-    return fetch(`/api/lobby/chart?after=${after}`).then(r => r.json());
+    return axios.get(`/api/lobby/chart?after=${after}`).then(r => r.data);
+}
+
+export type Visitors = {
+    value: number
+}
+
+export async function visitors(): Promise<Visitors> {
+    return axios.get(`/api/lobby/visitors`).then(r => r.data);
 }

@@ -1,7 +1,7 @@
 import { formatBytes } from "./helpers/bytes";
 import { Client, ClientStatistics } from "./client";
 import { sendMessage } from "./services/telegram";
-import timestamp from "./helpers/timestamp";
+import { timestamp } from "./helpers/timestamp";
 import { internal } from "./services/clickhouse";
 
 

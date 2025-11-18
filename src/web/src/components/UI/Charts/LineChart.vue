@@ -26,6 +26,7 @@
                         <template v-for="(color, j) in props.colors">
                             <div 
                                 v-if="props.data[cursorIndex]"
+                                :key="j"
                                 class="cursor-value" 
                                 :style="`top: ${(j*16)}px`"
                             >
@@ -37,7 +38,7 @@
                     <div v-if="props.labels[cursorIndex]" class="cursor-label">{{ props.labels[cursorIndex] }}</div>
                 </div>
                 <template v-for="(color, j) in props.colors">
-                    <div class="cursor-dot" v-if="props.data[cursorIndex]" :style="`bottom: ${ ((props.data[cursorIndex]![j]) / props.max) * props.height }px; background: ${color};`"/>
+                    <div class="cursor-dot" v-if="props.data[cursorIndex]" :style="`bottom: ${ ((props.data[cursorIndex]![j]) / props.max) * props.height }px; background: ${color};`" :key="j"/>
                 </template>
             </div>
         </div>

@@ -5,7 +5,7 @@ import { PlayerInfo } from '../types/api';
 
 @Injectable()
 export class PlayersService {
-    private client = createClient({
+    private clickhouse = createClient({
         url: 'http://clickhouse:8123',
         username: 'default',
         password: 'xQm8LpsLOolVLryE',
@@ -13,7 +13,7 @@ export class PlayersService {
     })
 
     async getList(limit: number, offset: number): Promise<Player[]> {
-        let result = await (await this.client.query({
+        let result = await (await this.clickhouse.query({
             query: `
                 select * 
                 from players
@@ -31,7 +31,7 @@ export class PlayersService {
     }
 
     async search(query: string, limit: number): Promise<Player[]> {
-        let result = await (await this.client.query({
+        let result = await (await this.clickhouse.query({
             query: `
                 SELECT * FROM
                 players
@@ -49,7 +49,7 @@ export class PlayersService {
     }
 
     async info(id: number): Promise<PlayerInfo|null> {
-        let result = await (await this.client.query({
+        let result = await (await this.clickhouse.query({
             query: `
                 SELECT * FROM
                 players

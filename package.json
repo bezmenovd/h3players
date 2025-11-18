@@ -20,13 +20,17 @@
     "workers:spectator": "node dist/workers/spectator/spectator.js",
     "workers:headhunter:dev": "tsx src/workers/headhunter.ts",
     "workers:headhunter:build": "tsup --config src/workers/headhunter.tsup.config.ts --clean",
-    "workers:headhunter": "node dist/workers/headhunter/headhunter.js"
+    "workers:headhunter": "node dist/workers/headhunter/headhunter.js",
+    "wss": "tsx src/wss/server.ts",
+    "wss:dev": "tsx src/wss/server.ts",
+    "wss:build": "tsup --config src/wss/tsup.config.ts --clean"
   },
   "dependencies": {
     "@clickhouse/client": "^1.12.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "@types/ws": "^8.18.1",
     "@vitejs/plugin-vue": "^6.0.1",
     "axios": "^1.13.1",
     "debounce": "^3.0.0",
@@ -42,7 +46,8 @@
     "vite": "^7.1.12",
     "vue": "3",
     "vue-i18n": "^11.1.12",
-    "vue-router": "^4.6.3"
+    "vue-router": "^4.6.3",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",

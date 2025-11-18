@@ -85,18 +85,6 @@ const workers = reactive<{
 
 const loading = ref(false)
 
-// const connected = computed<boolean>(() => {
-//     return online.value != undefined
-// })
-
-// const online = computed<number|undefined>(() => {
-//     return totalChart.data.at(-1) ?? totalChart.data.at(-2) ?? undefined
-// })
-
-// const onlineFormatted = computed<string>(() => {
-//     return online.value ? Intl.NumberFormat('ru-RU').format(online.value!) : '-'
-// })
-
 const totalChartMax = computed<number>(() => {
     let max: number = 0
 
@@ -199,27 +187,6 @@ onUnmounted(() => {
     padding: 5px 5px 5px 5px;
     height: 100%;
 }
-.metric {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-    align-items: center;
-}
-.metric-value {
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.metric-name {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: .7;
-    margin-top: 5px;
-}
-
 #workers {
     margin-top: 30px;
     display: grid;
@@ -236,20 +203,8 @@ onUnmounted(() => {
 }
 
 @media (max-width: 1600px) {
-    #online {
-        grid-template-columns: 1fr 140px;
-    }
-    #lobby-metrics {
-        padding: 8px 10px;
-    }
-    .metric-name {
-        font-size: 15px;
-    }
-    .metric-value {
-        font-size: 16px;
-    }
-    #online-light {
-        left: 14px;
+    #workers {
+        margin-top: 20px;
     }
 }
 </style>

@@ -4,7 +4,7 @@ import { Statistics } from '../types/clickhouse/internal';
 
 @Injectable()
 export class PerformanceService {
-    private client = createClient({
+    private clickhouse = createClient({
         url: 'http://clickhouse:8123',
         username: 'default',
         password: 'xQm8LpsLOolVLryE',
@@ -12,7 +12,7 @@ export class PerformanceService {
     })
 
     async getStatistics(after: number): Promise<Statistics[]> {
-        let result = await (await this.client.query({
+        let result = await (await this.clickhouse.query({
             query: `
             select 
                 toUnixTimestamp(toStartOfMinute(datetime)) as timestamp,

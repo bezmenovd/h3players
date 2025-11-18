@@ -1,3 +1,4 @@
+import axios from "axios"
 
 export type Statistics = {
     name: string
@@ -9,5 +10,5 @@ export type Statistics = {
 }
 
 export async function chart(after?: number): Promise<Statistics[]> {
-    return fetch(`/api/performance/chart?after=${after}`).then(r => r.json());
+    return axios.get(`/api/performance/chart?after=${after}`).then(r => r.data);
 }

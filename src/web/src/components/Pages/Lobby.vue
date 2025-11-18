@@ -36,7 +36,7 @@
                         <div class="metric-name">игр</div>
                     </div>
                     <div class="metric" hint="Число пользователей, посетивших лобби сегодня">
-                        <div class="metric-value">0</div>
+                        <div class="metric-value">{{ visitorsFormatted }}</div>
                         <div class="metric-name">посетителей</div>
                     </div>
                 </div>
@@ -46,14 +46,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, reactive, onUnmounted } from 'vue'
+import { ref, onMounted, computed, reactive, onUnmounted, onBeforeUnmount } from 'vue'
 import Panel from './../UI/Panel.vue'
 import Light from './../UI/Light.vue'
 import Title from './../UI/Title.vue'
-import { chart } from '../../api/lobby'
+import { chart, visitors } from '../../api/lobby'
 import Loader from '../UI/Loader.vue'
 import LineChart from '../UI/Charts/LineChart.vue'
 import { timestamp, datetime } from '../../helpers/timestamp'
+import { on } from '../../modules/websocket'
 
 const onlineChart = reactive<{
     data: (number[]|undefined)[],
@@ -72,18 +73,10 @@ const onlineChart = reactive<{
 const loading = ref(false)
 
 const connected = computed<boolean>(() => {
-    return online.value != undefined
+    return online.value > 0
 })
 
-const online = computed<number|undefined>(() => {
-    if (onlineChart.data.at(-1)) {
-        return onlineChart.data.at(-1)![0]
-    }
-    if (onlineChart.data.at(-2)) {
-        return onlineChart.data.at(-2)![0]
-    }
-    return undefined
-})
+const online = ref(0)
 
 const onlineFormatted = computed<string>(() => {
     return online.value ? Intl.NumberFormat('ru-RU').format(online.value!) : '-'
@@ -99,6 +92,12 @@ const chartMax = computed<number>(() => {
     })
 
     return Math.max(3000, Math.ceil(max / 1000) * 1000)
+})
+
+const visitorsRef = ref(0)
+
+const visitorsFormatted = computed<string>(() => {
+    return visitorsRef.value ? Intl.NumberFormat('ru-RU').format(visitorsRef.value!) : '-'
 })
 
 const chartSize = ref(0)
@@ -135,7 +134,15 @@ onMounted(() => {
 
         onlineChart.show = true
 
+        if (onlineChart.data[onlineChart.data.length-1]) {
+            online.value = onlineChart.data[onlineChart.data.length-1]![0]
+        }
+
         loading.value = false
+    })
+
+    visitors().then(r => {
+        visitorsRef.value = r.value
     })
 
     updateInterval = setInterval(() => {
@@ -144,6 +151,14 @@ onMounted(() => {
             onlineChart.labels = [...onlineChart.labels.slice(1), r[0] ? datetime.from(r[0].timestamp) : undefined]
         })
     }, 60_000)
+
+    onBeforeUnmount(on('online-changed', (msg) => {
+        online.value = msg.value
+    }))
+
+    onBeforeUnmount(on('visitors-changed', (msg) => {
+        visitorsRef.value = msg.value
+    }))
 })
 
 onUnmounted(() => {

@@ -4,7 +4,8 @@ import { GetHistory } from "../types/msgout";
 
 export class HistoryAgent {
     private resolve?: (msg: History) => void
-    private reject?: () => void
+    private reject?: (err: Error) => void
+    private errorTimeout: null|NodeJS.Timeout = null
 
     constructor(
         public postman: Postman
@@ -14,10 +15,15 @@ export class HistoryAgent {
         })
 
         postman.client.onDisconnect(() => {
-            this.reject && this.reject()
-            this.resolve = undefined
-            this.reject = undefined
+            this.reject && this.reject(new Error('disconnect'))
+            this.cleanup()
         })
+    }
+
+    private cleanup() {
+        this.errorTimeout && clearTimeout(this.errorTimeout)
+        this.resolve = undefined
+        this.reject = undefined
     }
 
     public async get(playerId: number, beforeTimestamp?: number): Promise<History> {
@@ -27,17 +33,14 @@ export class HistoryAgent {
 
         return new Promise<History>((resolve, reject) => {
             this.reject = reject
-                        
-            let errorTimeout =  setTimeout(() => { 
-                this.resolve = undefined
-                this.reject = undefined
-                reject()
+            
+            this.errorTimeout = setTimeout(() => {
+                this.cleanup()
+                reject(new Error('timeout'))
             }, 6000)
 
             this.resolve = (msg: History) => {
-                clearTimeout(errorTimeout)
-                this.reject = undefined
-                this.resolve = undefined
+                this.cleanup()
                 resolve(msg)
             }
 

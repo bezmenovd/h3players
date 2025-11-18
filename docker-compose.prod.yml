@@ -12,6 +12,9 @@ services:
   workers:
     restart: unless-stopped
 
+  wss:
+    restart: unless-stopped
+
   nginx:
     restart: unless-stopped
 
