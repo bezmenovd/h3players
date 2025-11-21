@@ -46,6 +46,7 @@ export class User extends MsgIn {
     public userIdBuffer: Buffer
     public name: string
     public rating: number
+    public flag: number
 
     public constructor(data: Buffer) {
         super(data)
@@ -53,6 +54,7 @@ export class User extends MsgIn {
         this.userIdBuffer = this.data.subarray(4, 8)
         this.name = readstr(this.data, 16)
         this.rating = this.data.readUint16LE(8)
+        this.flag = this.data.readUInt8(38)
     }
 }
 

@@ -6,7 +6,7 @@ import { Room, RoomRemove, RoomUpdate, User, UserDisconnect107, UserDisconnect10
 import { logger } from './src/services/logger'
 import { Supervisor } from './src/supervisor'
 import { sendMessage } from './src/services/telegram'
-import { timestamp, date } from './src/helpers/timestamp'
+import { timestamp, date, dateMonth, dateYear } from './src/helpers/timestamp'
 import { lobby } from './src/services/clickhouse'
 import { Postman } from './src/postman'
 import config from './config'
@@ -31,6 +31,8 @@ async function main() {
     await redis.connect()
     await redis.configSet('set-max-intset-entries', '10000000')
 
+    await redis.del('players')
+
     const client = new Client('spectator', 'h3players_bot1')
     const postman = new Postman(client)
     
@@ -43,8 +45,12 @@ async function main() {
         state = createState()
     })
 
-    const publishOnline = debounce(async (value: number) => {
-        await redis.publish('live:spectator:online', JSON.stringify({ value }))
+    const getOnline = () => {
+        return state.players.size - state.hiddenPlayers.size + 1
+    }
+
+    const publishOnline = debounce(async () => {
+        await redis.publish('live:spectator:online', JSON.stringify({ value: getOnline() }))
     }, 100)
 
     const publishVisitors = debounce(async (value: number) => {
@@ -53,14 +59,20 @@ async function main() {
     
     let counter = 0
     
-    client.onMessage((data: Buffer) => {
+    client.onMessage(async (data: Buffer) => {
         counter++
 
         let code = data.readUInt16LE(0)
-        let buffer = data.subarray(2)
+        // let buffer = data.subarray(2)
+
+        if (code > 255) {
+            logger.info(`bad message`)
+            await client.disconnect()
+            await client.connect()
+        }
         
-        fs.mkdir(`output/server/${code}`, { recursive: true }, () => {})
-        fs.writeFile(`output/server/${code}/${counter}`, hexDump(buffer), () => {})
+        // fs.mkdir(`output/server/${code}`, { recursive: true }, () => {})
+        // fs.writeFile(`output/server/${code}/${counter}`, hexDump(buffer), () => {})
     })
 
     postman.on(User, async (msg) => {
@@ -82,39 +94,50 @@ async function main() {
             id: msg.userId,
             name: msg.name,
             rating: msg.rating,
+            flag: msg.flag,
         })
 
-        await redis.set(`spectator:rating:${msg.userId}`, msg.rating)
+        if (msg.flag === 4) {
+            state.hiddenPlayers.delete(msg.userId)
+        } else {
+            state.hiddenPlayers.add(msg.userId)
+        }
+
+        await redis.set(`spectator:rating:${msg.userId}`, msg.rating, { EX: 86400*30 })
 
         if (isNew) {
-            publishOnline(state.players.size)
+            publishOnline()
 
-            let visitorsKey = `spectator:daily-visitors:${date.from(timestamp.now())}`
-            let visitorsChanged = await redis.sAdd(visitorsKey, String(msg.userId))
+            let visitorsChanged = await redis.sAdd(`spectator:daily-visitors:${date.from(timestamp.now())}`, String(msg.userId))
             if (visitorsChanged > 0) {
-                publishVisitors(await redis.sCard(visitorsKey))
+                publishVisitors(await redis.sCard(`spectator:daily-visitors:${date.from(timestamp.now())}`))
             }
+            await redis.sAdd(`spectator:monthly-visitors:${dateMonth.from(timestamp.now())}`, String(msg.userId))
+            await redis.sAdd(`spectator:yearly-visitors:${dateYear.from(timestamp.now())}`, String(msg.userId))
         }
     })
 
     postman.on(UserDisconnect83, async (msg) => {
         if (state.players.has(msg.userId)) {
             state.players.delete(msg.userId)
-            publishOnline(state.players.size)
+            state.hiddenPlayers.delete(msg.userId)
+            publishOnline()
         }
     })
 
     postman.on(UserDisconnect107, async (msg) => {
         if (state.players.has(msg.userId)) {
             state.players.delete(msg.userId)
-            publishOnline(state.players.size)
+            state.hiddenPlayers.delete(msg.userId)
+            publishOnline()
         }
     })
 
     postman.on(UserDisconnect108, async (msg) => {
         if (state.players.has(msg.userId)) {
             state.players.delete(msg.userId)
-            publishOnline(state.players.size)
+            state.hiddenPlayers.delete(msg.userId)
+            publishOnline()
         }
     })
 
@@ -158,7 +181,7 @@ async function main() {
     setInterval(() => {
         lobby().insert({
             table: 'online',
-            values: [ { online: state.players.size } ],
+            values: [ { online: getOnline() } ],
             format: 'JSONEachRow',
         })
     }, 60_000)

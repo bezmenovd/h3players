@@ -3,6 +3,7 @@ export type Player = {
     id: number
     name: string
     rating: number
+    flag: number
 }
 
 export type Room = {
@@ -22,6 +23,7 @@ export type Room = {
 
 export type State = {
     players: Map<number, Player>
+    hiddenPlayers: Set<number>
     rooms: Map<number, Room>
     lastUpdate?: number
 }
@@ -29,6 +31,7 @@ export type State = {
 export const createState = () => {
     return {
         players: new Map<number, Player>(),
+        hiddenPlayers: new Set<number>(),
         rooms: new Map<number, Room>(),
         lastUpdate: undefined,
     }

@@ -31,3 +31,24 @@ export const date = {
         return `${day}.${month}.${year}`
     }
 }
+
+export const dateMonth = {
+    from(timestamp: number): string {
+        let date = new Date(timestamp * 1000)
+
+        let year = date.getFullYear()
+        let month = String(date.getMonth()).padStart(2, '0')
+
+        return `${month}.${year}`
+    }
+}
+
+export const dateYear = {
+    from(timestamp: number): string {
+        let date = new Date(timestamp * 1000)
+
+        let year = date.getFullYear()
+
+        return `${year}`
+    }
+}

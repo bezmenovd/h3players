@@ -1,15 +1,15 @@
-import { Msg } from "./websocket"
 
 
-type OnlineChanged = Msg & {
+interface OnlineChanged {
+    route: 'online-changed'
     value: number
 }
 
-type VisitorsChanged = Msg & {
+interface VisitorsChanged {
+    route: 'visitors-changed'
     value: number
 }
 
 
 export type MsgAvailable = OnlineChanged 
     | VisitorsChanged
-

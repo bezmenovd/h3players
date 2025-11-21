@@ -56,6 +56,7 @@ import LineChart from '../UI/Charts/LineChart.vue'
 import { timestamp, datetime } from '../../helpers/timestamp'
 import { on } from '../../modules/websocket'
 
+
 const onlineChart = reactive<{
     data: (number[]|undefined)[],
     labels: (string|undefined)[],
@@ -176,6 +177,14 @@ onUnmounted(() => {
 }
 #online-chart {
     padding: 5px 0px 5px 5px;
+}
+#players {
+    margin-top: 40px;
+    padding: 20px;
+    display: grid;
+    gap: 4px;
+    width: 100%;
+    height: auto;
 }
 #lobby-metrics {
     padding: 10px 20px;

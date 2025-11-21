@@ -17,6 +17,14 @@ async function main() {
 
     await redis.connect()
 
+    const redisSub = createClient({
+        socket: {
+            host: 'redis',
+        }
+    })
+
+    await redisSub.connect()
+
 
     const wss = new WebSocketServer({ port: 8000 });
 
@@ -60,7 +68,7 @@ async function main() {
         })
     })
 
-    redis.subscribe('live:spectator:online', (data) => {
+    redisSub.subscribe('live:spectator:online', (data) => {
         const { value } = JSON.parse(data) as { value: number }
 
         subscribers.get('online-changed')?.forEach(client => {
@@ -68,7 +76,7 @@ async function main() {
         })
     })
 
-    redis.subscribe('live:spectator:visitors', (data) => {
+    redisSub.subscribe('live:spectator:visitors', (data) => {
         const { value } = JSON.parse(data) as { value: number }
 
         subscribers.get('visitors-changed')?.forEach(client => {
