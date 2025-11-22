@@ -34,7 +34,7 @@ services:
     volumes:
       - ./:/var/www
       - yarn-cache:/root/.yarn/cache
-    command: bash -c "sleep 100000"
+    command: bash -c "sleep 10000000"
 
   wss:
     image: node:22
@@ -49,7 +49,7 @@ services:
       - yarn-cache:/root/.yarn/cache
     ports:
       - 8000:8000
-    command: bash -c "sleep 100000"
+    command: bash -c "sleep 10000000"
 
   nginx:
     image: nginx:alpine

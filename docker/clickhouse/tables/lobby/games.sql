@@ -32,5 +32,5 @@ CREATE TABLE games
     `opponent_old_rating` UInt16,
     `opponent_new_rating` UInt16
 )
-ENGINE = MergeTree
+ENGINE = MergeTree()
 ORDER BY (`id`);

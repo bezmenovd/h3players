@@ -1,14 +1,15 @@
 <template>
     <div class="chart" :id="id" :style="`height: ${props.height}px`">
         <div class="chart-line">
-            <svg :width="props.width" :height="props.height" :viewBox="`0 0 ${props.width} ${props.height}`">
+            <svg width="100%" :height="props.height" :viewBox="`0 0 ${widthRef} ${props.height}`">
                 <template v-for="(itemLines, j) in lines">
                     <polyline v-for="(line, key) in itemLines"
                         :key="key"
                         fill="none"
                         :stroke="props.colors[j]"
                         stroke-width="1"
-                        :points="line.map(([x, y]) => `${x},${y}`).join(' ')"/>
+                        :points="line.map(([x, y]) => `${x},${y}`).join(' ')"
+                    />
                 </template>
             </svg>
         </div>
@@ -16,7 +17,7 @@
             <div v-for="(block, key) in noData"
                 class="no-data"
                 :key="key"
-                :style="`right: ${props.width - block[1]}px; width: ${block[1] - block[0]}px`"
+                :style="`right: ${widthRef - block[1]}px; width: ${block[1] - block[0]}px`"
             >
             </div>
             <div class="cursor" :style="`left: ${cursorX-1}px`" v-if="mouse.in">
@@ -50,7 +51,6 @@ import { computed, defineProps, onMounted, reactive, ref } from 'vue';
 
 const props = defineProps<{
     id: string,
-    width: number,
     height: number,
     colors: string[],
     data: (number[]|undefined)[]
@@ -73,7 +73,7 @@ const lines = computed<[number, number][][][]>(() => {
     for (let i = 0; i < props.data.length; i++) {
         if (props.data[i] !== undefined) {
             for (let j = 0; j < itemLength; j++) {
-                currentLines[j].push([Math.round(i / props.data.length * props.width), Math.round(props.height - (Number(props.data[i]![j]) / props.max) * props.height)])
+                currentLines[j].push([Math.round(i / (props.data.length-1) * widthRef.value), Math.round(props.height - (Number(props.data[i]![j]) / props.max) * props.height)])
             }
         } else {
             for (let j = 0; j < itemLength; j++) {
@@ -116,28 +116,23 @@ const noData = computed<[number, number][]>(() => {
     }
 
     if (currentNoDataStart !== -1) {
-        result.push([currentNoDataStart, props.width])
+        result.push([currentNoDataStart, widthRef.value])
     }
 
     return result
 })
 
 const cursorIndex = computed<number>(() => {
-    return props.data.length > 0 ? Math.round((mouse.x + mouse.offset) / props.data.length * props.width) : 0
+    return props.data.length > 0 ? Math.round((mouse.x / widthRef.value) * (props.data.length-1)) : 0
 })
 
 const cursorX = computed<number>(() => {
-    return Math.round((mouse.x / props.data.length * props.width) * (props.data.length / props.width))
+    return cursorIndex.value ? cursorIndex.value * (widthRef.value / (props.data.length-1)) : 0
 })
 
 const mouse = reactive({
     in: false,
     x: 0,
-    offset: 0,
-})
-
-const width = computed<number>(() => {
-    return document.querySelector(`#${props.id} .chart-ui`)?.getBoundingClientRect().width ?? 0
 })
 
 const valuePadding = computed<number>(() => {
@@ -173,21 +168,24 @@ const tooltipStyle = computed<string>(() => {
     if (cursorX.value < labelPadding.value) {
         return `transform: translateX(${(labelPadding.value - cursorX.value)}px)`
     }
-    if (width.value - cursorX.value < valuePadding.value) {
-        return `transform: translateX(-${(valuePadding.value - (width.value - cursorX.value))}px)`
+    if (widthRef.value - cursorX.value < valuePadding.value) {
+        return `transform: translateX(-${(valuePadding.value - (widthRef.value - cursorX.value))}px)`
     }
 
     return ''
 })
+
+const widthRef = ref(0)
 
 onMounted(() => {
     let uiElement = document.querySelector(`#${props.id} .chart-ui`)! as HTMLElement
     let uiRect = uiElement.getBoundingClientRect()
     let offsetLeft = uiRect.left
 
+    widthRef.value = uiElement.clientWidth
+
     uiElement.addEventListener('mousemove', (event) => {
         mouse.in = true
-        mouse.offset = props.width - width.value
         mouse.x = event.clientX - offsetLeft
     })
 

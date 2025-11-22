@@ -50,8 +50,18 @@ export class LobbyService {
     }
 
     async getGames(): Promise<number> {
-        let value = await this.redis.get(`spectator:daily-games:${date.from(timestamp.now())}`)
+        let count = await (await this.clickhouse.query({
+            query: `
+                SELECT count(*) as value
+                FROM games
+                WHERE end_timestamp >= {startOfDay:UInt32}
+            `,
+            query_params: {
+                startOfDay: timestamp.startOfDay(),
+            },
+            format: 'JSONEachRow',
+        })).json<{ value: number }>()
 
-        return parseInt(String(value))
+        return count[0].value
     }
 }

@@ -31,7 +31,6 @@ export type GameModel = {
 
 export type GameVModel = {
     player_id: number
-    opponent_id: number
     game_id: number
     template_id: number
     is_random: boolean
@@ -49,6 +48,7 @@ export type GameVModel = {
     player_hero: number
     player_old_rating: number
     player_new_rating: number
+    opponent_id: number
     opponent_color: number
     opponent_town: number
     opponent_hero: number

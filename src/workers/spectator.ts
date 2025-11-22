@@ -28,7 +28,13 @@ async function main() {
     await redis.connect()
     await redis.configSet('set-max-intset-entries', '10000000')
 
-    await redis.del('players')
+    const redisPub = createClient({
+        socket: {
+            host: 'redis',
+        }
+    })
+
+    await redisPub.connect()
 
     const client = new Client('spectator', 'h3players_bot1')
     const postman = new Postman(client)
@@ -47,16 +53,11 @@ async function main() {
     }
 
     const publishOnline = debounce(async () => {
-        await redis.publish('live:spectator:online', JSON.stringify({ value: getOnline() }))
+        await redisPub.publish('live:spectator:online', JSON.stringify({ value: getOnline() }))
     }, 100)
 
     const publishVisitors = debounce(async (value: number) => {
-        await redis.publish('live:spectator:visitors', JSON.stringify({ value }))
-    }, 100)
-
-    const publishGames = debounce(async () => {
-        let value = await redis.get(`spectator:daily-games:${date.from(timestamp.now())}`)
-        await redis.publish('live:spectator:games', JSON.stringify({ value: parseInt(value!) }))
+        await redisPub.publish('live:spectator:visitors', JSON.stringify({ value }))
     }, 100)
     
     let counter = 0
@@ -84,12 +85,13 @@ async function main() {
             isNew = true
         }
 
-        let rating = Number(await redis.get(`spectator:rating:${msg.userId}`)) || -1
+        let rating = Number(await redis.get(`spectator:rating:${msg.userId}`))
+        if (! Number.isFinite(rating)) {
+            rating = -1
+        }
 
         if (rating != msg.rating) {
-            redis.rPush('events:spectator:player-rating-changed', JSON.stringify({
-                playerId: msg.userId,
-            }))
+            redis.rPush('events:spectator:player-updated', JSON.stringify({ playerId: msg.userId }))
         }
 
         state.players.set(msg.userId, {
@@ -124,12 +126,13 @@ async function main() {
             isNew = true
         }
 
-        let rating = Number(await redis.get(`spectator:rating:${msg.userId}`)) || -1
+        let rating = Number(await redis.get(`spectator:rating:${msg.userId}`))
+        if (! Number.isFinite(rating)) {
+            rating = -1
+        }
 
         if (rating != msg.rating) {
-            redis.rPush('events:spectator:player-rating-changed', JSON.stringify({
-                playerId: msg.userId,
-            }))
+            redis.rPush('events:spectator:player-updated', JSON.stringify({ playerId: msg.userId }))
         }
 
         state.players.set(msg.userId, {
@@ -216,15 +219,9 @@ async function main() {
         if (state.rooms.has(msg.hostId)) {
             let room = state.rooms.get(msg.hostId)!
 
-            redis.rPush('events:spectator:room-removed', JSON.stringify({
-                gameId: room.gameId,
-                players: room.members,
-            }))
+            redis.rPush('events:spectator:player-updated', JSON.stringify({ playerId: room.members[0] }))
 
             state.rooms.delete(msg.hostId)
-
-            await redis.incr(`spectator:daily-games:${date.from(timestamp.now())}`)
-            publishGames()
         }
     })
     
@@ -236,8 +233,8 @@ async function main() {
         await client.connect()
     })
     
-    setInterval(() => {
-        lobby().insert({
+    setInterval(async () => {
+        await lobby().insert({
             table: 'online',
             values: [ { online: getOnline() } ],
             format: 'JSONEachRow',

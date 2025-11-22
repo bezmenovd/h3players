@@ -88,7 +88,7 @@ export class Client {
             this.socket.on('close', () => this.onClose())
         })
     }
-
+    
     public async disconnect(): Promise<void> {
         if (! this.connected) {
             return

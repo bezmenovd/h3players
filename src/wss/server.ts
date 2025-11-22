@@ -1,6 +1,9 @@
 import { logger } from './src/services/logger'
 import { createClient } from 'redis'
 import { WebSocket, WebSocketServer } from 'ws';
+import { throttle } from './src/helpers/functions';
+import { lobby } from './src/services/clickhouse';
+import timestamp from './src/helpers/timestamp';
 
 
 process.env.TZ = 'Europe/Moscow'
@@ -84,12 +87,26 @@ async function main() {
         })
     })
 
-    redisSub.subscribe('live:spectator:games', (data) => {
-        const { value } = JSON.parse(data) as { value: number }
+    let sendDailyGames = throttle(async () => {
+        let count = await (await lobby().query({
+            query: `
+                SELECT count(*) as value
+                FROM games
+                WHERE end_timestamp >= {startOfDay:UInt32}
+            `,
+            query_params: {
+                startOfDay: timestamp.startOfDay(),
+            },
+            format: 'JSONEachRow',
+        })).json<{ value: number }>()
 
         subscribers.get('games-changed')?.forEach(client => {
-            client.send(JSON.stringify({ route: 'games-changed', value: value }))
+            client.send(JSON.stringify({ route: 'games-changed', value: count[0].value }))
         })
+    }, 500)
+
+    redisSub.subscribe('live:journalist:games', () => {
+        sendDailyGames()
     })
 }
 

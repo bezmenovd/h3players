@@ -10,12 +10,18 @@ import { Game, GameType, GameStatus } from './src/types/msgin'
 import { HistoryAgent } from './src/agents/history'
 import { GameModel, GameVModel } from './src/models/lobby'
 import config from './config'
+import { gameIsValid } from './src/types/validate'
+import { date, timestamp } from './src/helpers/timestamp'
+import { debounce } from './src/helpers/functions'
 
 
 process.env.TZ = 'Europe/Moscow'
 
 
 async function main() {
+    const USER = String(process.env.USER)
+    const LAST_ONLY_MODE = String(process.env.LAST_ONLY_MODE) === 'true'
+
     logger.info('starting..')
 
     const redis = createClient({
@@ -26,7 +32,15 @@ async function main() {
 
     redis.connect()
 
-    const client = new Client('journalist', 'h3players_bot3')
+    const redisPub = createClient({
+        socket: {
+            host: 'redis',
+        }
+    })
+
+    await redisPub.connect()
+
+    const client = new Client('journalist', USER)
     const postman = new Postman(client)
     
     const supervisor = new Supervisor()
@@ -39,6 +53,7 @@ async function main() {
         await client.disconnect()
         await client.connect()
     })
+
     let historyAgent = new HistoryAgent(postman)
 
     while (true) {
@@ -47,8 +62,9 @@ async function main() {
             await sleep(10_000)
             continue
         }
+        logger.info('iter')
 
-        let event = await redis.lPop('events:spectator:player-rating-changed')
+        let event = await redis.lPop('events:spectator:player-updated')
         if (! event) {
             continue
         }
@@ -70,134 +86,190 @@ async function main() {
                     playerId
                 },
                 format: 'JSONEachRow',
-            })).json<GameVModel>()
+            })).json<{ game_id: number }>()
 
             let beforeTimestamp: number|undefined = undefined
 
             while (true) {
-                let history = await historyAgent.get(448, beforeTimestamp)
+                let history = await historyAgent.get(playerId, beforeTimestamp)
 
-                newGames = newGames.concat(history.games)
+                for (let i = 0; i < history.games.length; i++) {
+                    if (game_v_last_row.length === 1 && game_v_last_row[0].game_id >= history.games[i].id) {
+                        break
+                    }
+                    if (history.games[i].status === GameStatus.NotFinished) {
+                        continue
+                    }
 
+                    if (! gameIsValid(history.games[i])) {
+                        sendMessage(`invalid game: ${JSON.stringify(history.games[i])}`)
+                        continue
+                    }
+
+                    newGames.push(history.games[i])
+                }
+
+                if (LAST_ONLY_MODE) break
                 if (history.games.length !== 20) break
-                if (game_v_last_row.length === 1 && game_v_last_row[0].end_timestamp >= history.games[19].endTimestamp) break
+                if (game_v_last_row.length === 1 && game_v_last_row[0].game_id >= history.games[19].id) break
 
                 beforeTimestamp = history.games[19].endTimestamp - 1
 
-                await sleep(600)
+                await sleep(500)
             }
+
+
+            let games_existing = await (await lobby().query({
+                query: `
+                    SELECT id
+                    FROM games
+                    WHERE id in {ids:Array(UInt32)}
+                `,
+                query_params: {
+                    ids: newGames.map(g => g.id),
+                },
+                format: 'JSONEachRow',
+            })).json<{ id: number }>()
+
+            let games_existing_set = new Set(games_existing.map(g => g.id))
+
+            let games_v_existing = await (await lobby().query({
+                query: `
+                    SELECT player_id, opponent_id
+                    FROM games_v
+                    WHERE game_id in {ids:Array(UInt32)}
+                `,
+                query_params: {
+                    ids: newGames.map(g => g.id),
+                },
+                format: 'JSONEachRow',
+            })).json<{ player_id: number, opponent_id: number }>()
+
+            let games_v_existing_set = new Set(games_v_existing.map(g => `${g.player_id}:${g.opponent_id}`))
+
 
             let games_to_insert: GameModel[] = []
             let games_v_to_insert: GameVModel[] = []
 
-            newGames.filter(g => g.status !== GameStatus.NotFinished).forEach(game => {
-                games_to_insert.push({
-                    id: game.id,
-                    template_id: game.templateId,
-                    game_type: game.type(),
-                    size: game.size,
-                    levels: game.levels,
-                    status: game.status,
-                    restarts: game.restarts,
-                    end_day: game.endDay,
-                    start_timestamp: game.startTimestamp * 60 + config.variables.baseTimestamp,
-                    end_timestamp: game.endTimestamp * 60 + config.variables.baseTimestamp,
-                    host_id: game.hostId,
-                    host_color: game.hostColor,
-                    host_town: game.hostTown,
-                    host_hero: game.hostHero,
-                    host_old_rating: game.hostOldRating,
-                    host_new_rating: game.hostNewRating,
-                    opponent_id: game.opponentId,
-                    opponent_color: game.opponentColor,
-                    opponent_town: game.opponentTown,
-                    opponent_hero: game.opponentHero,
-                    opponent_old_rating: game.opponentOldRating,
-                    opponent_new_rating: game.opponentNewRating,
-                })
+            newGames.forEach(game => {
+                if (! games_existing_set.has(game.id)) {
+                    games_to_insert.push({
+                        id: game.id,
+                        template_id: game.templateId,
+                        game_type: game.type(),
+                        size: game.size,
+                        levels: game.levels,
+                        status: game.status,
+                        restarts: game.restarts,
+                        end_day: game.endDay,
+                        start_timestamp: game.startTimestamp * 60 + config.variables.baseTimestamp,
+                        end_timestamp: game.endTimestamp * 60 + config.variables.baseTimestamp,
+                        host_id: game.hostId,
+                        host_color: game.hostColor,
+                        host_town: game.hostTown,
+                        host_hero: game.hostHero,
+                        host_old_rating: game.hostOldRating,
+                        host_new_rating: game.hostNewRating,
+                        opponent_id: game.opponentId,
+                        opponent_color: game.opponentColor,
+                        opponent_town: game.opponentTown,
+                        opponent_hero: game.opponentHero,
+                        opponent_old_rating: game.opponentOldRating,
+                        opponent_new_rating: game.opponentNewRating,
+                    })
+                }
 
-                games_v_to_insert.push({
-                    player_id: game.hostId,
-                    opponent_id: game.opponentId,
-                    game_id: game.id,
-                    template_id: game.templateId,
-                    is_random: game.type() === GameType.RandomMap,
-                    size: game.size,
-                    levels: game.levels,
-                    is_win: game.status === GameStatus.HostWon,
-                    is_draw: game.status === GameStatus.Draw,
-                    is_loss: game.status === GameStatus.OpponentWon,
-                    restarts: game.restarts,
-                    end_day: game.endDay,
-                    start_timestamp: game.startTimestamp * 60 + config.variables.baseTimestamp,
-                    end_timestamp: game.endTimestamp * 60 + config.variables.baseTimestamp,
-                    player_color: game.hostColor,
-                    player_town: game.hostTown,
-                    player_hero: game.hostHero,
-                    player_old_rating: game.hostOldRating,
-                    player_new_rating: game.hostNewRating,
-                    opponent_color: game.opponentColor,
-                    opponent_town: game.opponentTown,
-                    opponent_hero: game.opponentHero,
-                    opponent_old_rating: game.opponentOldRating,
-                    opponent_new_rating: game.opponentNewRating,
-                })
+                if (! games_v_existing_set.has(`${game.hostId}:${game.opponentId}`)) {
+                    games_v_to_insert.push({
+                        player_id: game.hostId,
+                        game_id: game.id,
+                        template_id: game.templateId,
+                        is_random: game.type() === GameType.RandomMap,
+                        size: game.size,
+                        levels: game.levels,
+                        is_win: game.status === GameStatus.HostWon,
+                        is_draw: game.status === GameStatus.Draw,
+                        is_loss: game.status === GameStatus.OpponentWon,
+                        restarts: game.restarts,
+                        end_day: game.endDay,
+                        start_timestamp: game.startTimestamp * 60 + config.variables.baseTimestamp,
+                        end_timestamp: game.endTimestamp * 60 + config.variables.baseTimestamp,
+                        player_color: game.hostColor,
+                        player_town: game.hostTown,
+                        player_hero: game.hostHero,
+                        player_old_rating: game.hostOldRating,
+                        player_new_rating: game.hostNewRating,
+                        opponent_id: game.opponentId,
+                        opponent_color: game.opponentColor,
+                        opponent_town: game.opponentTown,
+                        opponent_hero: game.opponentHero,
+                        opponent_old_rating: game.opponentOldRating,
+                        opponent_new_rating: game.opponentNewRating,
+                    })
+                }
                 
-                games_v_to_insert.push({
-                    player_id: game.opponentId,
-                    opponent_id: game.hostId,
-                    game_id: game.id,
-                    template_id: game.templateId,
-                    is_random: game.type() === GameType.RandomMap,
-                    size: game.size,
-                    levels: game.levels,
-                    is_win: game.status === GameStatus.OpponentWon,
-                    is_draw: game.status === GameStatus.Draw,
-                    is_loss: game.status === GameStatus.HostWon,
-                    restarts: game.restarts,
-                    end_day: game.endDay,
-                    start_timestamp: game.startTimestamp * 60 + config.variables.baseTimestamp,
-                    end_timestamp: game.endTimestamp * 60 + config.variables.baseTimestamp,
-                    player_color: game.opponentColor,
-                    player_town: game.opponentTown,
-                    player_hero: game.opponentHero,
-                    player_old_rating: game.opponentOldRating,
-                    player_new_rating: game.opponentNewRating,
-                    opponent_color: game.hostColor,
-                    opponent_town: game.hostTown,
-                    opponent_hero: game.hostHero,
-                    opponent_old_rating: game.hostOldRating,
-                    opponent_new_rating: game.hostNewRating,
+                if (! games_v_existing_set.has(`${game.opponentId}:${game.hostId}`)) {
+                    games_v_to_insert.push({
+                        player_id: game.opponentId,
+                        game_id: game.id,
+                        template_id: game.templateId,
+                        is_random: game.type() === GameType.RandomMap,
+                        size: game.size,
+                        levels: game.levels,
+                        is_win: game.status === GameStatus.OpponentWon,
+                        is_draw: game.status === GameStatus.Draw,
+                        is_loss: game.status === GameStatus.HostWon,
+                        restarts: game.restarts,
+                        end_day: game.endDay,
+                        start_timestamp: game.startTimestamp * 60 + config.variables.baseTimestamp,
+                        end_timestamp: game.endTimestamp * 60 + config.variables.baseTimestamp,
+                        player_color: game.opponentColor,
+                        player_town: game.opponentTown,
+                        player_hero: game.opponentHero,
+                        player_old_rating: game.opponentOldRating,
+                        player_new_rating: game.opponentNewRating,
+                        opponent_id: game.hostId,
+                        opponent_color: game.hostColor,
+                        opponent_town: game.hostTown,
+                        opponent_hero: game.hostHero,
+                        opponent_old_rating: game.hostOldRating,
+                        opponent_new_rating: game.hostNewRating,
+                    })
+                }
+            })
+
+            if (games_to_insert.length > 0) {
+                await lobby().insert({
+                    table: `games`,
+                    values: games_to_insert,
+                    format: 'JSONEachRow',
                 })
-            })
-
-            lobby().insert({
-                table: `games`,
-                values: games_to_insert,
-                format: 'JSONEachRow',
-            })
-
-            lobby().insert({
-                table: `games_v`,
-                values: games_v_to_insert,
-                format: 'JSONEachRow',
-            })
-
-            logger.info(`loaded ${newGames.length} games of player ${playerId}`)
-
-            await sleep(500)
-        } catch (e: any) {
-            if (! client.isConnected()) {
-                logger.info('error caused by disconnect')
-                return
             }
 
-            await sleep(5000)
+            if (games_v_to_insert.length > 0) {
+                await lobby().insert({
+                    table: `games_v`,
+                    values: games_v_to_insert,
+                    format: 'JSONEachRow',
+                })
+            }
 
-            await redis.rPush('events:spectator:player-rating-changed', JSON.stringify({ playerId }))
+            if (games_to_insert.length > 0) {
+                logger.info(`added ${games_to_insert.length} games of player ${playerId}`)
+                redisPub.publish('live:journalist:games', '')
+            }
+        } catch (e: any) {
+            await redis.rPush('events:spectator:player-updated', JSON.stringify({ playerId }))
 
-            throw e;
+            if (! client.isConnected()) {
+                logger.info('error caused by disconnect')
+                continue
+            }
+
+            sendMessage(`${e.message}\n${e.stack}`)
         }
+
+        await sleep(1000)
     }
 }
 

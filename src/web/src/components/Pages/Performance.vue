@@ -7,8 +7,7 @@
                 <div id="performance-chart">
                     <LineChart 
                         v-if="totalChart.show" 
-                        id="chart-performance-total" 
-                        :width="totalChart.size" 
+                        id="chart-performance-total"
                         :height="200" 
                         :colors="['#ff5e00', '#00d3ff']" 
                         :data="totalChart.data" 
@@ -28,11 +27,10 @@
                         <LineChart 
                             v-if="chart.show" 
                             :id="`chart-performance-worker-${worker}`"
-                            :height="200" 
-                            :width="totalChart.size" 
+                            :height="200"
                             :colors="['#ff5e00', '#00d3ff']" 
                             :data="chart.data" 
-                            :labels="totalChart.labels" 
+                            :labels="chart.labels" 
                             :max="totalChartMax" 
                             :formatters="totalChart.formatters"
                             :showNoData="false"
@@ -74,8 +72,8 @@ const totalChart = reactive<{
 const workers = reactive<{
     charts: {
         [key: string]: {
-            size: number,
             data: (number[]|undefined)[],
+            labels: (string|undefined)[],
             show: boolean,
         }
     }
@@ -104,7 +102,7 @@ const totalChartMax = computed<number>(() => {
 let updateInterval
 
 onMounted(() => {
-    totalChart.size = Math.round(document.getElementById('performance-chart')!.getBoundingClientRect().width - 10)
+    totalChart.size = Math.round(document.getElementById('performance-chart')!.getBoundingClientRect().width / 3)
     
     loading.value = true
 
@@ -130,18 +128,22 @@ onMounted(() => {
                     totalChart.data[dIndex]![1] += r[rIndex].received_bytes
                 }
                 if (r[rIndex].name) {
-                    if (! (r[rIndex].name in workers.charts)) {
-                        workers.charts[r[rIndex].name] = {
-                            size: 0,
-                            data: new Array<number[]|undefined>(totalChart.size),
-                            show: false,
+                    let wChartIndex = dIndex - (totalChart.size-50)
+                    if (wChartIndex >= 0) {
+                        if (! (r[rIndex].name in workers.charts)) {
+                            workers.charts[r[rIndex].name] = {
+                                data: new Array<number[]|undefined>(50),
+                                labels: new Array<string|undefined>(50),
+                                show: false,
+                            }
                         }
-                    }
-                    if (workers.charts[r[rIndex].name].data[dIndex] === undefined) {
-                        workers.charts[r[rIndex].name].data[dIndex] = [r[rIndex].sent_bytes, r[rIndex].received_bytes]
-                    } else {
-                        workers.charts[r[rIndex].name].data[dIndex]![0] += r[rIndex].sent_bytes
-                        workers.charts[r[rIndex].name].data[dIndex]![1] += r[rIndex].received_bytes
+                        if (workers.charts[r[rIndex].name].data[wChartIndex] === undefined) {
+                            workers.charts[r[rIndex].name].data[wChartIndex] = [r[rIndex].sent_bytes, r[rIndex].received_bytes]
+                        } else {
+                            workers.charts[r[rIndex].name].data[wChartIndex]![0] += r[rIndex].sent_bytes
+                            workers.charts[r[rIndex].name].data[wChartIndex]![1] += r[rIndex].received_bytes
+                        }
+                        workers.charts[r[rIndex].name].labels[wChartIndex] = datetime.from(r[rIndex].timestamp)
                     }
                 }
                 

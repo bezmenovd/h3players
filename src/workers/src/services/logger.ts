@@ -1,12 +1,31 @@
-import pino from 'pino';
+import { createLogger, format, transports } from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
 
-export const logger = pino({
-    transport: {
-        target: 'pino-pretty',
-        options: {
-            colorize: false,
-            translateTime: 'dd.mm.yyyy HH:MM:ss',
-            ignore: 'pid,hostname,level',
-        },
-    },
-})
+const LOG_PATH = process.env.LOG_PATH;
+
+export const logger = createLogger({
+    level: 'info',
+    format: format.combine(
+        format.timestamp({ format: 'D.M.YYYY H:mm:ss' }),
+        format.errors({ stack: true }),
+        format.printf(({ timestamp, message, stack }) => `[${timestamp}]: ${stack || message}`)
+    ),
+    transports: LOG_PATH ? [
+        new DailyRotateFile({
+            filename: `${LOG_PATH}/%DATE%.log`,
+            datePattern: 'YYYY-MM-DD',
+            zippedArchive: true,
+            maxSize: '10m',
+            maxFiles: '7d',
+            format: format.uncolorize(),
+        }),
+    ] : [
+        new transports.Console({
+            format: format.combine(
+                format.colorize(),
+                format.timestamp({ format: 'D.M.YYYY H:mm:ss' }),
+                format.printf(({ timestamp, message, stack }) => `[${timestamp}]: ${stack || message}`)
+            ),
+        }),
+    ],
+});

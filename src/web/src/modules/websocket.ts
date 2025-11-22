@@ -7,9 +7,6 @@ let connect = () => {
     websocket = new WebSocket(`ws://${location.host}:8000`)
 
     websocket.onopen = () => {
-        for (const route of listeners.keys()) {
-            websocket!.send(JSON.stringify({ type: 'subscribe', route }))
-        }
         for (const data of queue) {
             websocket!.send(data)
         }
@@ -36,7 +33,7 @@ let connect = () => {
                 connect()
                 clearInterval(reconnectionInterval)
             } catch (e) {}
-        }, 5000)
+        }, 10000)
     }
 }
 
@@ -56,7 +53,7 @@ export function on<R extends MsgAvailable['route']>(
         if (websocket?.readyState === WebSocket.OPEN) {
             websocket!.send(JSON.stringify({ type: 'subscribe', route: route }))
         } else {
-            queue.push(JSON.stringify({ type: 'unsubscribe', route: route }))
+            queue.push(JSON.stringify({ type: 'subscribe', route: route }))
         }
     }
 

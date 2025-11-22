@@ -7,8 +7,7 @@
                 <div id="online-chart">
                     <LineChart 
                         v-if="onlineChart.show" 
-                        id="chart-online" 
-                        :width="chartSize" 
+                        id="chart-online"
                         :height="230" 
                         :colors="['#19f0af']" 
                         :data="onlineChart.data" 
