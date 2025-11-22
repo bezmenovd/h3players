@@ -27,8 +27,30 @@ export class GetHistory extends MsgOut {
 }
 
 
+@Code(153)
+export class GetTemplates extends MsgOut {
+    constructor(
+        public templateIds: number[]
+    ) {
+        super()
+    }
+
+    toBuffer(): Buffer {
+        let buffer = Buffer.alloc(this.templateIds.length * 4 + 4)
+
+        buffer.writeUInt32LE(this.templateIds.length, 0)
+
+        for (let i = 0; i < this.templateIds.length; i++) {
+            buffer.writeUInt32LE(this.templateIds[i], i*4 + 4)
+        }
+
+        return buffer
+    }
+}
+
+
 @Code(155)
-export class GetNames extends MsgOut {
+export class GetPlayers extends MsgOut {
     constructor(
         public playerIds: number[]
     ) {

@@ -55,3 +55,13 @@ export type GameVModel = {
     opponent_old_rating: number
     opponent_new_rating: number
 }
+
+export type PlayerModel = {
+    id: number
+    name: string
+}
+
+export type TemplateModel = {
+    id: number
+    name: string
+}

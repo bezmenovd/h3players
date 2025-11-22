@@ -327,15 +327,44 @@ export class History extends MsgIn {
 }
 
 
-export type NamesItem = {
+export type TemplateItem = {
+    id: number
+    name: string
+}
+
+@Code(154)
+export class Templates extends MsgIn {
+    public total: number
+    public items: PlayersItem[] = []
+
+    public constructor(data: Buffer) {
+        super(data)
+
+        this.total = this.data.readUInt32LE(0)
+
+        let offset = 4
+
+        for (let i = 0; i < this.total; i++) {
+            this.items.push({
+                id: this.data.readUInt32LE(offset),
+                name: readstr(this.data, offset + 4)
+            })
+
+            offset += 69
+        }
+    }
+}
+
+
+export type PlayersItem = {
     id: number
     name: string
 }
 
 @Code(156)
-export class Names extends MsgIn {
+export class Players extends MsgIn {
     public total: number
-    public items: NamesItem[] = []
+    public items: PlayersItem[] = []
 
     public constructor(data: Buffer) {
         super(data)

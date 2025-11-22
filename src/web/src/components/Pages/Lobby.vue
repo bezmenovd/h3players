@@ -1,46 +1,60 @@
 <template>
     <div id="lobby">
-        <Title text="Лобби"></Title>
-        <Panel id="online">
-            <Loader v-if="loading" />
-            <template v-else>
-                <div id="online-chart">
-                    <LineChart 
-                        v-if="onlineChart.show" 
-                        id="chart-online"
-                        :height="230" 
-                        :colors="['#19f0af']" 
-                        :data="onlineChart.data" 
-                        :labels="onlineChart.labels" 
-                        :max="chartMax" 
-                        :formatters="onlineChart.formatters"
-                        :showNoData="true"
-                    />
-                </div>
-                <div id="lobby-metrics">
-                    <div class="metric">
-                        <template v-if="connected">
-                            <div class="metric-value">
-                                <Light id="online-light" :pulse="false" color="#19f0af"/>
-                                {{ onlineFormatted }}
-                            </div>
-                        </template>
-                        <template v-else>
-                            <div class="metric-value">-</div>
-                        </template>
-                        <div class="metric-name">онлайн</div>
+        <div id="online">
+            <Title text="Лобби"></Title>
+            <Panel id="online-panel">
+                <Loader v-if="loading.online" />
+                <template v-else>
+                    <div id="online-chart">
+                        <LineChart 
+                            v-if="onlineChart.show" 
+                            id="chart-online"
+                            :height="230" 
+                            :colors="['#19f0af']" 
+                            :data="onlineChart.data" 
+                            :labels="onlineChart.labels" 
+                            :max="chartMax" 
+                            :formatters="onlineChart.formatters"
+                            :showNoData="true"
+                        />
                     </div>
-                    <div class="metric" hint="Число игр, завершённых сегодня">
-                        <div class="metric-value">{{ gamesFormatted }}</div>
-                        <div class="metric-name">игр</div>
+                    <div id="lobby-metrics">
+                        <div class="metric">
+                            <template v-if="connected">
+                                <div class="metric-value">
+                                    <Light id="online-light" :pulse="false" color="#19f0af"/>
+                                    {{ onlineFormatted }}
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div class="metric-value">-</div>
+                            </template>
+                            <div class="metric-name">онлайн</div>
+                        </div>
+                        <div class="metric" hint="Число игр, завершённых сегодня">
+                            <div class="metric-value">{{ gamesFormatted }}</div>
+                            <div class="metric-name">игр</div>
+                        </div>
+                        <div class="metric" hint="Число пользователей, посетивших лобби сегодня">
+                            <div class="metric-value">{{ visitorsFormatted }}</div>
+                            <div class="metric-name">посетителей</div>
+                        </div>
                     </div>
-                    <div class="metric" hint="Число пользователей, посетивших лобби сегодня">
-                        <div class="metric-value">{{ visitorsFormatted }}</div>
-                        <div class="metric-name">посетителей</div>
-                    </div>
-                </div>
-            </template>
-        </Panel>
+                </template>
+            </Panel>
+        </div>
+        <div id="live">
+            <div id="last-games">
+                <Subtitle text="Последние игры" />
+                <Panel id="last-games-panel">
+                    <Games :items="lastGames.items" />
+                </Panel>
+            </div>
+            <div id="top">
+                <Subtitle text="Топ за сегодня" />
+                <Panel id="top-panel"></Panel>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -49,11 +63,15 @@ import { ref, onMounted, computed, reactive, onUnmounted, onBeforeUnmount } from
 import Panel from './../UI/Panel.vue'
 import Light from './../UI/Light.vue'
 import Title from './../UI/Title.vue'
-import { chart, visitors, games } from '../../api/lobby'
+import Subtitle from './../UI/Subtitle.vue'
+import { chart, getLastGames } from '../../api/lobby'
+import { visitors, games } from '../../api/lobby/counter'
 import Loader from '../UI/Loader.vue'
 import LineChart from '../UI/Charts/LineChart.vue'
+import Games from '../UI/Games.vue'
 import { timestamp, datetime } from '../../helpers/timestamp'
 import { on } from '../../modules/websocket'
+import { GameWithInfo } from '../../api/games'
 
 
 const onlineChart = reactive<{
@@ -70,7 +88,10 @@ const onlineChart = reactive<{
     ]
 })
 
-const loading = ref(false)
+const loading = reactive({
+    online: false,
+    games: true,
+})
 
 const connected = computed<boolean>(() => {
     return online.value > 0
@@ -108,12 +129,18 @@ const gamesFormatted = computed<string>(() => {
 
 const chartSize = ref(0)
 
+const lastGames = reactive<{
+    items: GameWithInfo[]
+}>({
+    items: [],
+})
+
 let updateInterval
 
 onMounted(() => {
     chartSize.value = Math.round(document.getElementById('online-chart')!.getBoundingClientRect().width - 5)
     
-    loading.value = true
+    loading.online = true
 
     chart(timestamp.now() - chartSize.value*60).then(r => {
         onlineChart.data = new Array<number[]|undefined>(chartSize.value)
@@ -144,7 +171,7 @@ onMounted(() => {
             online.value = onlineChart.data[onlineChart.data.length-1]![0]
         }
 
-        loading.value = false
+        loading.online = false
     })
 
     visitors().then(r => {
@@ -173,6 +200,10 @@ onMounted(() => {
     onBeforeUnmount(on('games-changed', (msg) => {
         gamesRef.value = msg.value
     }))
+
+    getLastGames().then(items => {
+        lastGames.items = items
+    })
 })
 
 onUnmounted(() => {
@@ -182,11 +213,23 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+#lobby {
+    display: flex;
+    flex-direction: column;
+}
 #online {
+}
+#online-panel {
     width: 100%;
     height: 240px;
     display: grid;
     grid-template-columns: 1fr 180px;
+}
+#live {
+    margin-top: 25px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 40px;
 }
 #online-chart {
     padding: 5px 0px 5px 5px;
@@ -227,6 +270,10 @@ onUnmounted(() => {
     justify-content: center;
     opacity: .7;
     margin-top: 5px;
+}
+
+#last-games-panel {
+    height: 400px;
 }
 
 @media (max-width: 1600px) {

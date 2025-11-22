@@ -3,7 +3,8 @@ import { logger } from './services/logger';
 import { bytesToHex, hexDump, intToBytes } from './helpers/bytes';
 import config from '../config';
 import { getHdModVersion } from './version';
-import { MsgIn } from './types/msgin';
+import fs from 'node:fs'
+
 
 export type Listener = (data: Buffer) => void;
 
@@ -18,10 +19,12 @@ export type ClientStatistics = {
     }
 }
 
+
 export class Client {
     private authstr: string
     private socket?: Socket
     private connected: boolean = false
+    private debugging: boolean = false
 
     private listenersOnMessage: Listener[] = []
     private listenersOnConnect: Function[] = []
@@ -88,6 +91,13 @@ export class Client {
             this.socket.on('close', () => this.onClose())
         })
     }
+
+    public debug(value: boolean = true): void {
+        this.debugging = value
+        if (value) {
+            fs.rmdirSync('output/server/')
+        }
+    }
     
     public async disconnect(): Promise<void> {
         if (! this.connected) {
@@ -136,7 +146,10 @@ export class Client {
         this.statistics.sent.bytes += buffer.length
         this.statistics.sent.messages++
 
-        // logger.info(`client(${this.name}) wrote ${buffer.length} bytes`)
+        if (this.debugging) {
+            logger.info(`client(${this.name}) wrote ${buffer.length} bytes`)
+            logger.info(`client(${this.name}) wrote ${bytesToHex(buffer)}`)
+        }
     }
 
     public writeWL(buffer: Buffer, check: boolean = true): void {
@@ -153,14 +166,16 @@ export class Client {
         this.statistics.sent.bytes += bufferWL.length
         this.statistics.sent.messages++
 
-        // logger.info(`client(${this.name}) wrote ${bufferWL.length} bytes`)
-        // logger.info(`client(${this.name}) wrote ${bytesToHex(bufferWL)}`)
+        if (this.debugging) {
+            logger.info(`client(${this.name}) wrote ${bufferWL.length} bytes`)
+            logger.info(`client(${this.name}) wrote ${bytesToHex(bufferWL)}`)
+        }
     }
 
     private onData(data: Buffer): void {
-        // logger.info(`client(${this.name}) read ${data.length} bytes`)
-
-        // hexDump(data.subarray(0, 16))
+        if (this.debugging) {
+            logger.info(`client(${this.name}) read ${data.length} bytes`)
+        }
 
         this.statistics.received.bytes += data.length
 
@@ -176,7 +191,9 @@ export class Client {
                 this.msgLenBufferLen += toCopy
                 
                 if (this.msgLenBufferLen === 2) {
-                    // logger.info(`client(${this.name}) length bytes: ${bytesToHex(this.msgLenBuffer)}`)
+                    if (this.debugging) {
+                        logger.info(`client(${this.name}) length bytes: ${bytesToHex(this.msgLenBuffer)}`)
+                    }
                     this.msgLenExpected = this.msgLenBuffer.readUInt16LE(0)
                     this.msgLenBufferLen = 0
                     this.msgLen = 2
@@ -184,7 +201,9 @@ export class Client {
 
                 dataOffset += toCopy
 
-                // logger.info(`client(${this.name}) waiting for message of length=${this.msgLenExpected} (now=${this.msgLen})`)
+                if (this.debugging) {
+                    logger.info(`client(${this.name}) waiting for message of length=${this.msgLenExpected} (now=${this.msgLen})`)
+                }
             } else {
                 let remaining = this.msgLenExpected - this.msgLen
                 let toCopy = Math.min(data.length-dataOffset, remaining)
@@ -192,11 +211,14 @@ export class Client {
                 data.copy(this.msgBuffer, this.msgLen, dataOffset, dataOffset+toCopy)
                 this.msgLen += toCopy
 
-                // logger.info(`client(${this.name}) toCopy=${toCopy} remaining=${remaining}`)
+                if (this.debugging) {
+                    logger.info(`client(${this.name}) toCopy=${toCopy} remaining=${remaining}`)
+                }
     
                 if (this.msgLen === this.msgLenExpected) {
                     if (this.msgLen > 2) {
                         this.statistics.received.messages++
+                        this.debugListener(this.msgBuffer.subarray(2, this.msgLen))
                         this.listenersOnMessage.forEach(l => l(this.msgBuffer.subarray(2, this.msgLen)))
                     }
                     this.msgLen = 0
@@ -236,5 +258,21 @@ export class Client {
             logger.info(`client(${this.name}) trying to reconnect..`)
             this.connect()
         }
+    }
+
+    private async debugListener(data: Buffer): Promise<void> {
+        if (! this.debugging) {
+            return
+        }
+        
+        let code = data.readUInt16LE(0)
+        let buffer = data.subarray(2)
+
+        if (code > 255) {
+            logger.error(`bad message`)
+        }
+        
+        fs.mkdir(`output/server/${code}`, { recursive: true }, () => {})
+        fs.writeFile(`output/server/${code}/${this.statistics.received.messages}`, hexDump(buffer), () => {})
     }
 }

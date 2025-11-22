@@ -6,9 +6,6 @@ import { lobby } from './src/services/clickhouse';
 import timestamp from './src/helpers/timestamp';
 
 
-process.env.TZ = 'Europe/Moscow'
-
-
 async function main() {
     logger.info('starting..')
     

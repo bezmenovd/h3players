@@ -15,6 +15,7 @@
     "web:dev": "cd src/web && vite build --watch",
     "web:build": "cd src/web && vite build",
     "convert": "tsx src/workers/convert.ts",
+    "test": "tsx src/workers/test.ts",
     "workers:spectator:dev": "tsx src/workers/spectator.ts",
     "workers:spectator:build": "tsup --config src/workers/spectator.tsup.config.ts --clean",
     "workers:spectator": "node dist/workers/spectator/spectator.js",

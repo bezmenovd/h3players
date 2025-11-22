@@ -234,6 +234,7 @@ onMounted(() => {
 .cursor-tooltip {
     position: absolute;
     top: 5px;
+    z-index: 99;
 }
 .cursor-label {    
     position: absolute;

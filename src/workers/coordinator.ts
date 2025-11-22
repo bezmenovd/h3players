@@ -4,9 +4,6 @@ import { getHdModVersion } from './src/version'
 import { sendMessage } from './src/services/telegram'
 
 
-process.env.TZ = 'Europe/Moscow'
-
-
 async function main() {-
     logger.info('starting..')
 

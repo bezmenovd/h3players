@@ -1,17 +1,13 @@
 import { Client } from './src/client'
-import { bytesToHex, formatBytes, hexDump } from './src/helpers/bytes'
 import { logger } from './src/services/logger'
 import { Supervisor } from './src/supervisor'
 import { sendMessage } from './src/services/telegram'
 import { Postman } from './src/postman'
-import { NamesAgent } from './src/agents/names'
+import { PlayersAgent } from './src/agents/players'
 import { createClient } from 'redis'
 import { sleep } from './src/helpers/sleep'
 import { lobby } from './src/services/clickhouse'
-import { Names } from './src/types/msgin'
-
-
-process.env.TZ = 'Europe/Moscow'
+import { Players } from './src/types/msgin'
 
 
 async function main() {
@@ -44,7 +40,8 @@ async function main() {
         await client.connect()
     })
 
-    let namesAgent = new NamesAgent(postman)
+
+    let playersAgent = new PlayersAgent(postman)
     let currentId = startId
     let buffer: { id: number, name: string }[] = []
 
@@ -75,7 +72,7 @@ async function main() {
 
         try {
             await sleep(100)
-            let res = await namesAgent.get(ids);
+            let res = await playersAgent.get(ids);
             return res.items.map(i => i.id);
         } catch {
             if (ids.length === 1) {
@@ -95,11 +92,11 @@ async function main() {
             continue
         }
 
-        let result: Names|null = null
+        let result: Players|null = null
         let nextIds = Array.from({ length: 10 }, (x, k) => k + currentId)
 
         try {
-            result = await namesAgent.get(nextIds)
+            result = await playersAgent.get(nextIds)
         } catch (e: any) {
             if (! client.isConnected()) {
                 logger.info('error caused by disconnect')
@@ -118,7 +115,7 @@ async function main() {
                 continue
             }
 
-            result = await namesAgent.get(existingIds)
+            result = await playersAgent.get(existingIds)
         }
 
         result = result!

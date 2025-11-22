@@ -1,16 +1,16 @@
 import { Postman } from "../postman";
-import { Names } from "../types/msgin";
-import { GetNames } from "../types/msgout";
+import { Templates } from "../types/msgin";
+import { GetTemplates } from "../types/msgout";
 
-export class NamesAgent {
-    private resolve?: (msg: Names) => void
+export class TemplatesAgent {
+    private resolve?: (msg: Templates) => void
     private reject?: (err: Error) => void
     private errorTimeout: null|NodeJS.Timeout = null
 
     constructor(
         public postman: Postman
     ) {
-        postman.on(Names, (msg) => {
+        postman.on(Templates, (msg) => {
             this.resolve && this.resolve(msg)
         })
 
@@ -26,12 +26,12 @@ export class NamesAgent {
         this.reject = undefined
     }
 
-    public async get(playerIds: number[]): Promise<Names> {
+    public async get(playerIds: number[]): Promise<Templates> {
         if (this.resolve) {
             throw new Error("concurrent requests are forbidden");
         }
 
-        return new Promise<Names>((resolve, reject) => {
+        return new Promise<Templates>((resolve, reject) => {
             this.reject = reject
             
             this.errorTimeout = setTimeout(() => {
@@ -39,12 +39,12 @@ export class NamesAgent {
                 reject(new Error('timeout'))
             }, 6000)
 
-            this.resolve = (msg: Names) => {
+            this.resolve = (msg: Templates) => {
                 this.cleanup()
                 resolve(msg)
             }
 
-            this.postman.send(new GetNames(playerIds))
+            this.postman.send(new GetTemplates(playerIds))
         })
     }
 }

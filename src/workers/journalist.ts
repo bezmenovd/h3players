@@ -8,14 +8,13 @@ import { sleep } from './src/helpers/sleep'
 import { lobby } from './src/services/clickhouse'
 import { Game, GameType, GameStatus } from './src/types/msgin'
 import { HistoryAgent } from './src/agents/history'
-import { GameModel, GameVModel } from './src/models/lobby'
+import { GameModel, GameVModel, PlayerModel, TemplateModel } from './src/models/lobby'
 import config from './config'
 import { gameIsValid } from './src/types/validate'
 import { date, timestamp } from './src/helpers/timestamp'
 import { debounce } from './src/helpers/functions'
-
-
-process.env.TZ = 'Europe/Moscow'
+import { PlayersAgent } from './src/agents/players'
+import { TemplatesAgent } from './src/agents/templates'
 
 
 async function main() {
@@ -55,14 +54,17 @@ async function main() {
     })
 
     let historyAgent = new HistoryAgent(postman)
+    let playersAgent = new PlayersAgent(postman)
+    let templatesAgent = new TemplatesAgent(postman)
 
     while (true) {
+        await sleep(1000)
+
         if (! client.isConnected()) {
             logger.info('is not connected, sleeping')
             await sleep(10_000)
             continue
         }
-        logger.info('iter')
 
         let event = await redis.lPop('events:spectator:player-updated')
         if (! event) {
@@ -255,7 +257,85 @@ async function main() {
             }
 
             if (games_to_insert.length > 0) {
-                logger.info(`added ${games_to_insert.length} games of player ${playerId}`)
+                logger.info(`player #${playerId}: added games: ${games_to_insert.length}`)
+
+                let opponents = games_v_to_insert.map(g => g.opponent_id)
+                let templates = games_to_insert.map(g => g.template_id)
+
+                if (opponents.length > 0) {
+                    let unknownOpponents = (await (await lobby().query({
+                        query: `
+                            SELECT arrayJoin({ids:Array(UInt32)}) AS id
+                            WHERE NOT dictHas('players_dictionary', id)
+                        `,
+                        format: 'JSONEachRow',
+                        query_params: {
+                            ids: opponents,
+                        },
+                    })).json<{ id: number }>()).map(r => r.id)
+
+                    if (unknownOpponents.length > 0) {
+                        let players_to_insert: PlayerModel[] = []
+                        let i = 0
+
+                        while (i < unknownOpponents.length) {
+                            let chunk = unknownOpponents.slice(i, Math.min(i+10, unknownOpponents.length))
+                            let players = await playersAgent.get(chunk)
+
+                            players.items.forEach(i => {
+                                players_to_insert.push(i)
+                            })
+
+                            i += 10
+                        }
+
+                        await lobby().insert({
+                            table: `players`,
+                            values: players_to_insert,
+                            format: 'JSONEachRow',
+                        })
+
+                        await lobby().exec({ query: `SYSTEM RELOAD DICTIONARY lobby.players_dictionary` });
+                    }
+                }
+
+                if (templates.length > 0) {
+                    let unknownTemplates = (await (await lobby().query({
+                        query: `
+                            SELECT arrayJoin({ids:Array(UInt32)}) AS id
+                            WHERE NOT dictHas('templates_dictionary', id)
+                        `,
+                        format: 'JSONEachRow',
+                        query_params: {
+                            ids: templates,
+                        },
+                    })).json<{ id: number }>()).map(r => r.id)
+
+                    if (unknownTemplates.length > 0) {
+                        let templates_to_insert: TemplateModel[] = []
+                        let i = 0
+
+                        while (i < unknownTemplates.length) {
+                            let chunk = unknownTemplates.slice(i, Math.min(i+10, unknownTemplates.length))
+                            let templates = await templatesAgent.get(chunk)
+
+                            templates.items.forEach(i => {
+                                templates_to_insert.push(i)
+                            })
+
+                            i += 10
+                        }
+
+                        await lobby().insert({
+                            table: `templates`,
+                            values: templates_to_insert,
+                            format: 'JSONEachRow',
+                        })
+
+                        await lobby().exec({ query: `SYSTEM RELOAD DICTIONARY lobby.templates_dictionary` });
+                    }
+                }
+
                 redisPub.publish('live:journalist:games', '')
             }
         } catch (e: any) {
@@ -268,8 +348,6 @@ async function main() {
 
             sendMessage(`${e.message}\n${e.stack}`)
         }
-
-        await sleep(1000)
     }
 }
 

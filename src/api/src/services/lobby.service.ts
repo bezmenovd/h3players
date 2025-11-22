@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { createClient } from '@clickhouse/client';
-import { Online } from '../types/clickhouse/lobby';
+import { Game, GameWithInfo, Online } from '../types/clickhouse/lobby';
 import { createClient as createClientRedis } from 'redis'
 import { timestamp, date } from '../helpers/timestamp'
 
@@ -63,5 +63,23 @@ export class LobbyService {
         })).json<{ value: number }>()
 
         return count[0].value
+    }
+
+    async getLastGames(): Promise<GameWithInfo[]> {
+        let items = await (await this.clickhouse.query({
+            query: `
+                SELECT
+                    *,
+                    dictGet('players_dictionary', 'name', host_id) AS host_name,
+                    dictGet('players_dictionary', 'name', opponent_id) AS opponent_name,
+                    dictGet('templates_dictionary', 'name', template_id) AS template_name
+                FROM games
+                ORDER BY id DESC
+                LIMIT 7
+            `,
+            format: 'JSONEachRow',
+        })).json<GameWithInfo>()
+
+        return items
     }
 }

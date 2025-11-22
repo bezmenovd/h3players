@@ -15,7 +15,7 @@ export const logger = createLogger({
             filename: `${LOG_PATH}/%DATE%.log`,
             datePattern: 'YYYY-MM-DD',
             zippedArchive: true,
-            maxSize: '10m',
+            maxSize: '3m',
             maxFiles: '7d',
             format: format.uncolorize(),
         }),

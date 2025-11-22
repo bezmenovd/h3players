@@ -1,7 +1,5 @@
 import { Client } from './src/client'
 import { createState, State } from './src/state'
-import { bytesToHex, formatBytes, hexDump, intToBytes } from './src/helpers/bytes'
-import fs from 'node:fs'
 import { Room, RoomRemove, User51, User52, UserDisconnect107, UserDisconnect108, UserDisconnect83 } from './src/types/msgin'
 import { logger } from './src/services/logger'
 import { Supervisor } from './src/supervisor'
@@ -11,9 +9,6 @@ import { lobby } from './src/services/clickhouse'
 import { Postman } from './src/postman'
 import { createClient } from 'redis'
 import { debounce } from './src/helpers/functions'
-
-
-process.env.TZ = 'Europe/Moscow'
 
 
 async function main() {
@@ -59,24 +54,6 @@ async function main() {
     const publishVisitors = debounce(async (value: number) => {
         await redisPub.publish('live:spectator:visitors', JSON.stringify({ value }))
     }, 100)
-    
-    let counter = 0
-    
-    client.onMessage(async (data: Buffer) => {
-        counter++
-
-        let code = data.readUInt16LE(0)
-        // let buffer = data.subarray(2)
-
-        if (code > 255) {
-            logger.info(`bad message`)
-            await client.disconnect()
-            await client.connect()
-        }
-        
-        // fs.mkdir(`output/server/${code}`, { recursive: true }, () => {})
-        // fs.writeFile(`output/server/${code}/${counter}`, hexDump(buffer), () => {})
-    })
 
     postman.on(User51, async (msg) => {
         let isNew = false

@@ -14,21 +14,10 @@ export class LobbyController {
     return data
   }
 
-  @Get('/visitors')
-  async visitors() {
-    let visitors = await this.lobbyService.getVisitors()
+  @Get('/lastGames')
+  async lastGames() {
+    let items = await this.lobbyService.getLastGames()
     
-    return {
-      value: visitors
-    }
-  }
-
-  @Get('/games')
-  async games() {
-    let games = await this.lobbyService.getGames()
-    
-    return {
-      value: games
-    }
+    return items
   }
 }

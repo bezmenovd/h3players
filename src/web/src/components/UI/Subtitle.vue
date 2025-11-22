@@ -25,7 +25,7 @@ const props = defineProps<{
     justify-content: space-between;
 }
 .subtitle-text {
-    color: rgb(231, 231, 231);
+    color: #b7b7b7;
     font-size: 22px;
 }
 .subtitle-content {

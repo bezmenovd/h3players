@@ -1,4 +1,5 @@
 import axios from "axios";
+import { GameWithInfo } from "./games";
 
 export type Online = {
     timestamp: number
@@ -13,14 +14,6 @@ export async function chart(after?: number): Promise<Online[]> {
     }).then(r => r.data);
 }
 
-export type Visitors = {
-    value: number
-}
-
-export async function visitors(): Promise<Visitors> {
-    return axios.get(`/api/lobby/visitors`).then(r => r.data);
-}
-
-export async function games(): Promise<Visitors> {
-    return axios.get(`/api/lobby/games`).then(r => r.data);
+export async function getLastGames(): Promise<GameWithInfo[]> {
+    return axios.get(`/api/lobby/lastGames`).then(r => r.data);
 }

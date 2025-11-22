@@ -8,11 +8,14 @@ import { PerformanceService } from './services/performance.service';
 import { FunctionsController } from './controllers/functions.controller';
 import { GamesController } from './controllers/games.controller';
 import { GamesService } from './services/games.service';
+import { CounterController } from './controllers/lobby/counter.controller';
+import { CounterService } from './services/lobby/counter.service';
 
 @Module({
   imports: [],
   controllers: [
     LobbyController,
+    CounterController,
     PlayersController,
     GamesController,
     PerformanceController,
@@ -20,6 +23,7 @@ import { GamesService } from './services/games.service';
   ],
   providers: [
     LobbyService,
+    CounterService,
     PlayersService,
     GamesService,
     PerformanceService,
