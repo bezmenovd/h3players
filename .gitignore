@@ -3,5 +3,7 @@ dist/web/*
 dist/api/*
 dist/workers/spectator/*
 dist/workers/headhunter/*
+dist/workers/journalist/*
+dist/workers/coordinator/*
 yarn-cache
 output

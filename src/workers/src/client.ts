@@ -195,8 +195,10 @@ export class Client {
                 // logger.info(`client(${this.name}) toCopy=${toCopy} remaining=${remaining}`)
     
                 if (this.msgLen === this.msgLenExpected) {
-                    this.statistics.received.messages++
-                    this.listenersOnMessage.forEach(l => l(this.msgBuffer.subarray(2, this.msgLen)))
+                    if (this.msgLen > 2) {
+                        this.statistics.received.messages++
+                        this.listenersOnMessage.forEach(l => l(this.msgBuffer.subarray(2, this.msgLen)))
+                    }
                     this.msgLen = 0
                     this.msgLenExpected = 0
                 }
@@ -221,7 +223,7 @@ export class Client {
     private onClose(): void {
         let wasConnected = this.connected
 
-        this.socket!.removeAllListeners()
+        this.socket?.removeAllListeners()
         this.socket = undefined
 
         if (wasConnected) {

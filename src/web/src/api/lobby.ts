@@ -6,7 +6,11 @@ export type Online = {
 }
 
 export async function chart(after?: number): Promise<Online[]> {
-    return axios.get(`/api/lobby/chart?after=${after}`).then(r => r.data);
+    return axios.get(`/api/lobby/chart`, { 
+        params: { 
+            after 
+        } 
+    }).then(r => r.data);
 }
 
 export type Visitors = {
@@ -15,4 +19,8 @@ export type Visitors = {
 
 export async function visitors(): Promise<Visitors> {
     return axios.get(`/api/lobby/visitors`).then(r => r.data);
+}
+
+export async function games(): Promise<Visitors> {
+    return axios.get(`/api/lobby/games`).then(r => r.data);
 }

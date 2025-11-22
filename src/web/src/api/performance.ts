@@ -10,5 +10,9 @@ export type Statistics = {
 }
 
 export async function chart(after?: number): Promise<Statistics[]> {
-    return axios.get(`/api/performance/chart?after=${after}`).then(r => r.data);
+    return axios.get(`/api/performance/chart`, { 
+        params: { 
+            after 
+        } 
+    }).then(r => r.data);
 }

@@ -41,7 +41,7 @@ export class MultipleSessions extends MsgIn {}
 
 
 @Code(51)
-export class User extends MsgIn {
+export class User51 extends MsgIn {
     public userId: number
     public userIdBuffer: Buffer
     public name: string
@@ -60,11 +60,12 @@ export class User extends MsgIn {
 
 
 @Code(52)
-export class UserCurrent extends MsgIn {
+export class User52 extends MsgIn {
     public userId: number
     public userIdBuffer: Buffer
     public name: string
     public rating: number
+    public flag: number
 
     public constructor(data: Buffer) {
         super(data)
@@ -72,6 +73,7 @@ export class UserCurrent extends MsgIn {
         this.userIdBuffer = this.data.subarray(4, 8)
         this.name = readstr(this.data, 16)
         this.rating = this.data.readUint16LE(8)
+        this.flag = this.data.readUInt8(38)
     }
 }
 
@@ -237,12 +239,16 @@ export enum GamePlayerTown {
 }
 
 export class Game {
-    public data: Buffer
-
     public id: number
     public templateId: number
+
+    public size: number
+    public levels: number
     
     public status: GameStatus
+
+    public restarts: number
+    public endDay: number
 
     public startTimestamp: number
     public endTimestamp: number
@@ -262,28 +268,33 @@ export class Game {
     public opponentNewRating: number
 
     constructor(data: Buffer) {
-        this.data = data
-        this.id = this.data.readUInt32LE(0)
-        this.templateId = this.data.readUInt32LE(4)
+        this.id = data.readUInt32LE(0)
+        this.templateId = data.readUInt32LE(4)
 
-        this.status = this.data.readUInt8(11)
+        this.size = data.readUInt8(9)
+        this.levels = data.readUInt8(10)
+        this.status = data.readUInt8(11)
 
-        this.startTimestamp = this.data.readUInt32LE(19)
-        this.endTimestamp = this.data.readUInt32LE(23)
+        this.restarts = Math.max(data.readUInt8(13) - 1, 0)
 
-        this.hostId = this.data.readUInt32LE(27)
-        this.hostColor = this.data.readUInt8(31)
-        this.hostTown = this.data.readUInt8(38)
-        this.hostHero = this.data.readUInt8(39)
-        this.hostOldRating = this.data.readUInt32LE(65)
-        this.hostNewRating = this.data.readUInt32LE(69)
+        this.endDay = data.readUInt16LE(15)
 
-        this.opponentId = this.data.readUInt32LE(73)
-        this.opponentColor = this.data.readUInt8(77)
-        this.opponentTown = this.data.readUInt8(84)
-        this.opponentHero = this.data.readUInt8(85)
-        this.opponentOldRating = this.data.readUInt32LE(111)
-        this.opponentNewRating = this.data.readUInt32LE(115)
+        this.startTimestamp = data.readUInt32LE(19)
+        this.endTimestamp = data.readUInt32LE(23)
+
+        this.hostId = data.readUInt32LE(27)
+        this.hostColor = data.readUInt8(31)
+        this.hostTown = data.readUInt8(38)
+        this.hostHero = data.readUInt8(39)
+        this.hostOldRating = data.readUInt32LE(65)
+        this.hostNewRating = data.readUInt32LE(69)
+
+        this.opponentId = data.readUInt32LE(73)
+        this.opponentColor = data.readUInt8(77)
+        this.opponentTown = data.readUInt8(84)
+        this.opponentHero = data.readUInt8(85)
+        this.opponentOldRating = data.readUInt32LE(111)
+        this.opponentNewRating = data.readUInt32LE(115)
     }
 
     public type(): GameType {

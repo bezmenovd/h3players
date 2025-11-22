@@ -9,11 +9,6 @@ import Performance from './components/Pages/Performance.vue';
 
 const routes = [
     {
-        path: '/',
-        name: 'lobby',
-        component: Lobby
-    },
-    {
         path: '/performance',
         name: 'performance',
         component: Performance
@@ -29,10 +24,15 @@ const routes = [
         component: PlayersList,
     },
     {
-        path: '/#:id',
+        path: '/@:id',
         name: 'players.detail',
         component: PlayersDetail
-    }
+    },
+    {
+        path: '/',
+        name: 'lobby',
+        component: Lobby
+    },
 ]
 
 const router = createRouter({

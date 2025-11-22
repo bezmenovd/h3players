@@ -2,16 +2,13 @@ import { Client } from './src/client'
 import { createState, State } from './src/state'
 import { bytesToHex, formatBytes, hexDump, intToBytes } from './src/helpers/bytes'
 import fs from 'node:fs'
-import { Room, RoomRemove, RoomUpdate, User, UserDisconnect107, UserDisconnect108, UserDisconnect83 } from './src/types/msgin'
+import { Room, RoomRemove, User51, User52, UserDisconnect107, UserDisconnect108, UserDisconnect83 } from './src/types/msgin'
 import { logger } from './src/services/logger'
 import { Supervisor } from './src/supervisor'
 import { sendMessage } from './src/services/telegram'
-import { timestamp, date, dateMonth, dateYear } from './src/helpers/timestamp'
+import { timestamp, date } from './src/helpers/timestamp'
 import { lobby } from './src/services/clickhouse'
 import { Postman } from './src/postman'
-import config from './config'
-import { HistoryAgent } from './src/agents/history'
-import { NamesAgent } from './src/agents/names'
 import { createClient } from 'redis'
 import { debounce } from './src/helpers/functions'
 
@@ -46,7 +43,7 @@ async function main() {
     })
 
     const getOnline = () => {
-        return state.players.size - state.hiddenPlayers.size + 1
+        return state.players.size - state.hiddenPlayers.size
     }
 
     const publishOnline = debounce(async () => {
@@ -55,6 +52,11 @@ async function main() {
 
     const publishVisitors = debounce(async (value: number) => {
         await redis.publish('live:spectator:visitors', JSON.stringify({ value }))
+    }, 100)
+
+    const publishGames = debounce(async () => {
+        let value = await redis.get(`spectator:daily-games:${date.from(timestamp.now())}`)
+        await redis.publish('live:spectator:games', JSON.stringify({ value: parseInt(value!) }))
     }, 100)
     
     let counter = 0
@@ -75,7 +77,7 @@ async function main() {
         // fs.writeFile(`output/server/${code}/${counter}`, hexDump(buffer), () => {})
     })
 
-    postman.on(User, async (msg) => {
+    postman.on(User51, async (msg) => {
         let isNew = false
 
         if (! state.players.has(msg.userId)) {
@@ -112,8 +114,46 @@ async function main() {
             if (visitorsChanged > 0) {
                 publishVisitors(await redis.sCard(`spectator:daily-visitors:${date.from(timestamp.now())}`))
             }
-            await redis.sAdd(`spectator:monthly-visitors:${dateMonth.from(timestamp.now())}`, String(msg.userId))
-            await redis.sAdd(`spectator:yearly-visitors:${dateYear.from(timestamp.now())}`, String(msg.userId))
+        }
+    })
+
+    postman.on(User52, async (msg) => {
+        let isNew = false
+
+        if (! state.players.has(msg.userId)) {
+            isNew = true
+        }
+
+        let rating = Number(await redis.get(`spectator:rating:${msg.userId}`)) || -1
+
+        if (rating != msg.rating) {
+            redis.rPush('events:spectator:player-rating-changed', JSON.stringify({
+                playerId: msg.userId,
+            }))
+        }
+
+        state.players.set(msg.userId, {
+            id: msg.userId,
+            name: msg.name,
+            rating: msg.rating,
+            flag: msg.flag,
+        })
+
+        if (msg.flag === 4) {
+            state.hiddenPlayers.delete(msg.userId)
+        } else {
+            state.hiddenPlayers.add(msg.userId)
+        }
+
+        await redis.set(`spectator:rating:${msg.userId}`, msg.rating, { EX: 86400*30 })
+
+        if (isNew) {
+            publishOnline()
+
+            let visitorsChanged = await redis.sAdd(`spectator:daily-visitors:${date.from(timestamp.now())}`, String(msg.userId))
+            if (visitorsChanged > 0) {
+                publishVisitors(await redis.sCard(`spectator:daily-visitors:${date.from(timestamp.now())}`))
+            }
         }
     })
 
@@ -122,6 +162,11 @@ async function main() {
             state.players.delete(msg.userId)
             state.hiddenPlayers.delete(msg.userId)
             publishOnline()
+
+            let visitorsChanged = await redis.sAdd(`spectator:daily-visitors:${date.from(timestamp.now())}`, String(msg.userId))
+            if (visitorsChanged > 0) {
+                publishVisitors(await redis.sCard(`spectator:daily-visitors:${date.from(timestamp.now())}`))
+            }
         }
     })
 
@@ -130,6 +175,11 @@ async function main() {
             state.players.delete(msg.userId)
             state.hiddenPlayers.delete(msg.userId)
             publishOnline()
+
+            let visitorsChanged = await redis.sAdd(`spectator:daily-visitors:${date.from(timestamp.now())}`, String(msg.userId))
+            if (visitorsChanged > 0) {
+                publishVisitors(await redis.sCard(`spectator:daily-visitors:${date.from(timestamp.now())}`))
+            }
         }
     })
 
@@ -138,6 +188,11 @@ async function main() {
             state.players.delete(msg.userId)
             state.hiddenPlayers.delete(msg.userId)
             publishOnline()
+
+            let visitorsChanged = await redis.sAdd(`spectator:daily-visitors:${date.from(timestamp.now())}`, String(msg.userId))
+            if (visitorsChanged > 0) {
+                publishVisitors(await redis.sCard(`spectator:daily-visitors:${date.from(timestamp.now())}`))
+            }
         }
     })
 
@@ -157,7 +212,7 @@ async function main() {
         })
     })
 
-    postman.on(RoomRemove, (msg) => {
+    postman.on(RoomRemove, async (msg) => {
         if (state.rooms.has(msg.hostId)) {
             let room = state.rooms.get(msg.hostId)!
 
@@ -167,6 +222,9 @@ async function main() {
             }))
 
             state.rooms.delete(msg.hostId)
+
+            await redis.incr(`spectator:daily-games:${date.from(timestamp.now())}`)
+            publishGames()
         }
     })
     
@@ -185,21 +243,6 @@ async function main() {
             format: 'JSONEachRow',
         })
     }, 60_000)
-
-    // let historyAgent = new HistoryAgent(postman)
-
-    // let namesAgent = new NamesAgent(postman)
-
-    // setTimeout(async () => {
-    //     let start = Date.now()
-    //     // let history = await historyAgent.get(1095408) // Temnotta
-    //     let history = await historyAgent.get(1019110)
-    //     let diff = Date.now() - start
-
-    //     history.games.forEach(game => {
-    //         logger.info(`game #${game.id}: ${game.status}`)
-    //     })
-    // }, 2000)
 }
 
 main()

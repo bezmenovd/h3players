@@ -32,7 +32,7 @@
                         <div class="metric-name">онлайн</div>
                     </div>
                     <div class="metric" hint="Число игр, завершённых сегодня">
-                        <div class="metric-value">0</div>
+                        <div class="metric-value">{{ gamesFormatted }}</div>
                         <div class="metric-name">игр</div>
                     </div>
                     <div class="metric" hint="Число пользователей, посетивших лобби сегодня">
@@ -50,7 +50,7 @@ import { ref, onMounted, computed, reactive, onUnmounted, onBeforeUnmount } from
 import Panel from './../UI/Panel.vue'
 import Light from './../UI/Light.vue'
 import Title from './../UI/Title.vue'
-import { chart, visitors } from '../../api/lobby'
+import { chart, visitors, games } from '../../api/lobby'
 import Loader from '../UI/Loader.vue'
 import LineChart from '../UI/Charts/LineChart.vue'
 import { timestamp, datetime } from '../../helpers/timestamp'
@@ -101,6 +101,12 @@ const visitorsFormatted = computed<string>(() => {
     return visitorsRef.value ? Intl.NumberFormat('ru-RU').format(visitorsRef.value!) : '-'
 })
 
+const gamesRef = ref(0)
+
+const gamesFormatted = computed<string>(() => {
+    return gamesRef.value ? Intl.NumberFormat('ru-RU').format(gamesRef.value!) : '-'
+})
+
 const chartSize = ref(0)
 
 let updateInterval
@@ -146,6 +152,10 @@ onMounted(() => {
         visitorsRef.value = r.value
     })
 
+    games().then(r => {
+        gamesRef.value = r.value
+    })
+
     updateInterval = setInterval(() => {
         chart(timestamp.now() - 60).then(r => {
             onlineChart.data = [...onlineChart.data.slice(1), r[0] ? [r[0].online] : undefined]
@@ -159,6 +169,10 @@ onMounted(() => {
 
     onBeforeUnmount(on('visitors-changed', (msg) => {
         visitorsRef.value = msg.value
+    }))
+
+    onBeforeUnmount(on('games-changed', (msg) => {
+        gamesRef.value = msg.value
     }))
 })
 

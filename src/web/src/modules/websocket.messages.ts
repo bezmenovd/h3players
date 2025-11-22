@@ -10,6 +10,12 @@ interface VisitorsChanged {
     value: number
 }
 
+interface GamesChanged {
+    route: 'games-changed'
+    value: number
+}
+
 
 export type MsgAvailable = OnlineChanged 
     | VisitorsChanged
+    | GamesChanged

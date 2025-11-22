@@ -105,7 +105,7 @@ async function main() {
                 logger.info('error caused by disconnect')
                 continue
             }
-            if (e !== undefined) {
+            if (e.message !== 'timeout') {
                 throw e
             }
 

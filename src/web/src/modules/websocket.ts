@@ -1,18 +1,49 @@
 import { MsgAvailable } from "./websocket.messages";
 
 
-const websocket = new WebSocket(`ws://${location.host}:8000`)
+let websocket: WebSocket|null = null
 
-const listeners: Map<string, ((msg: any) => void)[]> = new Map()
+let connect = () => {
+    websocket = new WebSocket(`ws://${location.host}:8000`)
 
-websocket.onmessage = (e) => {
-    const msg = JSON.parse(e.data as string) as { route: string }
-    const route = msg.route
-
-    if (listeners.has(route)) {
-        listeners.get(route)!.forEach(l => l(msg))
+    websocket.onopen = () => {
+        for (const route of listeners.keys()) {
+            websocket!.send(JSON.stringify({ type: 'subscribe', route }))
+        }
+        for (const data of queue) {
+            websocket!.send(data)
+        }
+    
+        queue = []
+    }
+    
+    websocket.onmessage = (e) => {
+        const msg = JSON.parse(e.data as string) as { route: string }
+        const route = msg.route
+    
+        if (listeners.has(route)) {
+            listeners.get(route)!.forEach(l => l(msg))
+        }
+    }
+    
+    websocket.onerror = () => {
+        websocket!.close()
+    }
+    
+    websocket.onclose = () => {
+        let reconnectionInterval = setInterval(() => {
+            try {
+                connect()
+                clearInterval(reconnectionInterval)
+            } catch (e) {}
+        }, 5000)
     }
 }
+
+connect()
+
+let listeners: Map<string, ((msg: any) => void)[]> = new Map()
+let queue: (string | ArrayBuffer)[] = []
 
 export function on<R extends MsgAvailable['route']>(
     route: R,
@@ -22,10 +53,10 @@ export function on<R extends MsgAvailable['route']>(
         listeners.set(route, [])
     }
     if (listeners.get(route)!.length === 0) {
-        if (websocket.readyState === WebSocket.OPEN) {
-            websocket.send(JSON.stringify({ type: 'subscribe', route: route }))
+        if (websocket?.readyState === WebSocket.OPEN) {
+            websocket!.send(JSON.stringify({ type: 'subscribe', route: route }))
         } else {
-            websocket.addEventListener('open', () => websocket.send(JSON.stringify({ type: 'subscribe', route: route })), { once: true })
+            queue.push(JSON.stringify({ type: 'unsubscribe', route: route }))
         }
     }
 
@@ -37,10 +68,10 @@ export function on<R extends MsgAvailable['route']>(
             const idx = arr.indexOf(listener)
             if (idx > -1) arr.splice(idx, 1)
             if (arr.length === 0) {
-                if (websocket.readyState === WebSocket.OPEN) {
-                    websocket.send(JSON.stringify({ type: 'unsubscribe', route: route }))
+                if (websocket?.readyState === WebSocket.OPEN) {
+                    websocket!.send(JSON.stringify({ type: 'unsubscribe', route: route }))
                 } else {
-                    websocket.addEventListener('open', () => websocket.send(JSON.stringify({ type: 'unsubscribe', route: route })), { once: true })
+                    queue.push(JSON.stringify({ type: 'unsubscribe', route: route }))
                 }
             }
         }

@@ -1,13 +1,4 @@
-
-export type Online = {
-    timestamp: number
-    online: number
-}
-
-export type Player = {
-    id: number
-    name: string
-}
+import axios from "axios";
 
 export type GameV = {
     player_id: number
@@ -34,4 +25,14 @@ export type GameV = {
     opponent_hero: number
     opponent_old_rating: number
     opponent_new_rating: number
+}
+
+export async function getList(playerId: number, limit?: number, offset?: number): Promise<GameV[]> {
+    return axios.get(`/api/games`, {
+        params: {
+            playerId,
+            limit,
+            offset
+        }
+    }).then(r => r.data);
 }

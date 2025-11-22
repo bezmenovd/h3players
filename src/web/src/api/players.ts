@@ -6,7 +6,12 @@ export type Player = {
 }
 
 export async function getList(limit: number, offset: number): Promise<Player[]> {
-    return axios.get(`/api/players?limit=${limit}&offset=${offset}`).then(r => r.data);
+    return axios.get(`/api/players`, {
+        params: {
+            limit,
+            offset,
+        }
+    }).then(r => r.data);
 }
 
 export async function search(query: string): Promise<Player[]> {

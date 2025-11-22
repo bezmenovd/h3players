@@ -35,8 +35,8 @@ export function useSearchHistory() {
         save();
     }
 
-    function remove(player: Player) {
-        _items.value.delete(player.id);
+    function remove(id: number) {
+        _items.value.delete(id);
         save();
     }
 

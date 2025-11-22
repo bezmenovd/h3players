@@ -22,4 +22,13 @@ export class LobbyController {
       value: visitors
     }
   }
+
+  @Get('/games')
+  async games() {
+    let games = await this.lobbyService.getGames()
+    
+    return {
+      value: games
+    }
+  }
 }

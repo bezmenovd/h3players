@@ -30,12 +30,12 @@ export class LobbyService {
     async getChartData(after: number): Promise<Online[]> {
         let result = await (await this.clickhouse.query({
             query: `
-            select 
-                toUnixTimestamp(toStartOfMinute(datetime)) as timestamp,
-                online 
-            from online 
-            where datetime > {after:UInt32} 
-            order by datetime asc`,
+                select 
+                    toUnixTimestamp(toStartOfMinute(datetime)) as timestamp,
+                    online 
+                from online 
+                where datetime > {after:UInt32} 
+                order by datetime asc`,
             query_params: {
                 after,
             },
@@ -47,5 +47,11 @@ export class LobbyService {
 
     async getVisitors(): Promise<number> {
         return this.redis.sCard(`spectator:daily-visitors:${date.from(timestamp.now())}`)
+    }
+
+    async getGames(): Promise<number> {
+        let value = await this.redis.get(`spectator:daily-games:${date.from(timestamp.now())}`)
+
+        return parseInt(String(value))
     }
 }

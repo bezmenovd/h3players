@@ -83,6 +83,14 @@ async function main() {
             client.send(JSON.stringify({ route: 'visitors-changed', value: value }))
         })
     })
+
+    redisSub.subscribe('live:spectator:games', (data) => {
+        const { value } = JSON.parse(data) as { value: number }
+
+        subscribers.get('games-changed')?.forEach(client => {
+            client.send(JSON.stringify({ route: 'games-changed', value: value }))
+        })
+    })
 }
 
 main()

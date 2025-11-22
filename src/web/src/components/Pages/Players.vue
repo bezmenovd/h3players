@@ -14,6 +14,7 @@
                     <div class="players-search-history-items">
                         <div class="players-search-history-item" v-for="item in searchHistory.items.value">
                             <router-link :to="{ name: 'players.detail', params: { id: item.id }}">{{ item.name }}</router-link>
+                            <div class="players-search-history-item-removebtn" @click="searchHistory.remove(item.id)">×</div>
                         </div>
                     </div>
                 </div>
@@ -96,6 +97,28 @@ onMounted(() => {
 }
 .players-search-history {
 }
+.players-search-history-item {
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+.players-search-history-item:hover .players-search-history-item-removebtn {
+    opacity: .7;
+}
+.players-search-history-item-removebtn {
+    font-size: 26px;
+    height: 20px;
+    line-height: 21px;
+    font-weight: 500;
+    width: 20px;
+    text-align: center;
+    opacity: 0;
+    cursor: pointer;
+}
+.players-search-history-item-removebtn:hover {
+    opacity: 1;
+}
 .players-search-history-title {
     padding: 10px;
     color: gray;
@@ -104,7 +127,8 @@ onMounted(() => {
 .players-search-history-items {
     display: grid;
     /* grid-template-columns: 1fr 1fr; */
-    gap: 15px;
+    row-gap: 5px;
+    column-gap: 30%;
     padding: 15px 10px;
     grid-template-columns: 1fr 1fr;
 }
