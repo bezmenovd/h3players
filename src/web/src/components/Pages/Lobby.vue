@@ -68,7 +68,7 @@ import { chart, getLastGames } from '../../api/lobby'
 import { visitors, games } from '../../api/lobby/counter'
 import Loader from '../UI/Loader.vue'
 import LineChart from '../UI/Charts/LineChart.vue'
-import Games from '../UI/Games.vue'
+import Games from '../UI/Lobby/Games.vue'
 import { timestamp, datetime } from '../../helpers/timestamp'
 import { on } from '../../modules/websocket'
 import { GameWithInfo } from '../../api/games'
@@ -199,6 +199,10 @@ onMounted(() => {
 
     onBeforeUnmount(on('games-changed', (msg) => {
         gamesRef.value = msg.value
+
+        getLastGames().then(items => {
+            lastGames.items = items
+        })
     }))
 
     getLastGames().then(items => {

@@ -74,8 +74,8 @@ export class LobbyService {
                     dictGet('players_dictionary', 'name', opponent_id) AS opponent_name,
                     dictGet('templates_dictionary', 'name', template_id) AS template_name
                 FROM games
-                ORDER BY id DESC
-                LIMIT 7
+                ORDER BY end_timestamp DESC, id DESC
+                LIMIT 8
             `,
             format: 'JSONEachRow',
         })).json<GameWithInfo>()

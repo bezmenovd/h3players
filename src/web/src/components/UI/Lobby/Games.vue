@@ -1,0 +1,184 @@
+<template>
+    <div class="games">
+        <div class="game" v-for="item in props.items" :data-status="item.status">
+            <div class="game-ago">{{ ago(item) }}</div>
+            <div class="game-players">
+                <div class="game-host">
+                    <router-link :to="{ name: 'players.detail', params: { id: item.host_id }}">{{ item.host_name || '?' }}</router-link>
+                </div>
+                <div class="game-vs">
+                    VS
+                </div>
+                <div class="game-opponent">
+                    <router-link :to="{ name: 'players.detail', params: { id: item.opponent_id }}">{{ item.opponent_name || '?' }}</router-link>
+                </div>
+            </div>
+            <div :class="`game-template ${item.game_type === 0 ? 'scenario' : ''}`">{{ template(item) }}</div>
+        </div>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { GameWithInfo } from '../../../api/games';
+import { timestamp } from '../../../helpers/timestamp';
+
+const props = defineProps<{
+    items: GameWithInfo[]
+}>()
+
+const ago = (game: GameWithInfo): string => {
+    const now = timestamp.now()
+    if (now - game.end_timestamp < 60) {
+        return `только что`
+    }
+    if (now - game.end_timestamp < 3600) {
+        return `${Math.floor((now - game.end_timestamp) / 60)} мин назад`
+    }
+    if (now - game.end_timestamp < 86400) {
+        return `${Math.floor((now - game.end_timestamp) / 3600)} час назад`
+    }
+        return `${Math.floor((now - game.end_timestamp) / 86400)} день назад`
+}
+
+const duration = (game: GameWithInfo): string => {
+    return `${Math.round((game.end_timestamp - game.start_timestamp) / 60)} мин`
+}
+
+const template = (game: GameWithInfo): string => {
+    if (game.game_type === 0) {
+        return `сценарий`
+    }
+    return game.template_name || '?'
+}
+
+</script>
+
+<style scoped>
+.game {
+    height: 50px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 3fr 8fr 6fr;
+    gap: 10px;
+    align-items: center;
+    border-bottom: 1px solid #272c3a;
+    background: #2e3245;
+}
+.game:hover {
+    background: #363a4c;
+}
+.game-players {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr;
+    align-items: center;
+    height: 100%;
+}
+.game-ago {
+    font-size: 12px;
+    padding: 0 15px;
+}
+.game-duration {
+    text-align: right;
+}
+.game-host {
+    height: 100%;
+    padding: 0 10px;
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+.game-vs {
+    text-align: center;
+    font-size: 12px;
+    color: #878787;
+}
+.game-opponent {
+    height: 100%;
+    padding: 0 10px;
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+.game-template {
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.game-template.scenario {
+    color: gray;
+}
+.game[data-status="2"] .game-host::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(-90deg, #5bc7574d, #fff0 76%);
+    opacity: .7;
+    pointer-events: none;
+}
+.game[data-status="4"] .game-host::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(-90deg, #578ec74d, #fff0 76%);
+    opacity: .7;
+    pointer-events: none;
+}
+.game[data-status="8"] .game-host::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(-90deg, #c757574d, #fff0 76%);
+    opacity: .7;
+    pointer-events: none;
+}
+.game[data-status="2"] .game-opponent::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #c757574d, #fff0 76%);
+    opacity: .7;
+    pointer-events: none;
+}
+.game[data-status="4"] .game-opponent::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #578ec74d, #fff0 76%);
+    opacity: .7;
+    pointer-events: none;
+}
+.game[data-status="8"] .game-opponent::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #5bc7574d, #fff0 76%);
+    opacity: .7;
+    pointer-events: none;
+}
+</style>

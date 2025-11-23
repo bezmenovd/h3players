@@ -63,12 +63,14 @@ input:disabled {
 }
 
 a {
-    padding-top: 2px;
+    max-width: 100%;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
     text-decoration: none !important;
-    border-bottom: 2px solid rgba(255, 255, 255, 0);
 }
 a:hover {
-    border-bottom: 2px solid rgba(255, 255, 255, 0.726);
+    box-shadow: 0 -2px 0 0 rgba(255, 255, 255, 0.726) inset;
 }
 
 ::selection {
