@@ -1,6 +1,9 @@
 <template>
     <div class="subtitle">
-        <div class="subtitle-text" v-if="props.text">{{ props.text }}</div>
+        <div class="subtitle-text" v-if="props.text">
+            {{ props.text }}
+            <slot name="in-text"/>
+        </div>
         <div class="subtitle-content">
             <slot />
         </div>
@@ -23,10 +26,13 @@ const props = defineProps<{
     height: 50px;
     padding-bottom: 20px;
     justify-content: space-between;
+    position: relative;
 }
 .subtitle-text {
     color: #b7b7b7;
     font-size: 22px;
+    align-items: center;
+    display: flex;
 }
 .subtitle-content {
     height: 100%;

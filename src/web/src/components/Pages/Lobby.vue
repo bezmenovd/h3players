@@ -45,14 +45,66 @@
         </div>
         <div id="live">
             <div id="last-games">
-                <Subtitle text="Последние игры" />
+                <Subtitle text="Последние игры">
+                    <template #in-text>
+                        <Questionmark hint="Только завершенные рейтинговые игры"/>
+                    </template>
+                </Subtitle>
                 <Panel id="last-games-panel">
-                    <Games :items="lastGames.items" />
+                    <Loader v-if="loading.lastGames" />
+                    <Games :items="lastGames.items" v-else/>
                 </Panel>
             </div>
-            <div id="top">
-                <Subtitle text="Топ за сегодня" />
-                <Panel id="top-panel"></Panel>
+            <div id="daily-top">
+                <Subtitle text="Топ за день" />
+                <Panel id="daily-top-panel">
+                    <div class="rating">
+                        <div class="rating-title" hint="Все завершенные рейтинговые игры">
+                            Рейтинг
+                        </div>
+                        <div class="rating-items">
+                            <div class="rating-item" v-for="(item, key) in dailyTop.byRating">
+                                <div class="rating-place">{{ key+1 }}</div>
+                                <div class="rating-user">
+                                    <router-link :to="{ name: 'players.detail', params: { id: item.id }}">{{ item.name || '?' }}</router-link>
+                                </div>
+                                <div class="rating-value">
+                                    <Rating :value="item.rating_diff" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rating">
+                        <div class="rating-title" hint="Все завершенные рейтинговые игры">
+                            Антирейтинг
+                        </div>
+                        <div class="rating-items">
+                            <div class="rating-item" v-for="(item, key) in dailyTop.byRatingAnti">
+                                <div class="rating-place">{{ key+1 }}</div>
+                                <div class="rating-user">
+                                    <router-link :to="{ name: 'players.detail', params: { id: item.id }}">{{ item.name || '?' }}</router-link>
+                                </div>
+                                <div class="rating-value">
+                                    <Rating :value="item.rating_diff" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rating">
+                        <div class="rating-title" hint="Только завершенные рейтинговые игры на случайных картах">
+                            Игры
+                        </div>
+                        <div class="rating-items">
+                            <div class="rating-item" v-for="(item, key) in dailyTop.byGamesCount">
+                                <div class="rating-place">{{ key+1 }}</div>
+                                <div class="rating-user">
+                                    <router-link :to="{ name: 'players.detail', params: { id: item.id }}">{{ item.name || '?' }}</router-link>
+                                </div>
+                                <div class="rating-value" style="font-weight: bold">{{ item.games_count }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </Panel>
             </div>
         </div>
     </div>
@@ -64,11 +116,13 @@ import Panel from './../UI/Panel.vue'
 import Light from './../UI/Light.vue'
 import Title from './../UI/Title.vue'
 import Subtitle from './../UI/Subtitle.vue'
-import { chart, getLastGames } from '../../api/lobby'
+import Rating from './../UI/Rating.vue'
+import { chart, getLastGames, getDailyTop, DailyTop } from '../../api/lobby'
 import { visitors, games } from '../../api/lobby/counter'
 import Loader from '../UI/Loader.vue'
 import LineChart from '../UI/Charts/LineChart.vue'
 import Games from '../UI/Lobby/Games.vue'
+import Questionmark from '../UI/Questionmark.vue'
 import { timestamp, datetime } from '../../helpers/timestamp'
 import { on } from '../../modules/websocket'
 import { GameWithInfo } from '../../api/games'
@@ -90,7 +144,8 @@ const onlineChart = reactive<{
 
 const loading = reactive({
     online: false,
-    games: true,
+    lastGames: true,
+    dailyTop: true,
 })
 
 const connected = computed<boolean>(() => {
@@ -133,6 +188,12 @@ const lastGames = reactive<{
     items: GameWithInfo[]
 }>({
     items: [],
+})
+
+const dailyTop = reactive<DailyTop>({
+    byRating: [],
+    byRatingAnti: [],
+    byGamesCount: [],
 })
 
 let updateInterval
@@ -203,10 +264,24 @@ onMounted(() => {
         getLastGames().then(items => {
             lastGames.items = items
         })
+
+        getDailyTop().then(res => {
+            dailyTop.byRating = res.byRating
+            dailyTop.byRatingAnti = res.byRatingAnti
+            dailyTop.byGamesCount = res.byGamesCount
+        })
     }))
 
     getLastGames().then(items => {
         lastGames.items = items
+        loading.lastGames = false
+    })
+
+    getDailyTop().then(res => {
+        loading.dailyTop = false
+        dailyTop.byRating = res.byRating
+        dailyTop.byRatingAnti = res.byRatingAnti
+        dailyTop.byGamesCount = res.byGamesCount
     })
 })
 
@@ -278,6 +353,55 @@ onUnmounted(() => {
 
 #last-games-panel {
     height: 400px;
+}
+
+#daily-top-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 5px;
+    background: #272c3a;
+}
+.rating-title {
+    height: 50px;
+    justify-content: center;
+    display: flex;
+    align-items: center;    
+    font-size: 16px;
+    border-bottom: 1px solid #272c3a;
+    background: #2e3245;
+    color: #b7b7b7;
+    position: relative;
+}
+.rating-item {
+    height: 50px;
+    display: grid;
+    grid-template-columns: 16px 1fr 30px;
+    padding: 0 8px;
+    border-bottom: 1px solid #272c3a;
+    background: #2e3245;
+}
+.rating-item:hover {
+    background: #363a4c;
+}
+.rating-item div {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.rating-place {
+    font-size: 14px;
+    padding-left: 4px;
+    color: #b7b7b7;
+}
+.rating-user {
+    padding: 0 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.rating-value {
+    padding-right: 6px;
 }
 
 @media (max-width: 1600px) {

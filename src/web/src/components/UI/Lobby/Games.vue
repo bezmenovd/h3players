@@ -40,10 +40,6 @@ const ago = (game: GameWithInfo): string => {
         return `${Math.floor((now - game.end_timestamp) / 86400)} день назад`
 }
 
-const duration = (game: GameWithInfo): string => {
-    return `${Math.round((game.end_timestamp - game.start_timestamp) / 60)} мин`
-}
-
 const template = (game: GameWithInfo): string => {
     if (game.game_type === 0) {
         return `сценарий`
@@ -58,11 +54,18 @@ const template = (game: GameWithInfo): string => {
     height: 50px;
     width: 100%;
     display: grid;
-    grid-template-columns: 3fr 8fr 6fr;
+    grid-template-columns: 5fr 16fr 12fr;
     gap: 10px;
     align-items: center;
     border-bottom: 1px solid #272c3a;
     background: #2e3245;
+}
+
+@media (max-width: 1600px) {
+    .game {
+        grid-template-columns: 4fr 16fr 8fr;
+    }
+
 }
 .game:hover {
     background: #363a4c;
@@ -90,6 +93,7 @@ const template = (game: GameWithInfo): string => {
     display: flex;
     align-items: center;
     justify-content: right;
+    white-space: nowrap;
 }
 .game-vs {
     text-align: center;
@@ -106,11 +110,14 @@ const template = (game: GameWithInfo): string => {
     display: flex;
     align-items: center;
     justify-content: left;
+    white-space: nowrap;
 }
 .game-template {
     font-size: 13px;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding: 0 10px 0 0;
+    white-space: nowrap;
 }
 .game-template.scenario {
     color: gray;

@@ -20,4 +20,19 @@ export class LobbyController {
     
     return items
   }
+
+  @Get('/dailyTop')
+  async dailyTop(@Query('limit') limit: number) {
+    let l = Math.min(Number(limit) || 10, 128)
+
+    let byRating = await this.lobbyService.getDailyTopByRating(l)
+    let byRatingAnti = await this.lobbyService.getDailyTopByRating(l, true)
+    let byGamesCount = await this.lobbyService.getDailyTopByGamesCount(l)
+    
+    return {
+      byRating,
+      byRatingAnti,
+      byGamesCount,
+    }
+  }
 }

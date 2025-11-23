@@ -18,15 +18,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 import config from './config';
 import MainLoader from './components/UI/MainLoader.vue';
 import Navigation from './components/Navigation.vue';
 import Return from './components/Return.vue';
 import { preload } from './modules/preload';
 
-
-const logoOnClick = () => useRouter().push('/')
 
 const loading = ref({
     is: true,
@@ -68,6 +65,7 @@ a {
     overflow: hidden;
     text-overflow: ellipsis;
     text-decoration: none !important;
+    white-space: nowrap;
 }
 a:hover {
     box-shadow: 0 -2px 0 0 rgba(255, 255, 255, 0.726) inset;
@@ -125,7 +123,7 @@ a:hover {
     content: attr(hint);
     position: absolute;
     bottom: 0;
-    right: 0;
+    right: -40px;
     background: #2e3245;
     z-index: 1009;
     background-color: #2e3245;

@@ -17,3 +17,26 @@ export async function chart(after?: number): Promise<Online[]> {
 export async function getLastGames(): Promise<GameWithInfo[]> {
     return axios.get(`/api/lobby/lastGames`).then(r => r.data);
 }
+
+
+export type DailyTopPlayerWithRatingDiff = {
+    id: number
+    name: string
+    rating_diff: number
+}
+
+export type DailyTopPlayerWithGamesCount = {
+    id: number
+    name: string
+    games_count: number
+}
+
+export type DailyTop = {
+    byRating: DailyTopPlayerWithRatingDiff[],
+    byRatingAnti: DailyTopPlayerWithRatingDiff[],
+    byGamesCount: DailyTopPlayerWithGamesCount[],
+}
+
+export async function getDailyTop(): Promise<DailyTop> {
+    return axios.get(`/api/lobby/dailyTop?limit=7`).then(r => r.data);
+}

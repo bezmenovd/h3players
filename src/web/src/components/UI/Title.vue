@@ -1,6 +1,9 @@
 <template>
     <div class="title">
-        <div class="title-text" v-if="props.text">{{ props.text }}</div>
+        <div class="title-text" v-if="props.text">
+            {{ props.text }}
+            <slot name="in-text"/>
+        </div>
         <div class="title-content">
             <slot />
         </div>
@@ -27,6 +30,8 @@ const props = defineProps<{
 .title-text {
     color: white;
     font-size: 24px;
+    align-items: center;
+    display: flex;
 }
 .title-content {
     height: 100%;
