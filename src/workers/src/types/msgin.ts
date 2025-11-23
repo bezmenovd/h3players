@@ -202,9 +202,9 @@ export class RoomRemove extends MsgIn {
 
 
 export enum GameStatus {
-    HostWon = 2,
+    OpponentWon = 2,
     Draw = 4,
-    OpponentWon = 8,
+    HostWon = 8,
     NotFinished = 1,
 }
 

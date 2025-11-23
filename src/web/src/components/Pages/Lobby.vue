@@ -56,7 +56,11 @@
                 </Panel>
             </div>
             <div id="daily-top">
-                <Subtitle text="Топ за день" />
+                <Subtitle text="Топ за день">
+                    <template #in-text>
+                        <Questionmark hint="По UTC"/>
+                    </template>
+                </Subtitle>
                 <Panel id="daily-top-panel">
                     <div class="rating">
                         <div class="rating-title" hint="Все завершенные рейтинговые игры">
@@ -76,7 +80,7 @@
                     </div>
                     <div class="rating">
                         <div class="rating-title" hint="Все завершенные рейтинговые игры">
-                            Антирейтинг
+                            Рейтинг -
                         </div>
                         <div class="rating-items">
                             <div class="rating-item" v-for="(item, key) in dailyTop.byRatingAnti">

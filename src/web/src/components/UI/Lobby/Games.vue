@@ -129,7 +129,7 @@ const template = (game: GameWithInfo): string => {
     top: 0;
     height: 100%;
     width: 100%;
-    background: linear-gradient(-90deg, #5bc7574d, #fff0 76%);
+    background: linear-gradient(-90deg, #c757574d, #fff0 76%);
     opacity: .7;
     pointer-events: none;
 }
@@ -151,7 +151,7 @@ const template = (game: GameWithInfo): string => {
     top: 0;
     height: 100%;
     width: 100%;
-    background: linear-gradient(-90deg, #c757574d, #fff0 76%);
+    background: linear-gradient(-90deg, #5bc7574d, #fff0 76%);
     opacity: .7;
     pointer-events: none;
 }
@@ -162,7 +162,7 @@ const template = (game: GameWithInfo): string => {
     top: 0;
     height: 100%;
     width: 100%;
-    background: linear-gradient(90deg, #c757574d, #fff0 76%);
+    background: linear-gradient(90deg, #5bc7574d, #fff0 76%);
     opacity: .7;
     pointer-events: none;
 }
@@ -184,7 +184,7 @@ const template = (game: GameWithInfo): string => {
     top: 0;
     height: 100%;
     width: 100%;
-    background: linear-gradient(90deg, #5bc7574d, #fff0 76%);
+    background: linear-gradient(90deg, #c757574d, #fff0 76%);
     opacity: .7;
     pointer-events: none;
 }
