@@ -1,7 +1,7 @@
 <template>
     <div id="lobby">
         <Title text="Суммарная нагрузка"></Title>
-        <Loader v-if="loading" />
+        <Loader v-if="loading" :solid="false"/>
         <template v-else>
             <Panel id="performance">
                 <div id="performance-chart">

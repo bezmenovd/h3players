@@ -1,7 +1,7 @@
 <template>
     <Title :text="info.name"></Title>
     <Panel id="players-detail">
-        <Loader v-if="loading"/>
+        <Loader v-if="loading" :solid="false"/>
         <template v-else>
 
         </template>

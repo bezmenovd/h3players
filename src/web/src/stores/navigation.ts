@@ -9,12 +9,10 @@ export const useNavigationStore = defineStore('navigation', () => {
   
   function push(route: { name: string, path: string, params?: object }) {
     routes.value.push(route)
-    console.log('after push', JSON.parse(JSON.stringify(routes.value)).map(i => i.name))
   }
 
   function pop() {
     routes.value.pop()
-    console.log('after pop', JSON.parse(JSON.stringify(routes.value)).map(i => i.name))
   }
 
   function clear() {

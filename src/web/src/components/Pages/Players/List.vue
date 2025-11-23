@@ -3,6 +3,7 @@
         <Title text="Все игроки"></Title>
         <Panel id="players-list-panel">
             <Table :rows="playersTable.rows" :columns="playersTable.columns" :loading="loading"/>
+            <Footer></Footer>
         </Panel>
     </div>
 </template>
@@ -12,6 +13,7 @@ import { onMounted, onUnmounted, reactive, ref } from 'vue'
 import Panel from '../../UI/Panel.vue'
 import Table from '../../UI/Table.vue'
 import Title from '../../UI/Title.vue'
+import Footer from '../../UI/Table/Footer.vue';
 import { getList } from '../../../api/players'
 import { Player } from '../../../api/players'
 import { Column } from '../../UI/table'
@@ -36,13 +38,14 @@ const playersTable = reactive<{
     ]
 })
 
+const pageSize = ref(0)
 const loading = ref(true)
 
 onMounted(async () => {
-    const pageSize = Math.min(Math.floor((getContentSize().height - 150) / 50), 20)
+    pageSize.value = Math.min(Math.floor((getContentSize().height - 150) / 50), 20)
 
-    getList(pageSize, 0).then(list => {
-        playersTable.rows = list
+    getList(pageSize.value, 0).then(r => {
+        playersTable.rows = r.items
         loading.value = false
     })
 })

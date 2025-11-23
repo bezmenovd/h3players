@@ -37,7 +37,7 @@ export class HistoryAgent {
             this.errorTimeout = setTimeout(() => {
                 this.cleanup()
                 reject(new Error('timeout'))
-            }, 15000)
+            }, 30000)
 
             this.resolve = (msg: History) => {
                 this.cleanup()

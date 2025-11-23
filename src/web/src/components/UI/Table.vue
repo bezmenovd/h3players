@@ -11,9 +11,7 @@
                     </th>
                 </thead>
             </table>
-            <div class="table-loading-block">
-                <Loader />
-            </div>
+            <Loader :solid="true"/>
         </template>
         <template v-else>
             <table class="table">

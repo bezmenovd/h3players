@@ -1,42 +1,26 @@
 <template>
-    <div class="rating" :data-color="color">{{ value }}</div>
+    <div class="rating">{{ value }}</div>
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps } from 'vue';
+import { defineProps } from 'vue';
 
 const props = defineProps<{
     value: number,
 }>()
 
-const color = computed(() => {
-    if (props.value > 0) {
-        return `positive`
-    } else if (props.value < 0) {
-        return `negative`
-    } else {
-        return `zero`
-    }
-})
-
-const value = computed(() => {
-    if (props.value >= 0) {
-        return `+${props.value}`
-    } else {
-        return `${props.value}`
-    }
-})
-
 </script>
 
-<style>
-.rating[data-color="positive"] {
-    color: #5bc757;
-}
-.rating[data-color="negative"] {
-    color: #c75757;
-}
-.rating[data-color="zero"] {
-    color: #578ec7;
+<style scoped>
+.rating {
+    display: flex;
+    align-items: center;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    font-size: 14px;
+    gap: 5px;
+    padding: 3px 5px;
+    background: #0000004f;
+    font-weight: 500;
 }
 </style>

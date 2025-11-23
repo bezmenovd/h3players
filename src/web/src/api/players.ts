@@ -1,11 +1,12 @@
 import axios from "axios";
+import { Paginated } from "./general";
 
 export type Player = {
     id: number
     name: string
 }
 
-export async function getList(limit: number, offset: number): Promise<Player[]> {
+export async function getList(limit: number, offset: number): Promise<Paginated<Player>> {
     return axios.get(`/api/players`, {
         params: {
             limit,

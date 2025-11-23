@@ -3,7 +3,7 @@ import { createClient } from '@clickhouse/client';
 import { Game, GameWithInfo, Online } from '../types/clickhouse/lobby';
 import { createClient as createClientRedis } from 'redis'
 import { timestamp, date } from '../helpers/timestamp'
-import { DailyTopPlayerWithGamesCount, DailyTopPlayerWithRatingDiff } from '../types/api';
+import { DailyTopPlayerWithGamesCount, DailyTopPlayerWithRatingDiff, Paginated } from '../types/api';
 
 @Injectable()
 export class LobbyService {
@@ -66,7 +66,7 @@ export class LobbyService {
         return count[0].value
     }
 
-    async getDailyGames(limit: number, offset: number, date?: string): Promise<GameWithInfo[]> {
+    async getDailyGames(limit: number, offset: number, date?: string): Promise<Paginated<GameWithInfo>> {
         let items = await (await this.clickhouse.query({
             query: `
                 SELECT
@@ -81,7 +81,20 @@ export class LobbyService {
             format: 'JSONEachRow',
         })).json<GameWithInfo>()
 
-        return items
+        let total = await (await this.clickhouse.query({
+            query: `
+                SELECT count(*) as total
+                FROM games
+            `,
+            format: 'JSONEachRow',
+        })).json<{ total: number}>()
+
+        return {
+            total: Number(total[0].total),
+            limit,
+            offset,
+            items,
+        }
     }
 
     async getDailyTopByRating(limit: number, offset: number, anti: boolean = false, date?: string): Promise<DailyTopPlayerWithRatingDiff[]> {

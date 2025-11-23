@@ -1,4 +1,11 @@
 
+export type Paginated<T> = {
+    total: number
+    limit: number
+    offset: number
+    items: T[]
+}
+
 export type PlayerInfo = {
     id: number
     name: string

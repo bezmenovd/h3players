@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { createClient } from '@clickhouse/client';
 import { Player } from '../types/clickhouse/lobby';
-import { PlayerInfo } from '../types/api';
+import { Paginated, PlayerInfo } from '../types/api';
 
 @Injectable()
 export class PlayersService {
@@ -12,8 +12,8 @@ export class PlayersService {
         database: 'lobby',
     })
 
-    async getList(limit: number, offset: number): Promise<Player[]> {
-        let result = await (await this.clickhouse.query({
+    async getList(limit: number, offset: number): Promise<Paginated<Player>> {
+        let items = await (await this.clickhouse.query({
             query: `
                 select * 
                 from players
@@ -27,7 +27,24 @@ export class PlayersService {
             format: 'JSONEachRow',
         })).json<Player>()
 
-        return result
+        let total = await (await this.clickhouse.query({
+            query: `
+                select count(*) as total
+                from players
+            `,
+            query_params: {
+                limit,
+                offset,
+            },
+            format: 'JSONEachRow',
+        })).json<{ total: number }>()
+
+        return {
+            total: Number(total[0].total),
+            limit,
+            offset,
+            items,
+        }
     }
 
     async search(query: string, limit: number): Promise<Player[]> {

@@ -40,7 +40,7 @@ preload(config.resources.app).then(() => {
 * { 
     font-family: "Exo 2", sans-serif; 
     font-optical-sizing: auto; 
-    font-style: normal; 
+    font-style: normal;
 }
 
 input {

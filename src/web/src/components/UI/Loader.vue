@@ -1,11 +1,24 @@
 <template>
-  <div class="loader-wrapper" v-if="visible">
-      <div class="loader"></div>
-  </div>
+    <template v-if="props.solid">
+        <div class="loader-solid-wrapper">
+            <div class="loader-wrapper" v-if="visible">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </template>
+    <template v-else>
+        <div class="loader-wrapper" v-if="visible">
+            <div class="loader"></div>
+        </div>
+    </template>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+
+const props = defineProps<{
+  solid: boolean
+}>()
 
 const visible = ref(false)
 
@@ -16,6 +29,11 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.loader-solid-wrapper {
+    width: 100%;
+    height: 100px;
+    position: relative;
+}
 .loader-wrapper {
     width: 100%;
     height: 100%;

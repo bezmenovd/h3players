@@ -19,9 +19,9 @@ export class LobbyController {
     let o = Number(offset) || 0
     let l = Math.min(Number(limit) || 10, 100)
 
-    let items = await this.lobbyService.getDailyGames(l, o)
+    let r = await this.lobbyService.getDailyGames(l, o)
     
-    return items
+    return r
   }
 
   @Get('/dailyTop')

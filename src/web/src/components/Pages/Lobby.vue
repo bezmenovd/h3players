@@ -3,7 +3,7 @@
         <div id="online">
             <Title text="Лобби"></Title>
             <Panel id="online-panel">
-                <Loader v-if="loading.online" />
+                <Loader v-if="loading.online" :solid="false"/>
                 <template v-else>
                     <div id="online-chart">
                         <LineChart 
@@ -52,7 +52,7 @@
                     <ListButton @click="router.push({ name: 'lobby.games' })"/>
                 </Subtitle>
                 <Panel id="last-games-panel">
-                    <Loader v-if="loading.lastGames" />
+                    <Loader v-if="loading.lastGames" :solid="false"/>
                     <Games :items="lastGames.items" v-else/>
                 </Panel>
             </div>
@@ -74,7 +74,7 @@
                                     <router-link :to="{ name: 'players.detail', params: { id: item.id }}">{{ item.name || '?' }}</router-link>
                                 </div>
                                 <div class="rating-value">
-                                    <Rating :value="item.rating_diff" />
+                                    <RatingDiff :value="item.rating_diff" />
                                 </div>
                             </div>
                         </div>
@@ -90,7 +90,7 @@
                                     <router-link :to="{ name: 'players.detail', params: { id: item.id }}">{{ item.name || '?' }}</router-link>
                                 </div>
                                 <div class="rating-value">
-                                    <Rating :value="item.rating_diff" />
+                                    <RatingDiff :value="item.rating_diff" />
                                 </div>
                             </div>
                         </div>
@@ -121,7 +121,7 @@ import Panel from './../UI/Panel.vue'
 import Light from './../UI/Light.vue'
 import Title from './../UI/Title.vue'
 import Subtitle from './../UI/Subtitle.vue'
-import Rating from './../UI/Rating.vue'
+import RatingDiff from '../UI/RatingDiff.vue'
 import { getChart, getDailyGames, getDailyTop, DailyTop } from '../../api/lobby'
 import { getVisitors, getGames } from '../../api/lobby/counter'
 import Loader from '../UI/Loader.vue'
@@ -268,27 +268,27 @@ onMounted(() => {
     onBeforeUnmount(on('games-changed', (msg) => {
         gamesRef.value = msg.value
 
-        getDailyGames(8).then(items => {
-            lastGames.items = items
+        getDailyGames(8).then(r => {
+            lastGames.items = r.items
         })
 
-        getDailyTop(7).then(res => {
-            dailyTop.byRating = res.byRating
-            dailyTop.byRatingAnti = res.byRatingAnti
-            dailyTop.byGamesCount = res.byGamesCount
+        getDailyTop(7).then(r => {
+            dailyTop.byRating = r.byRating
+            dailyTop.byRatingAnti = r.byRatingAnti
+            dailyTop.byGamesCount = r.byGamesCount
         })
     }))
 
-    getDailyGames(8).then(items => {
-        lastGames.items = items
+    getDailyGames(8).then(r => {
+        lastGames.items = r.items
         loading.lastGames = false
     })
 
-    getDailyTop(7).then(res => {
+    getDailyTop(7).then(r => {
         loading.dailyTop = false
-        dailyTop.byRating = res.byRating
-        dailyTop.byRatingAnti = res.byRatingAnti
-        dailyTop.byGamesCount = res.byGamesCount
+        dailyTop.byRating = r.byRating
+        dailyTop.byRatingAnti = r.byRatingAnti
+        dailyTop.byGamesCount = r.byGamesCount
     })
 })
 
@@ -382,7 +382,7 @@ onUnmounted(() => {
 .rating-item {
     height: 50px;
     display: grid;
-    grid-template-columns: 16px 1fr 30px;
+    grid-template-columns: 16px 1fr 50px;
     padding: 0 8px;
     border-bottom: 1px solid #272c3a;
     background: #2e3245;
@@ -390,7 +390,7 @@ onUnmounted(() => {
 .rating-item:hover {
     background: #363a4c;
 }
-.rating-item div {
+.rating-item > div {
     height: 100%;
     display: flex;
     align-items: center;
@@ -406,9 +406,12 @@ onUnmounted(() => {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    justify-content: start !important;
+    padding-bottom: 2px;
 }
 .rating-value {
     padding-right: 6px;
+    justify-content: flex-end !important;
 }
 
 @media (max-width: 1600px) {
