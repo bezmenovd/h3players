@@ -6,6 +6,8 @@ import Players from './components/Pages/Players.vue'
 import PlayersList from './components/Pages/Players/List.vue'
 import PlayersDetail from './components/Pages/Players/Detail.vue'
 import Performance from './components/Pages/Performance.vue';
+import Games from './components/Pages/Lobby/Games.vue';
+import { useNavigationStore } from './stores/navigation';
 
 const routes = [
     {
@@ -33,6 +35,11 @@ const routes = [
         name: 'lobby',
         component: Lobby
     },
+    {
+        path: '/games',
+        name: 'lobby.games',
+        component: Games
+    },
 ]
 
 const router = createRouter({
@@ -54,6 +61,27 @@ NProgress.configure({
 router.beforeEach((to, from, next) => {
     NProgress.start();
     next();
+
+    const navigationStore = useNavigationStore()
+
+    if ((String(to.name) || null)?.indexOf('.') !== -1) {
+        if ((String(from.name) || null)?.indexOf('.') !== -1) {
+            navigationStore.push({
+                name: String(from.name),
+                path: from.path,
+                params: from.params,
+            })
+        } else {
+            let parentName = String(to.name).split('.').slice(0, -1).join('.')
+            let parent = routes.find(r => r.name === parentName)
+    
+            if (parent) {
+                navigationStore.push(parent)
+            }
+        }
+    } else {
+        navigationStore.clear()
+    }
 });
 
 router.afterEach(() => {

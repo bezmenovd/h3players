@@ -14,20 +14,24 @@ export class LobbyController {
     return data
   }
 
-  @Get('/lastGames')
-  async lastGames() {
-    let items = await this.lobbyService.getLastGames()
+  @Get('/dailyGames')
+  async dailyGames(@Query('offset') offset?: number, @Query('limit') limit?: number) {
+    let o = Number(offset) || 0
+    let l = Math.min(Number(limit) || 10, 100)
+
+    let items = await this.lobbyService.getDailyGames(l, o)
     
     return items
   }
 
   @Get('/dailyTop')
-  async dailyTop(@Query('limit') limit: number) {
-    let l = Math.min(Number(limit) || 10, 128)
+  async dailyTop(@Query('offset') offset?: number, @Query('limit') limit?: number) {
+    let o = Number(offset) || 0
+    let l = Math.min(Number(limit) || 10, 100)
 
-    let byRating = await this.lobbyService.getDailyTopByRating(l)
-    let byRatingAnti = await this.lobbyService.getDailyTopByRating(l, true)
-    let byGamesCount = await this.lobbyService.getDailyTopByGamesCount(l)
+    let byRating = await this.lobbyService.getDailyTopByRating(l, o)
+    let byRatingAnti = await this.lobbyService.getDailyTopByRating(l, o, true)
+    let byGamesCount = await this.lobbyService.getDailyTopByGamesCount(l, o)
     
     return {
       byRating,

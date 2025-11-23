@@ -13,39 +13,69 @@
                     <router-link :to="{ name: 'players.detail', params: { id: item.opponent_id }}">{{ item.opponent_name || '?' }}</router-link>
                 </div>
             </div>
-            <div :class="`game-template ${item.game_type === 0 ? 'scenario' : ''}`">{{ template(item) }}</div>
+            <div :class="`game-template ${templateClass(item)}`">{{ template(item) }}</div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { GameWithInfo } from '../../../api/games';
+import { pluralize } from '../../../helpers/string';
 import { timestamp } from '../../../helpers/timestamp';
 
 const props = defineProps<{
     items: GameWithInfo[]
 }>()
 
+const now = ref(timestamp.now())
+
 const ago = (game: GameWithInfo): string => {
-    const now = timestamp.now()
-    if (now - game.end_timestamp < 60) {
+    if (now.value - game.end_timestamp < 60) {
         return `только что`
     }
-    if (now - game.end_timestamp < 3600) {
-        return `${Math.floor((now - game.end_timestamp) / 60)} мин назад`
+    if (now.value - game.end_timestamp < 3600) {
+        let count = Math.floor((now.value - game.end_timestamp) / 60)
+        return `${count} ${pluralize(count, 'минута', 'минуты', 'минут')} назад`
     }
-    if (now - game.end_timestamp < 86400) {
-        return `${Math.floor((now - game.end_timestamp) / 3600)} час назад`
+    if (now.value - game.end_timestamp < 86400) {
+        let count = Math.floor((now.value - game.end_timestamp) / 3600)
+        return `${count} ${pluralize(count, 'час', 'часа', 'часов')} назад`
     }
-        return `${Math.floor((now - game.end_timestamp) / 86400)} день назад`
+
+    let count = Math.floor((now.value - game.end_timestamp) / 86400)
+    return `${count} ${pluralize(count, 'день', 'дня', 'дней')} назад`
 }
 
 const template = (game: GameWithInfo): string => {
     if (game.game_type === 0) {
         return `сценарий`
     }
+    if (game.template_name === '<Default>') {
+        return 'по умолчанию'
+    }
     return game.template_name || '?'
 }
+
+const templateClass = (game: GameWithInfo): string => {
+    if (game.template_id === 1) {
+        return 'scenario'
+    }
+    if (game.template_name === '<Default>') {
+        return 'default'
+    }
+    return ''
+}
+
+onMounted(() => {
+    const updateNow = setInterval(() => {
+        now.value = timestamp.now()
+    }, 10000)
+
+    onBeforeUnmount(() => {
+        clearInterval(updateNow)
+    })
+})
 
 </script>
 
@@ -54,7 +84,7 @@ const template = (game: GameWithInfo): string => {
     height: 50px;
     width: 100%;
     display: grid;
-    grid-template-columns: 5fr 16fr 12fr;
+    grid-template-columns: 6fr 19fr 8fr;
     gap: 10px;
     align-items: center;
     border-bottom: 1px solid #272c3a;
@@ -62,10 +92,6 @@ const template = (game: GameWithInfo): string => {
 }
 
 @media (max-width: 1600px) {
-    .game {
-        grid-template-columns: 4fr 16fr 8fr;
-    }
-
 }
 .game:hover {
     background: #363a4c;
@@ -121,6 +147,9 @@ const template = (game: GameWithInfo): string => {
 }
 .game-template.scenario {
     color: gray;
+}
+.game-template.default {
+    color: #7b7ba0;
 }
 .game[data-status="2"] .game-host::before {
     content: '';

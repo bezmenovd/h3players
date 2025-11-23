@@ -1,5 +1,5 @@
 <template>
-    <div id="return-button" v-if="navigationStore.returnPage" @click="router.push(navigationStore.returnPage)" />
+    <div id="return-button" v-if="navigationStore.previous" @click="click" />
 </template>
 
 <script setup lang="ts">
@@ -7,6 +7,14 @@ import router from '../router';
 import { useNavigationStore } from '../stores/navigation';
 
 const navigationStore = useNavigationStore()
+
+const click = () => {
+    router.push(navigationStore.previous!)
+    setTimeout(() => {
+        navigationStore.pop()
+        navigationStore.pop()
+    }, 50)
+}
 </script>
 
 <style scoped>

@@ -25,6 +25,7 @@ const config: Config = {
             '/img/players.png',
             '/img/performance.png',
             '/img/arrow-left.png',
+            '/img/list.png',
         ]
     }
 }

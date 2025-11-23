@@ -9,7 +9,7 @@ export type Statistics = {
     received_messages: number
 }
 
-export async function chart(after?: number): Promise<Statistics[]> {
+export async function getChart(after?: number): Promise<Statistics[]> {
     return axios.get(`/api/performance/chart`, { 
         params: { 
             after 

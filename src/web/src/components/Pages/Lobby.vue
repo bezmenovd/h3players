@@ -49,6 +49,7 @@
                     <template #in-text>
                         <Questionmark hint="Только завершенные рейтинговые игры"/>
                     </template>
+                    <ListButton @click="router.push({ name: 'lobby.games' })"/>
                 </Subtitle>
                 <Panel id="last-games-panel">
                     <Loader v-if="loading.lastGames" />
@@ -63,7 +64,7 @@
                 </Subtitle>
                 <Panel id="daily-top-panel">
                     <div class="rating">
-                        <div class="rating-title" hint="Все завершенные рейтинговые игры">
+                        <div class="rating-title" hint="Все игры">
                             Рейтинг
                         </div>
                         <div class="rating-items">
@@ -79,7 +80,7 @@
                         </div>
                     </div>
                     <div class="rating">
-                        <div class="rating-title" hint="Все завершенные рейтинговые игры">
+                        <div class="rating-title" hint="Все игры">
                             Рейтинг -
                         </div>
                         <div class="rating-items">
@@ -95,7 +96,7 @@
                         </div>
                     </div>
                     <div class="rating">
-                        <div class="rating-title" hint="Только завершенные рейтинговые игры на случайных картах">
+                        <div class="rating-title" hint="Только рейтинговые игры на случайных картах">
                             Игры
                         </div>
                         <div class="rating-items">
@@ -121,8 +122,8 @@ import Light from './../UI/Light.vue'
 import Title from './../UI/Title.vue'
 import Subtitle from './../UI/Subtitle.vue'
 import Rating from './../UI/Rating.vue'
-import { chart, getLastGames, getDailyTop, DailyTop } from '../../api/lobby'
-import { visitors, games } from '../../api/lobby/counter'
+import { getChart, getDailyGames, getDailyTop, DailyTop } from '../../api/lobby'
+import { getVisitors, getGames } from '../../api/lobby/counter'
 import Loader from '../UI/Loader.vue'
 import LineChart from '../UI/Charts/LineChart.vue'
 import Games from '../UI/Lobby/Games.vue'
@@ -130,6 +131,8 @@ import Questionmark from '../UI/Questionmark.vue'
 import { timestamp, datetime } from '../../helpers/timestamp'
 import { on } from '../../modules/websocket'
 import { GameWithInfo } from '../../api/games'
+import ListButton from '../UI/Buttons/ListButton.vue'
+import router from '../../router'
 
 
 const onlineChart = reactive<{
@@ -207,7 +210,7 @@ onMounted(() => {
     
     loading.online = true
 
-    chart(timestamp.now() - chartSize.value*60).then(r => {
+    getChart(timestamp.now() - chartSize.value*60).then(r => {
         onlineChart.data = new Array<number[]|undefined>(chartSize.value)
         onlineChart.labels = new Array<string|undefined>(chartSize.value)
 
@@ -239,16 +242,16 @@ onMounted(() => {
         loading.online = false
     })
 
-    visitors().then(r => {
+    getVisitors().then(r => {
         visitorsRef.value = r.value
     })
 
-    games().then(r => {
+    getGames().then(r => {
         gamesRef.value = r.value
     })
 
     updateInterval = setInterval(() => {
-        chart(timestamp.now() - 60).then(r => {
+        getChart(timestamp.now() - 60).then(r => {
             onlineChart.data = [...onlineChart.data.slice(1), r[0] ? [r[0].online] : undefined]
             onlineChart.labels = [...onlineChart.labels.slice(1), r[0] ? datetime.from(r[0].timestamp) : undefined]
         })
@@ -265,23 +268,23 @@ onMounted(() => {
     onBeforeUnmount(on('games-changed', (msg) => {
         gamesRef.value = msg.value
 
-        getLastGames().then(items => {
+        getDailyGames(8).then(items => {
             lastGames.items = items
         })
 
-        getDailyTop().then(res => {
+        getDailyTop(7).then(res => {
             dailyTop.byRating = res.byRating
             dailyTop.byRatingAnti = res.byRatingAnti
             dailyTop.byGamesCount = res.byGamesCount
         })
     }))
 
-    getLastGames().then(items => {
+    getDailyGames(8).then(items => {
         lastGames.items = items
         loading.lastGames = false
     })
 
-    getDailyTop().then(res => {
+    getDailyTop(7).then(res => {
         loading.dailyTop = false
         dailyTop.byRating = res.byRating
         dailyTop.byRatingAnti = res.byRatingAnti
@@ -309,7 +312,7 @@ onUnmounted(() => {
     grid-template-columns: 1fr 180px;
 }
 #live {
-    margin-top: 25px;
+    margin-top: 35px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 40px;

@@ -58,7 +58,7 @@ async function main() {
     let templatesAgent = new TemplatesAgent(postman)
 
     while (true) {
-        await sleep(1000)
+        await sleep(1200)
 
         if (! client.isConnected()) {
             logger.info('is not connected, sleeping')
@@ -117,7 +117,7 @@ async function main() {
 
                 beforeTimestamp = history.games[19].endTimestamp - 1
 
-                await sleep(500)
+                await sleep(600)
             }
 
 
@@ -287,6 +287,8 @@ async function main() {
                             })
 
                             i += 10
+
+                            await sleep(600)
                         }
 
                         await lobby().insert({
@@ -324,6 +326,8 @@ async function main() {
                             })
 
                             i += 10
+
+                            await sleep(600)
                         }
 
                         await lobby().insert({

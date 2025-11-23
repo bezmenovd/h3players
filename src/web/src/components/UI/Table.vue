@@ -65,21 +65,25 @@ const props = defineProps<{
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
+    border-bottom: unset;
 }
 .table-loading-block {
-    height: 80px;
+    height: 100px;
     position: relative;
 }
 .table-columns {
     background: #2e3245;
     border-bottom: 2px solid #2a2e40;
+    height: 50px;
 }
 .table-column {
-    padding: 16px 20px;
+    padding: 15px 20px;
     color: #909090;
+    height: 50px;
 }
 .table-cell {
     padding: 12px 20px;
+    height: 50px;
 }
 .table-cell > .-link {
     cursor: pointer;
@@ -88,7 +92,7 @@ const props = defineProps<{
 .table-cell > .-link:hover {
     text-decoration: underline;
 }
-.table-row {
+.table-row:not(:last-of-type) {
     border-bottom: 1px solid #00000014;
 }
 .table-row:hover {

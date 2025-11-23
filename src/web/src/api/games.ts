@@ -58,7 +58,7 @@ export type GameWithInfo = Game & {
     template_name: string|null
 }
 
-export async function getList(playerId: number, limit?: number, offset?: number): Promise<GameV[]> {
+export async function list(playerId: number, limit?: number, offset?: number): Promise<GameV[]> {
     return axios.get(`/api/games`, {
         params: {
             playerId,

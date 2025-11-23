@@ -1,7 +1,7 @@
 <template>
     <div id="players">
         <Title text="Найти игрока">
-            <router-link :to="{ name: 'players.list' }" id="players-list-link">Список всех игроков</router-link>
+            <ListButton @click="router.push({ name: 'players.list' })"/>
         </Title>
 
         <Panel id="players-search">
@@ -40,6 +40,7 @@ import { search, Player } from '../../api/players'
 import router from '../../router'
 import { SearchItem } from '../UI/Inputs/search'
 import { useSearchHistory } from './players'
+import ListButton from '../UI/Buttons/ListButton.vue'
 
 const searchFunc = async (value: string): Promise<SearchItem[]> => {
     return search(value).then((players: Player[]) => players.map((p: Player): SearchItem => ({

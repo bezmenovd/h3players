@@ -46,7 +46,7 @@
 import { ref, onMounted, computed, reactive, onUnmounted, nextTick } from 'vue'
 import Panel from './../UI/Panel.vue'
 import Title from './../UI/Title.vue'
-import { chart } from '../../api/performance'
+import { getChart } from '../../api/performance'
 import Loader from '../UI/Loader.vue'
 import LineChart from '../UI/Charts/LineChart.vue'
 import { timestamp, datetime } from '../../helpers/timestamp'
@@ -106,7 +106,7 @@ onMounted(() => {
     
     loading.value = true
 
-    chart(timestamp.now() - totalChart.size*60).then(async (r) => {
+    getChart(timestamp.now() - totalChart.size*60).then(async (r) => {
         totalChart.data = new Array<number[]|undefined>(totalChart.size)
         totalChart.labels = new Array<string|undefined>(totalChart.size)
 
@@ -167,7 +167,7 @@ onMounted(() => {
     })
 
     updateInterval = setInterval(() => {
-        chart(timestamp.now() - 60).then(r => {
+        getChart(timestamp.now() - 60).then(r => {
             totalChart.data = [...totalChart.data.slice(1), r[0]? [r.reduce((acc, i) => acc + i.sent_bytes, 0), r.reduce((acc, i) => acc + i.received_bytes, 0)] : undefined]
             totalChart.labels = [...totalChart.labels.slice(1), r[0] ? datetime.from(r[0].timestamp) : undefined]
         })

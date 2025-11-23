@@ -16,7 +16,6 @@ import { getList } from '../../../api/players'
 import { Player } from '../../../api/players'
 import { Column } from '../../UI/table'
 import { getContentSize } from '../../../helpers/content'
-import { useNavigationStore } from '../../../stores/navigation'
 
 const playersTable = reactive<{
     rows: Player[],
@@ -37,23 +36,15 @@ const playersTable = reactive<{
     ]
 })
 
-const navigationStore = useNavigationStore()
-
 const loading = ref(true)
 
 onMounted(async () => {
-    navigationStore.setReturnPage({ name: 'players' })
-
-    const pageSize = Math.min(Math.floor((getContentSize().height - 152) / 44), 20)
+    const pageSize = Math.min(Math.floor((getContentSize().height - 150) / 50), 20)
 
     getList(pageSize, 0).then(list => {
         playersTable.rows = list
         loading.value = false
     })
-})
-
-onUnmounted(async () => {
-    navigationStore.clearReturnPage()
 })
 
 </script>

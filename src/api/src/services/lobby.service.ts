@@ -66,7 +66,7 @@ export class LobbyService {
         return count[0].value
     }
 
-    async getLastGames(): Promise<GameWithInfo[]> {
+    async getDailyGames(limit: number, offset: number, date?: string): Promise<GameWithInfo[]> {
         let items = await (await this.clickhouse.query({
             query: `
                 SELECT
@@ -76,7 +76,7 @@ export class LobbyService {
                     dictGet('templates_dictionary', 'name', template_id) AS template_name
                 FROM games
                 ORDER BY end_timestamp DESC, id DESC
-                LIMIT 8
+                LIMIT ${limit} OFFSET ${offset}
             `,
             format: 'JSONEachRow',
         })).json<GameWithInfo>()
@@ -84,7 +84,7 @@ export class LobbyService {
         return items
     }
 
-    async getDailyTopByRating(limit: number, anti: boolean = false): Promise<DailyTopPlayerWithRatingDiff[]> {
+    async getDailyTopByRating(limit: number, offset: number, anti: boolean = false, date?: string): Promise<DailyTopPlayerWithRatingDiff[]> {
         let items = await (await this.clickhouse.query({
             query: `
                 SELECT
@@ -96,7 +96,7 @@ export class LobbyService {
                 WHERE end_timestamp >= {startOfDay:UInt32}
                 GROUP BY player_id
                 ORDER BY rating_diff ${(anti ? 'ASC' : 'DESC')}, end_timestamp_max DESC
-                LIMIT ${limit}
+                LIMIT ${limit} OFFSET ${offset}
             `,
             query_params: {
                 startOfDay: timestamp.startOfDay(),
@@ -111,7 +111,7 @@ export class LobbyService {
         }))
     }
 
-    async getDailyTopByGamesCount(limit: number): Promise<DailyTopPlayerWithGamesCount[]> {
+    async getDailyTopByGamesCount(limit: number, offset: number, ): Promise<DailyTopPlayerWithGamesCount[]> {
         let items = await (await this.clickhouse.query({
             query: `
                 SELECT
@@ -123,7 +123,7 @@ export class LobbyService {
                 WHERE end_timestamp >= {startOfDay:UInt32} AND template_id != 1
                 GROUP BY player_id
                 ORDER BY games_count DESC, end_timestamp_max DESC
-                LIMIT ${limit}
+                LIMIT ${limit} OFFSET ${offset}
             `,
             query_params: {
                 startOfDay: timestamp.startOfDay(),

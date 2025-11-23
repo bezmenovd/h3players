@@ -10,10 +10,10 @@ export type Games = {
 }
 
 
-export async function visitors(): Promise<Visitors> {
+export async function getVisitors(): Promise<Visitors> {
     return axios.get(`/api/lobby/counter/visitors`).then(r => r.data);
 }
 
-export async function games(): Promise<Games> {
+export async function getGames(): Promise<Games> {
     return axios.get(`/api/lobby/counter/games`).then(r => r.data);
 }

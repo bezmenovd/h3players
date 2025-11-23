@@ -1,13 +1,16 @@
 
 export const timestamp = {
-    now() {
+    now(): number {
         return Math.floor(Date.now() / 1000)
     },
-    startOfDay() {
+    startOfDay(): number {
         let start = new Date();
         start.setUTCHours(0, 0, 0, 0);
         return Math.floor(start.getTime() / 1000)
-    }
+    },
+    // from(datetime: string): number {
+    //     let 
+    // }
 }
 
 export const datetime = {
@@ -34,5 +37,5 @@ export const date = {
         let day = String(date.getDate()).padStart(2, '0')
 
         return `${day}.${month}.${year}`
-    }
+    },
 }

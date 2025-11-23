@@ -6,7 +6,7 @@ export type Online = {
     online: number
 }
 
-export async function chart(after?: number): Promise<Online[]> {
+export async function getChart(after?: number): Promise<Online[]> {
     return axios.get(`/api/lobby/chart`, { 
         params: { 
             after 
@@ -14,8 +14,13 @@ export async function chart(after?: number): Promise<Online[]> {
     }).then(r => r.data);
 }
 
-export async function getLastGames(): Promise<GameWithInfo[]> {
-    return axios.get(`/api/lobby/lastGames`).then(r => r.data);
+export async function getDailyGames(limit: number, offset: number = 0): Promise<GameWithInfo[]> {
+    return axios.get(`/api/lobby/dailyGames`, { 
+        params: { 
+            limit,
+            offset, 
+        } 
+    }).then(r => r.data);
 }
 
 
@@ -37,6 +42,11 @@ export type DailyTop = {
     byGamesCount: DailyTopPlayerWithGamesCount[],
 }
 
-export async function getDailyTop(): Promise<DailyTop> {
-    return axios.get(`/api/lobby/dailyTop?limit=7`).then(r => r.data);
+export async function getDailyTop(limit: number, offset: number = 0): Promise<DailyTop> {
+    return axios.get(`/api/lobby/dailyTop`, { 
+        params: { 
+            limit,
+            offset, 
+        } 
+    }).then(r => r.data);
 }
