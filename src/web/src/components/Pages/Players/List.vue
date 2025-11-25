@@ -2,57 +2,70 @@
     <div id="players-list">
         <Title text="Все игроки"></Title>
         <Panel id="players-list-panel">
-            <Table :rows="playersTable.rows" :columns="playersTable.columns" :loading="loading"/>
-            <Footer></Footer>
+            <Header></Header>
+            <Loader v-if="loading" :solid="true" />
+            <PlayersList :items="players.list.items" :class="{'updating': updating}"/>
+            <Footer :total="players.list.total" :limit="players.list.limit"></Footer>
         </Panel>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive, ref } from 'vue'
+import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import Panel from '../../UI/Panel.vue'
-import Table from '../../UI/Table.vue'
 import Title from '../../UI/Title.vue'
 import Footer from '../../UI/Table/Footer.vue';
+import Header from '../../UI/Table/Header.vue';
 import { getList } from '../../../api/players'
 import { Player } from '../../../api/players'
-import { Column } from '../../UI/table'
 import { getContentSize } from '../../../helpers/content'
+import { Paginated } from '../../../api/general';
+import { useRoute } from 'vue-router';
+import { on } from '../../../modules/websocket';
+import PlayersList from '../../UI/Players/List/PlayersList.vue';
 
-const playersTable = reactive<{
-    rows: Player[],
-    columns: Column[],
+const players = reactive<{
+    list: Paginated<Player>,
 }>({
-    rows: [],
-    columns: [
-        new Column({
-            name: 'Id',
-            code: 'id',
-            width: '10%',
-        }),
-        new Column<Player>({
-            name: 'Имя',
-            code: 'name',
-            link: (row: Player) => ({ name: 'players.detail', params: { id: row.id } })
-        }),
-    ]
+    list: {
+        items: [],
+        total: 0,
+        limit: 0,
+        offset: 0,
+    },
 })
 
 const pageSize = ref(0)
 const loading = ref(true)
+const updating = ref(false)
+
+const route = useRoute()
+
+const load = () => {
+    const offset = Number(route.query.offset) || 0
+    updating.value = true
+
+    getList(pageSize.value, offset).then(r => {
+        players.list = r
+        updating.value = false
+
+        if (loading.value) {
+            loading.value = false
+        }
+    })
+}
 
 onMounted(async () => {
     pageSize.value = Math.min(Math.floor((getContentSize().height - 150) / 50), 20)
 
-    getList(pageSize.value, 0).then(r => {
-        playersTable.rows = r.items
-        loading.value = false
-    })
+    watch(() => route.query.offset, load, { immediate: true })
+
+    onBeforeUnmount(on('data.players-update', load))
 })
 
 </script>
 
-<style>
+<style scoped>
 #players-list {
     display: grid;
     grid-template-rows: 50px 1fr;

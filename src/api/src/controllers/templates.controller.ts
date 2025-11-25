@@ -1,9 +1,9 @@
 import { Controller, Get, NotFoundException, Param, Query } from '@nestjs/common';
-import { PlayersService } from '../services/players.service';
+import { TemplatesService } from '../services/templates.service';
 
-@Controller('players')
-export class PlayersController {
-    constructor(private readonly playersService: PlayersService) {}
+@Controller('templates')
+export class TemplatesController {
+    constructor(private readonly templatesService: TemplatesService) {}
 
     @Get('/')
     async list(@Query('limit') limit?: string, @Query('offset') offset?: string, @Query('ids') ids?: string) {
@@ -11,7 +11,7 @@ export class PlayersController {
         let o = Number(offset) || 0
         let i = String(ids).split(',').map(id => parseInt(id)).filter(e => e) || []
 
-        let data = await this.playersService.getList(l, o, i)
+        let data = await this.templatesService.getList(l, o, i)
 
         return data
     }
@@ -25,25 +25,8 @@ export class PlayersController {
         let q = query.replace(/[^a-zA-Z0-9_ \-=@.!#$%^&*]/g, '').toUpperCase()
         let l = Math.min(Number(limit) || 10, 100)
         
-        let data = await this.playersService.search(q, l)
+        let data = await this.templatesService.search(q, l)
 
         return data
-    }
-
-    @Get(':id')
-    async info(@Param('id') id: string) {
-        const i = Number(id)
-
-        if (! i) {
-            return {}
-        }
-
-        let info = this.playersService.info(i)
-
-        if (! info) {
-            throw new NotFoundException()
-        }
-
-        return info
     }
 }

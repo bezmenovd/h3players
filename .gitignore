@@ -5,5 +5,6 @@ dist/workers/spectator/*
 dist/workers/headhunter/*
 dist/workers/journalist/*
 dist/workers/coordinator/*
+dist/workers/processor/*
 yarn-cache
 output

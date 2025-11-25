@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { createClient } from '@clickhouse/client';
-import { Player } from '../types/clickhouse/lobby';
-import { Paginated, PlayerInfo } from '../types/api';
+import { Template } from '../types/clickhouse/lobby';
+import { Paginated } from '../types/api';
 
 @Injectable()
-export class PlayersService {
+export class TemplatesService {
     private clickhouse = createClient({
         url: 'http://clickhouse:8123',
         username: 'default',
@@ -12,11 +12,11 @@ export class PlayersService {
         database: 'lobby',
     })
 
-    async getList(limit: number, offset: number, ids: number[] = []): Promise<Paginated<Player>> {
+    async getList(limit: number, offset: number, ids: number[] = []): Promise<Paginated<Template>> {
         let items = await (await this.clickhouse.query({
             query: `
                 select * 
-                from players
+                from templates
                 ${ ids.length > 0 ? `where id in {ids:Array(UInt32)}` : '' }
                 order by id desc
                 limit {limit:UInt32} offset {offset:UInt32}
@@ -27,12 +27,12 @@ export class PlayersService {
                 ids,
             },
             format: 'JSONEachRow',
-        })).json<Player>()
+        })).json<Template>()
 
         let total = await (await this.clickhouse.query({
             query: `
                 select count(*) as total
-                from players
+                from templates
                 ${ ids.length > 0 ? `where id in {ids:Array(UInt32)}` : '' }
             `,
             query_params: {
@@ -51,7 +51,7 @@ export class PlayersService {
         }
     }
 
-    async search(query: string, limit: number): Promise<Player[]> {
+    async search(query: string, limit: number): Promise<Template[]> {
         let result = await (await this.clickhouse.query({
             query: `
                 SELECT * FROM
@@ -64,24 +64,8 @@ export class PlayersService {
                 query, 
             },
             format: 'JSONEachRow',
-        })).json<Player>()
+        })).json<Template>()
 
         return result
-    }
-
-    async info(id: number): Promise<PlayerInfo|null> {
-        let result = await (await this.clickhouse.query({
-            query: `
-                SELECT * FROM
-                players
-                WHERE id = {id:UInt32}
-            `,
-            query_params: {
-                id, 
-            },
-            format: 'JSONEachRow',
-        })).json<Player>()
-
-        return result.length === 1 ? result[0] : null
     }
 }

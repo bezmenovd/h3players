@@ -29,15 +29,7 @@ async function main() {
         }
     })
 
-    redis.connect()
-
-    const redisPub = createClient({
-        socket: {
-            host: 'redis',
-        }
-    })
-
-    await redisPub.connect()
+    await redis.connect()
 
     const client = new Client('journalist', USER)
     const postman = new Postman(client)
@@ -58,8 +50,6 @@ async function main() {
     let templatesAgent = new TemplatesAgent(postman)
 
     while (true) {
-        await sleep(1200)
-
         if (! client.isConnected()) {
             logger.info('is not connected, sleeping')
             await sleep(10_000)
@@ -68,8 +58,11 @@ async function main() {
 
         let event = await redis.lPop('events:spectator:player-updated')
         if (! event) {
+            await sleep(500)
             continue
         }
+
+        await sleep(500)
 
         let { playerId } = JSON.parse(event)
 
@@ -117,7 +110,7 @@ async function main() {
 
                 beforeTimestamp = history.games[19].endTimestamp - 1
 
-                await sleep(600)
+                await sleep(500)
             }
 
 
@@ -240,24 +233,11 @@ async function main() {
                 }
             })
 
-            if (games_to_insert.length > 0) {
-                await lobby().insert({
-                    table: `games`,
-                    values: games_to_insert,
-                    format: 'JSONEachRow',
-                })
-            }
-
-            if (games_v_to_insert.length > 0) {
-                await lobby().insert({
-                    table: `games_v`,
-                    values: games_v_to_insert,
-                    format: 'JSONEachRow',
-                })
-            }
+            games_to_insert.forEach(g => redis.rPush('processor:games', JSON.stringify(g)))
+            games_v_to_insert.forEach(g => redis.rPush('processor:games_v', JSON.stringify(g)))
 
             if (games_to_insert.length > 0) {
-                logger.info(`player #${playerId}: added games: ${games_to_insert.length}`)
+                logger.info(`player #${playerId}: retrieved games: ${games_to_insert.length}`)
 
                 let opponents = games_v_to_insert.map(g => g.opponent_id)
                 let templates = games_to_insert.map(g => g.template_id)
@@ -290,14 +270,10 @@ async function main() {
 
                             await sleep(600)
                         }
+                        
+                        players_to_insert.forEach(p => redis.rPush('processor:players', JSON.stringify(p)))
 
-                        await lobby().insert({
-                            table: `players`,
-                            values: players_to_insert,
-                            format: 'JSONEachRow',
-                        })
-
-                        await lobby().exec({ query: `SYSTEM RELOAD DICTIONARY lobby.players_dictionary` });
+                        logger.info(`player #${playerId}: retrieved players: ${players_to_insert.length}`)
                     }
                 }
 
@@ -330,17 +306,11 @@ async function main() {
                             await sleep(600)
                         }
 
-                        await lobby().insert({
-                            table: `templates`,
-                            values: templates_to_insert,
-                            format: 'JSONEachRow',
-                        })
+                        templates_to_insert.forEach(t => redis.rPush('processor:templates', JSON.stringify(t)))
 
-                        await lobby().exec({ query: `SYSTEM RELOAD DICTIONARY lobby.templates_dictionary` });
+                        logger.info(`player #${playerId}: retrieved templates: ${templates_to_insert.length}`)
                     }
                 }
-
-                redisPub.publish('live:journalist:games', '')
             }
         } catch (e: any) {
             await redis.rPush('events:spectator:player-updated', JSON.stringify({ playerId }))

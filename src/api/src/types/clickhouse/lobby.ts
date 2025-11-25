@@ -9,6 +9,11 @@ export type Player = {
     name: string
 }
 
+export type Template = {
+    id: number
+    name: string
+}
+
 export type GameV = {
     player_id: number
     opponent_id: number
@@ -34,6 +39,12 @@ export type GameV = {
     opponent_hero: number
     opponent_old_rating: number
     opponent_new_rating: number
+}
+
+export type GameVWithInfo = GameV & {
+    player_name: string|null
+    opponent_name: string|null
+    template_name: string|null
 }
 
 export type Game = {

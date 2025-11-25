@@ -141,7 +141,7 @@ onMounted(() => {
     font-size: 13px;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding: 0 10px 0 0;
+    padding: 0 15px 0 0;
     white-space: nowrap;
 }
 .game-template.scenario {

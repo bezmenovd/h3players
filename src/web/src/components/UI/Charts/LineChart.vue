@@ -202,7 +202,7 @@ onMounted(() => {
     max-width: 100%;
     position: relative;
     overflow: hidden;
-    background: #242737;
+    background: #171924;
 }
 .chart-line {
     width: 100%;

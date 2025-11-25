@@ -1,46 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import NProgress from 'nprogress';
-import 'nprogress/nprogress.css'; // Import the default CSS
-import Lobby from './components/Pages/Lobby.vue'
-import Players from './components/Pages/Players.vue'
-import PlayersList from './components/Pages/Players/List.vue'
-import PlayersDetail from './components/Pages/Players/Detail.vue'
-import Performance from './components/Pages/Performance.vue';
-import Games from './components/Pages/Lobby/Games.vue';
+import 'nprogress/nprogress.css';
 import { useNavigationStore } from './stores/navigation';
-
-const routes = [
-    {
-        path: '/performance',
-        name: 'performance',
-        component: Performance
-    },
-    {
-        path: '/players',
-        name: 'players',
-        component: Players
-    },
-    {
-        path: '/players/list',
-        name: 'players.list',
-        component: PlayersList,
-    },
-    {
-        path: '/@:id',
-        name: 'players.detail',
-        component: PlayersDetail
-    },
-    {
-        path: '/',
-        name: 'lobby',
-        component: Lobby
-    },
-    {
-        path: '/games',
-        name: 'lobby.games',
-        component: Games
-    },
-]
+import routes from './routes';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -62,10 +24,14 @@ router.beforeEach((to, from, next) => {
     NProgress.start();
     next();
 
+    if (from.name === to.name) {
+        return
+    }
+
     const navigationStore = useNavigationStore()
 
     if ((String(to.name) || null)?.indexOf('.') !== -1) {
-        if ((String(from.name) || null)?.indexOf('.') !== -1) {
+        if (from.name) {
             navigationStore.push({
                 name: String(from.name),
                 path: from.path,

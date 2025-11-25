@@ -6,11 +6,12 @@ export type Player = {
     name: string
 }
 
-export async function getList(limit: number, offset: number): Promise<Paginated<Player>> {
+export async function getList(limit: number, offset: number, ids: number[] = []): Promise<Paginated<Player>> {
     return axios.get(`/api/players`, {
         params: {
             limit,
             offset,
+            ...(ids?.length ? { ids: ids.join(',') } : {}),
         }
     }).then(r => r.data);
 }

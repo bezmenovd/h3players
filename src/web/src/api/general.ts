@@ -5,3 +5,9 @@ export type Paginated<T> = {
     offset: number
     items: T[]
 }
+
+export type PaginatedTable<T> = {
+    total: number
+    limit: number
+    items: T[]
+}

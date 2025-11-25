@@ -34,6 +34,7 @@ preload(config.resources.app).then(() => {
     loading.value.show = false
     loading.value.is = false
 })
+
 </script>
 
 <style>
@@ -140,5 +141,19 @@ a:hover {
     opacity: 1;
     transition: opacity .1s ease-in;
     transition-delay: 1s;
+}
+.updating {
+    position: relative;
+}
+.updating::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: .03;
+    z-index: 999;
 }
 </style>

@@ -122,7 +122,8 @@ import Light from './../UI/Light.vue'
 import Title from './../UI/Title.vue'
 import Subtitle from './../UI/Subtitle.vue'
 import RatingDiff from '../UI/RatingDiff.vue'
-import { getChart, getDailyGames, getDailyTop, DailyTop } from '../../api/lobby'
+import { getChart, getDailyTop, DailyTop } from '../../api/lobby'
+import { getList } from '../../api/games'
 import { getVisitors, getGames } from '../../api/lobby/counter'
 import Loader from '../UI/Loader.vue'
 import LineChart from '../UI/Charts/LineChart.vue'
@@ -133,6 +134,8 @@ import { on } from '../../modules/websocket'
 import { GameWithInfo } from '../../api/games'
 import ListButton from '../UI/Buttons/ListButton.vue'
 import router from '../../router'
+import { getList as getPlayersList } from '../../api/players';
+import { getList as getTemplatesList } from '../../api/templates';
 
 
 const onlineChart = reactive<{
@@ -257,18 +260,18 @@ onMounted(() => {
         })
     }, 60_000)
 
-    onBeforeUnmount(on('online-changed', (msg) => {
+    onBeforeUnmount(on('lobby.online-changed', (msg) => {
         online.value = msg.value
     }))
 
-    onBeforeUnmount(on('visitors-changed', (msg) => {
+    onBeforeUnmount(on('lobby.visitors-changed', (msg) => {
         visitorsRef.value = msg.value
     }))
 
-    onBeforeUnmount(on('games-changed', (msg) => {
+    onBeforeUnmount(on('lobby.games-changed', (msg) => {
         gamesRef.value = msg.value
 
-        getDailyGames(8).then(r => {
+        getList(8).then(r => {
             lastGames.items = r.items
         })
 
@@ -279,7 +282,59 @@ onMounted(() => {
         })
     }))
 
-    getDailyGames(8).then(r => {
+    onBeforeUnmount(on('data.players-update', (msg) => {
+        const unknownPlayers: Set<number> = new Set()
+
+        lastGames.items.forEach((g, i) => {
+            if (msg.id.includes(g.host_id) && ! g.host_name) {
+                unknownPlayers.add(g.host_id)
+            }
+            if (msg.id.includes(g.opponent_id) && ! g.opponent_name) {
+                unknownPlayers.add(g.opponent_id)
+            }
+        })
+
+        if (unknownPlayers.size > 0) {
+            getPlayersList(unknownPlayers.size, 0, unknownPlayers.values().toArray()).then(r => {
+                const playersMap: Map<number, string> = new Map()
+                r.items.forEach(p => playersMap.set(p.id, p.name))
+
+                lastGames.items.forEach(g => {
+                    if (! g.host_name && playersMap.has(g.host_id)) {
+                        g.host_name = playersMap.get(g.host_id)!
+                    }
+                    if (! g.opponent_name && playersMap.has(g.opponent_id)) {
+                        g.opponent_name = playersMap.get(g.opponent_id)!
+                    }
+                })
+            })
+        }
+    }))
+
+    onBeforeUnmount(on('data.templates-update', (msg) => {
+        const unknownTemplates: Set<number> = new Set()
+
+            lastGames.items.forEach((g, i) => {
+            if (msg.id.includes(g.template_id) && ! g.template_name) {
+                unknownTemplates.add(g.template_id)
+            }
+        })
+
+        if (unknownTemplates.size > 0) {
+            getTemplatesList(unknownTemplates.size, 0, unknownTemplates.values().toArray()).then(r => {
+                const templatesMap: Map<number, string> = new Map()
+                r.items.forEach(t => templatesMap.set(t.id, t.name))
+
+                lastGames.items.forEach(g => {
+                    if (! g.template_name && templatesMap.has(g.template_id)) {
+                        g.template_name = templatesMap.get(g.template_id)!
+                    }
+                })
+            })
+        }
+    }))
+
+    getList(8).then(r => {
         lastGames.items = r.items
         loading.lastGames = false
     })

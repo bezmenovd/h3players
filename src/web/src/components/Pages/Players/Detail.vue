@@ -14,7 +14,7 @@ import Panel from '../../UI/Panel.vue'
 import Loader from '../../UI/Loader.vue'
 import Title from '../../UI/Title.vue'
 import { getPlayer } from '../../../api/players'
-import { GameV, list } from '../../../api/games'
+import { GameV, getList } from '../../../api/games_v'
 import { useRoute } from 'vue-router'
 
 const loading = ref(true)
@@ -32,7 +32,7 @@ onMounted(async () => {
         getPlayer(info.id).then(data => {
             info.name = data.name
         }),
-        list(info.id).then(data => {
+        getList(info.id).then(data => {
             games.value = data
         })
     ]).then(() => {

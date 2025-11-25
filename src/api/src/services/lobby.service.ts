@@ -66,37 +66,6 @@ export class LobbyService {
         return count[0].value
     }
 
-    async getDailyGames(limit: number, offset: number, date?: string): Promise<Paginated<GameWithInfo>> {
-        let items = await (await this.clickhouse.query({
-            query: `
-                SELECT
-                    *,
-                    dictGet('players_dictionary', 'name', host_id) AS host_name,
-                    dictGet('players_dictionary', 'name', opponent_id) AS opponent_name,
-                    dictGet('templates_dictionary', 'name', template_id) AS template_name
-                FROM games
-                ORDER BY end_timestamp DESC, id DESC
-                LIMIT ${limit} OFFSET ${offset}
-            `,
-            format: 'JSONEachRow',
-        })).json<GameWithInfo>()
-
-        let total = await (await this.clickhouse.query({
-            query: `
-                SELECT count(*) as total
-                FROM games
-            `,
-            format: 'JSONEachRow',
-        })).json<{ total: number}>()
-
-        return {
-            total: Number(total[0].total),
-            limit,
-            offset,
-            items,
-        }
-    }
-
     async getDailyTopByRating(limit: number, offset: number, anti: boolean = false, date?: string): Promise<DailyTopPlayerWithRatingDiff[]> {
         let items = await (await this.clickhouse.query({
             query: `

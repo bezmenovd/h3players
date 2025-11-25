@@ -13,11 +13,23 @@ async function main() {-
         }
     })
 
-    redis.connect()
+    await redis.connect()
 
     setInterval(async () => {
         let eventsCount = await redis.lLen('events:spectator:player-updated')
         logger.info(`events:spectator:player-updated: ${eventsCount}`)
+
+        let processorGamesCount = await redis.lLen('processor:games')
+        logger.info(`processor:games: ${processorGamesCount}`)
+
+        let processorGamesVCount = await redis.lLen('processor:games_v')
+        logger.info(`processor:games_v: ${processorGamesVCount}`)
+
+        let processorPlayersCount = await redis.lLen('processor:players')
+        logger.info(`processor:players: ${processorPlayersCount}`)
+
+        let processorTemplatesCount = await redis.lLen('processor:templates')
+        logger.info(`processor:templates: ${processorTemplatesCount}`)
     }, 60_000)
 
     setInterval(async () => {

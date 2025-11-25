@@ -1,6 +1,5 @@
 import axios from "axios";
-import { GameWithInfo } from "./games";
-import { Paginated } from "./general";
+
 
 export type Online = {
     timestamp: number
@@ -11,15 +10,6 @@ export async function getChart(after?: number): Promise<Online[]> {
     return axios.get(`/api/lobby/chart`, { 
         params: { 
             after 
-        } 
-    }).then(r => r.data);
-}
-
-export async function getDailyGames(limit: number, offset: number = 0): Promise<Paginated<GameWithInfo>> {
-    return axios.get(`/api/lobby/dailyGames`, { 
-        params: { 
-            limit,
-            offset, 
         } 
     }).then(r => r.data);
 }

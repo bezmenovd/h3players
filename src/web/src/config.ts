@@ -26,6 +26,8 @@ const config: Config = {
             '/img/performance.png',
             '/img/arrow-left.png',
             '/img/list.png',
+            '/img/table/page.png',
+            '/img/table/end.png',
         ]
     }
 }

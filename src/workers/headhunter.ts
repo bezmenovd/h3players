@@ -19,7 +19,7 @@ async function main() {
         }
     })
 
-    redis.connect()
+    await redis.connect()
 
     let startIdCache = await redis.get('headhunter:startId')
     let startId = startIdCache ? Number(startIdCache) : 1

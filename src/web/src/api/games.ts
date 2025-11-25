@@ -1,31 +1,6 @@
 import axios from "axios";
+import { Paginated } from "./general";
 
-export type GameV = {
-    player_id: number
-    opponent_id: number
-    game_id: number
-    template_id: number
-    is_random: boolean
-    size: number
-    levels: number
-    is_win: boolean
-    is_draw: boolean
-    is_loss: boolean
-    restarts: number
-    end_day: number
-    start_timestamp: number
-    end_timestamp: number
-    player_color: number
-    player_town: number
-    player_hero: number
-    player_old_rating: number
-    player_new_rating: number
-    opponent_color: number
-    opponent_town: number
-    opponent_hero: number
-    opponent_old_rating: number
-    opponent_new_rating: number
-}
 
 export type Game = {
     id: number
@@ -58,12 +33,12 @@ export type GameWithInfo = Game & {
     template_name: string|null
 }
 
-export async function list(playerId: number, limit?: number, offset?: number): Promise<GameV[]> {
-    return axios.get(`/api/games`, {
-        params: {
-            playerId,
+
+export async function getList(limit: number, offset: number = 0): Promise<Paginated<GameWithInfo>> {
+    return axios.get(`/api/games`, { 
+        params: { 
             limit,
-            offset
-        }
+            offset, 
+        } 
     }).then(r => r.data);
 }

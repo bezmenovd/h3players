@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { createClient } from '@clickhouse/client';
-import { Game, GameWithInfo } from '../types/clickhouse/lobby';
+import { GameVWithInfo } from '../types/clickhouse/lobby';
 import { Paginated } from '../types/api';
 
 @Injectable()
-export class GamesService {
+export class GamesVService {
     private clickhouse = createClient({
         url: 'http://clickhouse:8123',
         username: 'default',
@@ -12,28 +12,40 @@ export class GamesService {
         database: 'lobby',
     })
 
-    async getList(limit: number, offset: number, date?: string): Promise<Paginated<GameWithInfo>> {
+    async getList(playerId: number, limit: number, offset: number): Promise<Paginated<GameVWithInfo>> {
         let items = await (await this.clickhouse.query({
             query: `
                 SELECT
                     *,
-                    dictGet('players_dictionary', 'name', host_id) AS host_name,
+                    dictGet('players_dictionary', 'name', player_id) AS player_name,
                     dictGet('players_dictionary', 'name', opponent_id) AS opponent_name,
                     dictGet('templates_dictionary', 'name', template_id) AS template_name
-                FROM games
-                ORDER BY end_timestamp DESC, id DESC
+                FROM games_v
+                WHERE player_id = {playerId:UInt32}
+                ORDER BY end_timestamp DESC, game_id DESC
                 LIMIT ${limit} OFFSET ${offset}
             `,
+            query_params: {
+                playerId,
+                limit,
+                offset,
+            },
             format: 'JSONEachRow',
-        })).json<GameWithInfo>()
+        })).json<GameVWithInfo>()
 
         let total = await (await this.clickhouse.query({
             query: `
                 SELECT count(*) as total
-                FROM games
+                FROM games_v
+                WHERE player_id = {playerId:UInt32}
             `,
+            query_params: {
+                playerId,
+                limit,
+                offset,
+            },
             format: 'JSONEachRow',
-        })).json<{ total: number}>()
+        })).json<{ total: number }>()
 
         return {
             total: Number(total[0].total),

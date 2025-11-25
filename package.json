@@ -28,6 +28,9 @@
     "workers:coordinator:dev": "tsx src/workers/coordinator.ts",
     "workers:coordinator:build": "tsup --config src/workers/coordinator.tsup.config.ts --clean",
     "workers:coordinator": "node dist/workers/coordinator/coordinator.js",
+    "workers:processor:dev": "tsx src/workers/processor.ts",
+    "workers:processor:build": "tsup --config src/workers/processor.tsup.config.ts --clean",
+    "workers:processor": "node dist/workers/processor/processor.js",
     "wss": "tsx src/wss/server.ts",
     "wss:dev": "tsx src/wss/server.ts",
     "wss:build": "tsup --config src/wss/tsup.config.ts --clean"
