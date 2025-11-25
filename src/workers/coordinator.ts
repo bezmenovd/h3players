@@ -30,6 +30,9 @@ async function main() {-
 
         let processorTemplatesCount = await redis.lLen('processor:templates')
         logger.info(`processor:templates: ${processorTemplatesCount}`)
+
+        let archivistCurrentId = await redis.get('archivist:currentId')
+        logger.info(`archivist:currentId: ${archivistCurrentId}`)
     }, 60_000)
 
     setInterval(async () => {

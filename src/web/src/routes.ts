@@ -15,7 +15,7 @@ export default [
     },
     {
         path: '/players',
-        name: 'players.search',
+        name: 'players',
         component: PlayersSearch,
     },
     {

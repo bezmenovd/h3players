@@ -4,6 +4,7 @@ dist/api/*
 dist/workers/spectator/*
 dist/workers/headhunter/*
 dist/workers/journalist/*
+dist/workers/archivist/*
 dist/workers/coordinator/*
 dist/workers/processor/*
 yarn-cache

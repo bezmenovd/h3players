@@ -8,8 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
 
 type Link = {
@@ -28,7 +27,7 @@ const links: Link[] = [
     text: 'Лобби',
   },
   {
-    route: { name: 'players.search' },
+    route: { name: 'players' },
     img: '/img/players.png',
     text: 'Игроки',
   },

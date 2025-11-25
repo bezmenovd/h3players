@@ -17,7 +17,6 @@ import { TemplatesAgent } from './src/agents/templates'
 
 async function main() {
     const USER = String(process.env.USER)
-    const LAST_ONLY_MODE = String(process.env.LAST_ONLY_MODE) === 'true'
 
     logger.info('starting..')
 
@@ -29,7 +28,7 @@ async function main() {
 
     await redis.connect()
 
-    const client = new Client('journalist', USER)
+    const client = new Client('archivist', USER)
     const postman = new Postman(client)
     
     const supervisor = new Supervisor()
@@ -54,42 +53,19 @@ async function main() {
             continue
         }
 
-        let event = await redis.lPop('events:spectator:player-updated')
-        if (! event) {
-            await sleep(500)
-            continue
-        }
+        let currentId = await redis.incr('archivist:currentId')
 
         await sleep(500)
 
-        let { playerId } = JSON.parse(event)
-
         try {
-            let newGames: Game[] = []
-
-            let game_v_last_row = await (await lobby().query({
-                query: `
-                    SELECT game_id
-                    FROM games_v
-                    WHERE player_id = {playerId:UInt32}
-                    ORDER BY game_id DESC
-                    LIMIT 1
-                `,
-                query_params: {
-                    playerId
-                },
-                format: 'JSONEachRow',
-            })).json<{ game_id: number }>()
+            let games: Game[] = []
 
             let beforeTimestamp: number|undefined = undefined
 
             while (true) {
-                let history = await historyAgent.get(playerId, beforeTimestamp)
+                let history = await historyAgent.get(currentId, beforeTimestamp)
 
                 for (let i = 0; i < history.games.length; i++) {
-                    if (game_v_last_row.length === 1 && game_v_last_row[0].game_id >= history.games[i].id) {
-                        break
-                    }
                     if (history.games[i].status === GameStatus.NotFinished) {
                         continue
                     }
@@ -99,12 +75,10 @@ async function main() {
                         continue
                     }
 
-                    newGames.push(history.games[i])
+                    games.push(history.games[i])
                 }
 
-                if (LAST_ONLY_MODE) break
                 if (history.games.length !== 20) break
-                if (game_v_last_row.length === 1 && game_v_last_row[0].game_id >= history.games[19].id) break
 
                 beforeTimestamp = history.games[19].endTimestamp - 1
 
@@ -119,7 +93,7 @@ async function main() {
                     WHERE id in {ids:Array(UInt32)}
                 `,
                 query_params: {
-                    ids: newGames.map(g => g.id),
+                    ids: games.map(g => g.id),
                 },
                 format: 'JSONEachRow',
             })).json<{ id: number }>()
@@ -133,7 +107,7 @@ async function main() {
                     WHERE game_id in {ids:Array(UInt32)}
                 `,
                 query_params: {
-                    ids: newGames.map(g => g.id),
+                    ids: games.map(g => g.id),
                 },
                 format: 'JSONEachRow',
             })).json<{ player_id: number, opponent_id: number }>()
@@ -144,7 +118,7 @@ async function main() {
             let games_to_insert: GameModel[] = []
             let games_v_to_insert: GameVModel[] = []
 
-            newGames.forEach(game => {
+            games.forEach(game => {
                 if (! games_existing_set.has(game.id)) {
                     games_to_insert.push({
                         id: game.id,
@@ -235,8 +209,6 @@ async function main() {
             games_v_to_insert.forEach(g => redis.rPush('processor:games_v', JSON.stringify(g)))
 
             if (games_to_insert.length > 0) {
-                logger.info(`player #${playerId}: retrieved games: ${games_to_insert.length}`)
-
                 let opponents = games_v_to_insert.map(g => g.opponent_id)
                 let templates = games_to_insert.map(g => g.template_id)
 
@@ -270,8 +242,6 @@ async function main() {
                         }
                         
                         players_to_insert.forEach(p => redis.rPush('processor:players', JSON.stringify(p)))
-
-                        logger.info(`player #${playerId}: retrieved players: ${players_to_insert.length}`)
                     }
                 }
 
@@ -305,20 +275,18 @@ async function main() {
                         }
 
                         templates_to_insert.forEach(t => redis.rPush('processor:templates', JSON.stringify(t)))
-
-                        logger.info(`player #${playerId}: retrieved templates: ${templates_to_insert.length}`)
                     }
                 }
             }
-        } catch (e: any) {
-            await redis.rPush('events:spectator:player-updated', JSON.stringify({ playerId }))
 
+            logger.info(`loaded player#${currentId}`)
+        } catch (e: any) {
             if (! client.isConnected()) {
                 logger.info('error caused by disconnect')
                 continue
             }
 
-            sendMessage(`journalist (playerId=${playerId}): ${e.message}\n${e.stack}`)
+            sendMessage(`archivist (currentId=${currentId}): ${e.message}\n${e.stack}`)
         }
     }
 }
