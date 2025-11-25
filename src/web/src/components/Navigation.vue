@@ -28,9 +28,14 @@ const links: Link[] = [
     text: 'Лобби',
   },
   {
-    route: { name: 'players' },
+    route: { name: 'players.search' },
     img: '/img/players.png',
     text: 'Игроки',
+  },
+  {
+    route: { name: 'templates.list' },
+    img: '/img/templates.png',
+    text: 'Шаблоны',
   },
   {
     route: { name: 'performance' },

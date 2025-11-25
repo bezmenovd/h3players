@@ -23,6 +23,7 @@ const config: Config = {
             },
             '/img/lobby.png',
             '/img/players.png',
+            '/img/templates.png',
             '/img/performance.png',
             '/img/arrow-left.png',
             '/img/list.png',

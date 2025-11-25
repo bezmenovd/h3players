@@ -1,9 +1,11 @@
 import Lobby from './components/Pages/Lobby.vue'
-import Players from './components/Pages/Players.vue'
+import PlayersSearch from './components/Pages/Players/Search.vue'
 import PlayersList from './components/Pages/Players/List.vue'
 import PlayersDetail from './components/Pages/Players/Detail.vue'
+import TemplatesList from './components/Pages/Templates/List.vue'
 import Performance from './components/Pages/Performance.vue';
 import Games from './components/Pages/Lobby/Games.vue';
+import NotFound from './components/Pages/NotFound.vue';
 
 export default [
     {
@@ -13,8 +15,8 @@ export default [
     },
     {
         path: '/players',
-        name: 'players',
-        component: Players,
+        name: 'players.search',
+        component: PlayersSearch,
     },
     {
         path: '/players/list',
@@ -27,6 +29,11 @@ export default [
         component: PlayersDetail,
     },
     {
+        path: '/templates/list',
+        name: 'templates.list',
+        component: TemplatesList,
+    },
+    {
         path: '/',
         name: 'lobby',
         component: Lobby,
@@ -36,4 +43,9 @@ export default [
         name: 'lobby.games',
         component: Games,
     },
+    { 
+        path: '/:pathMatch(.*)*',
+        name: 'not_found',
+        component: NotFound,
+    }
 ]

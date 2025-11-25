@@ -33,14 +33,14 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import Panel from '../UI/Panel.vue'
-import Title from '../UI/Title.vue'
-import Search from '../UI/Inputs/Search.vue'
-import { search, Player } from '../../api/players'
-import router from '../../router'
-import { SearchItem } from '../UI/Inputs/search'
-import { useSearchHistory } from './players'
-import ListButton from '../UI/Buttons/ListButton.vue'
+import Panel from '../../UI/Panel.vue'
+import Title from '../../UI/Title.vue'
+import Search from '../../UI/Inputs/Search.vue'
+import { search, Player } from '../../../api/players'
+import router from '../../../router'
+import { SearchItem } from '../../UI/Inputs/search'
+import { useSearchHistory } from '../players'
+import ListButton from '../../UI/Buttons/ListButton.vue'
 
 const searchFunc = async (value: string): Promise<SearchItem[]> => {
     return search(value).then((players: Player[]) => players.map((p: Player): SearchItem => ({
