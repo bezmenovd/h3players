@@ -92,8 +92,6 @@ const max = computed(() => {
     let received_bytes_max = Math.max(...totalChart.data.map(i => i ? i[1] : 0).filter(v => v))
     let received_messages_max = Math.max(...totalChart.data.map(i => i ? i[3] : 0).filter(v => v))
 
-    console.log([received_bytes_max, received_bytes_max, received_messages_max, received_messages_max])
-
     return [received_bytes_max, received_bytes_max, received_messages_max, received_messages_max]
 })
 

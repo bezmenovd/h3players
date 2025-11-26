@@ -2,18 +2,20 @@ services:
   web:
     restart: unless-stopped
     # command: bash -c "yarn && pm2-runtime dist/web/main.js -i max"
-    command: sleep 10000
+    command: bash -c "yarn && yarn web:build && sleep infinity"
 
   api:
     restart: unless-stopped
     # command: bash -c "yarn && pm2-runtime dist/web/main.js -i max"
-    command: sleep 10000
+    command: bash -c "yarn && yarn api:build && yarn api:start:prod"
 
   workers:
     restart: unless-stopped
+    command: bash -c "yarn && yarn workers:build && yarn pm2 restart pm2/prod/* && sleep infinity"
 
   wss:
     restart: unless-stopped
+    command: bash -c "yarn && yarn wss"
 
   nginx:
     restart: unless-stopped

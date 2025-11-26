@@ -1,10 +1,10 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: ['client/background.ts'],
-  outDir: 'client/dist/background',
-  format: ['esm'],
-  dts: false,
-  sourcemap: false,
-  target: 'esnext',
+    entry: ['src/workers/background.ts'],
+    outDir: 'dist/workers/background',
+    format: ['cjs'],
+    dts: false,
+    sourcemap: false,
+    target: 'esnext',
 });

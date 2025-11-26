@@ -8,5 +8,6 @@ dist/workers/archivist/*
 dist/workers/coordinator/*
 dist/workers/processor/*
 dist/workers/background/*
+dist/wss/*
 yarn-cache
 output

@@ -11,7 +11,7 @@
     "api:start": "cd src/api && nest start",
     "api:start:dev": "cd src/api && nest start --watch",
     "api:start:debug": "cd src/api && nest start src/api --debug --watch",
-    "api:start:prod": "cd src/api && node dist/api/main",
+    "api:start:prod": "node dist/api/main.js",
     "web:dev": "cd src/web && vite build --watch",
     "web:build": "cd src/web && vite build",
     "convert": "tsx src/workers/convert.ts",
@@ -34,9 +34,10 @@
     "workers:background:dev": "tsx src/workers/background.ts",
     "workers:background:build": "tsup --config src/workers/background.tsup.config.ts --clean",
     "workers:background": "node dist/workers/background/background.js",
-    "wss": "tsx src/wss/server.ts",
+    "wss": "node dist/wss/server.js",
     "wss:dev": "tsx src/wss/server.ts",
-    "wss:build": "tsup --config src/wss/tsup.config.ts --clean"
+    "wss:build": "tsup --config src/wss/tsup.config.ts --clean",
+    "workers:build": "yarn workers:spectator:build && yarn workers:journalist:build && yarn workers:archivist:build && yarn workers:coordinator:build && yarn workers:processor:build"
   },
   "dependencies": {
     "@clickhouse/client": "^1.12.1",
