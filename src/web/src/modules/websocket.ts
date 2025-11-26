@@ -4,7 +4,11 @@ import { MsgAvailable } from "./websocket.messages";
 let websocket: WebSocket|null = null
 
 let connect = () => {
-    websocket = new WebSocket(`ws://${location.host}:8000`)
+    if (location.host === 'localhost') {
+        websocket = new WebSocket(`ws://${location.host}:8000`);
+    } else {
+        websocket = new WebSocket(`wss://${location.host}/ws`);
+    }
 
     websocket.onopen = () => {
         for (const data of queue) {

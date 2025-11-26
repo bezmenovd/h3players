@@ -51,8 +51,6 @@ services:
     volumes:
       - ./:/var/www
       - yarn-cache:/root/.yarn/cache
-    ports:
-      - 8000:8000
     command: bash -c "yarn && yarn wss"
 
   nginx:
@@ -69,6 +67,7 @@ services:
       - ./:/var/www:ro
     depends_on:
       - web
+      - wss
 
   mysql:
     image: mysql/mysql-server:8.0
