@@ -9,7 +9,7 @@ services:
     volumes:
       - ./:/var/www
       - yarn-cache:/root/.yarn/cache
-    command: bash -c "yarn && yarn web:build && sleep infinity"
+    command: yarn web:build
 
   api:
     image: node:22
@@ -23,7 +23,7 @@ services:
     volumes:
       - ./:/var/www
       - yarn-cache:/root/.yarn/cache
-    command: bash -c "yarn && yarn api:build && yarn api:start:prod"
+    command: api:start:prod
 
   workers:
     image: node:22
@@ -37,7 +37,7 @@ services:
     volumes:
       - ./:/var/www
       - yarn-cache:/root/.yarn/cache
-    command: bash -c "yarn && yarn workers:build && yarn pm2 restart pm2/prod/* && sleep infinity"
+    command: bash -c "yarn pm2 restart pm2/prod/* && sleep infinity"
 
   wss:
     image: node:22
@@ -51,7 +51,7 @@ services:
     volumes:
       - ./:/var/www
       - yarn-cache:/root/.yarn/cache
-    command: bash -c "yarn && yarn wss:build && yarn wss"
+    command: yarn wss
 
   nginx:
     image: nginx:alpine
