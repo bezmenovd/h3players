@@ -51,7 +51,7 @@ services:
     volumes:
       - ./:/var/www
       - yarn-cache:/root/.yarn/cache
-    command: bash -c "yarn && yarn wss"
+    command: bash -c "yarn && yarn wss:build && yarn wss"
 
   nginx:
     image: nginx:alpine
