@@ -1,6 +1,6 @@
 <template>
     <div id="version">
-        <router-link to="changelog" id="version-value">v{{ version }}</router-link>
+        <router-link :to="{ name: 'changelog' }" id="version-value">v{{ version }}</router-link>
     </div>
 </template>
 

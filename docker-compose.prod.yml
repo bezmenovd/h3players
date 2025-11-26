@@ -37,7 +37,7 @@ services:
     volumes:
       - ./:/var/www
       - yarn-cache:/root/.yarn/cache
-    command: bash -c "yarn pm2 restart pm2/prod/* && sleep infinity"
+    command: sleep infinity
 
   wss:
     image: node:22
