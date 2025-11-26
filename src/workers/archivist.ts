@@ -60,7 +60,7 @@ async function main() {
             }
         }
 
-        await sleep(500)
+        await sleep(1000)
 
         try {
             let games: Game[] = []
@@ -87,7 +87,7 @@ async function main() {
 
                 beforeTimestamp = history.games[19].endTimestamp - 1
 
-                await sleep(500)
+                await sleep(700)
             }
 
 
@@ -243,7 +243,7 @@ async function main() {
 
                             i += 10
 
-                            await sleep(600)
+                            await sleep(700)
                         }
                         
                         players_to_insert.forEach(p => redis.rPush('processor:players', JSON.stringify(p)))
@@ -276,7 +276,7 @@ async function main() {
 
                             i += 10
 
-                            await sleep(600)
+                            await sleep(700)
                         }
 
                         templates_to_insert.forEach(t => redis.rPush('processor:templates', JSON.stringify(t)))
