@@ -3,6 +3,7 @@
     <div id="app" key="app" v-if="! loading.is">
         <div id="left">
             <Navigation />
+            <Version />
         </div>
         <div id="content">
             <Return />
@@ -18,11 +19,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import config from './config';
+import resources from './meta/resources';
 import MainLoader from './components/UI/MainLoader.vue';
 import Navigation from './components/Navigation.vue';
 import Return from './components/Return.vue';
 import { preload } from './modules/preload';
+import Version from './components/Version.vue';
 
 
 const loading = ref({
@@ -30,7 +32,7 @@ const loading = ref({
     show: true,
 })
 
-preload(config.resources.app).then(() => {
+preload(resources.app).then(() => {
     loading.value.show = false
     loading.value.is = false
 })
@@ -88,6 +90,9 @@ a:hover {
 #left {
     background: #2e3245;
     backdrop-filter: blur(1px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 #content {
     background: #272c3a;

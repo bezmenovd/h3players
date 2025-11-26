@@ -1,0 +1,9 @@
+[
+    {
+        "version": "0.1.0",
+        "date": "2025-11-26",
+        "changes": [
+            { "type": "feature", "description": "Первая версия" }
+        ]
+    }
+]

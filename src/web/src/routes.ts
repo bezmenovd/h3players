@@ -6,6 +6,7 @@ import TemplatesList from './components/Pages/Templates/List.vue'
 import Performance from './components/Pages/Performance.vue';
 import Games from './components/Pages/Lobby/Games.vue';
 import NotFound from './components/Pages/NotFound.vue';
+import Changelog from './components/Pages/Changelog.vue'
 
 export default [
     {
@@ -44,8 +45,13 @@ export default [
         component: Games,
     },
     { 
+        path: '/changelog',
+        name: 'changelog',
+        component: Changelog,
+    },
+    { 
         path: '/:pathMatch(.*)*',
         name: 'not_found',
         component: NotFound,
-    }
+    },
 ]
