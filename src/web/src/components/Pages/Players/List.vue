@@ -41,13 +41,17 @@ const updating = ref(false)
 
 const route = useRoute()
 
-const load = () => {
+const load = (visible: boolean = true) => {
     const offset = Number(route.query.offset) || 0
-    updating.value = true
+    if (visible) {
+        updating.value = true
+    }
 
     getList(pageSize.value, offset).then(r => {
         players.list = r
-        updating.value = false
+        if (visible) {
+            updating.value = false
+        }
 
         if (loading.value) {
             loading.value = false
@@ -56,11 +60,11 @@ const load = () => {
 }
 
 onMounted(async () => {
-    pageSize.value = Math.min(Math.floor((getContentSize().height - 150) / 50), 20)
+    pageSize.value = Math.min(Math.floor((getContentSize().height - 170) / 50), 20)
 
-    watch(() => route.query.offset, load, { immediate: true })
+    watch(() => route.query.offset, () => { load(true) }, { immediate: true })
 
-    onBeforeUnmount(on('data.players-update', load))
+    onBeforeUnmount(on('data.players.update', () => { load(false) }))
 })
 
 </script>

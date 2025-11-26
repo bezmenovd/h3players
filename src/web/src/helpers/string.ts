@@ -16,7 +16,7 @@ export const pluralize = (count: number, var1: string, var2: string, var5: strin
         if (mod10 === 1) {
             return var1
         }
-        if (mod10 < 5) {
+        if (mod10 < 5 && mod10 > 0) {
             return var2
         }
     }

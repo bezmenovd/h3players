@@ -1,32 +1,37 @@
 
 
 interface LobbyOnlineChanged {
-    route: 'lobby.online-changed'
+    route: 'lobby.counter.online.update'
     value: number
 }
 
 interface LobbyVisitorsChanged {
-    route: 'lobby.visitors-changed'
+    route: 'lobby.counter.visitors.update'
     value: number
 }
 
 interface LobbyGamesChanged {
-    route: 'lobby.games-changed'
+    route: 'lobby.counter.games.update'
     value: number
 }
 
 interface DataGamesUpdate {
-    route: 'data.games-update'
+    route: 'data.games.update'
+    value: number
+}
+
+interface DataGamesVUpdate {
+    route: 'data.games_v.update'
     value: number
 }
 
 interface DataPlayersUpdate {
-    route: 'data.players-update'
+    route: 'data.players.update'
     id: number[]
 }
 
 interface DateTemplatesUpdate {
-    route: 'data.templates-update'
+    route: 'data.templates.update'
     id: number[]
 }
 
@@ -34,6 +39,7 @@ interface DateTemplatesUpdate {
 export type MsgAvailable = LobbyOnlineChanged 
     | LobbyVisitorsChanged
     | LobbyGamesChanged
+    | DataGamesVUpdate
     | DataGamesUpdate
     | DataPlayersUpdate
     | DateTemplatesUpdate

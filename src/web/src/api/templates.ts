@@ -6,16 +6,17 @@ export type Template = {
     name: string
 }
 
-export async function getList(limit: number, offset: number, ids: number[] = []): Promise<Paginated<Template>> {
+export type TemplateWithInfo = Template & {
+    games_count: number
+}
+
+export async function getList(limit: number, offset: number, ids: number[] = [], query?: string): Promise<Paginated<TemplateWithInfo>> {
     return axios.get(`/api/templates`, {
         params: {
             limit,
             offset,
             ...(ids?.length ? { ids: ids.join(',') } : {}),
+            ...(query?.length ? { query } : {}),
         }
     }).then(r => r.data);
-}
-
-export async function search(query: string): Promise<Template[]> {
-    return axios.get(`/api/templates/search?query=${query}`).then(r => r.data);
 }

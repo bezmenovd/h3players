@@ -1,6 +1,6 @@
 <template>
     <div id="navigation">
-        <div :class="{'link': true, 'active': String(route.name!).startsWith(link.route.name) }" v-for="link in links" @click="goto(link)">
+        <div :class="{'link': true, 'active': String(route.name!).startsWith(link.route.name), [link.route.name]: true }" v-for="link in links" @click="goto(link)">
             <img class="link-icon" :src="link.img">
             <div class="link-text">{{ link.text }}</div>
         </div>
@@ -20,27 +20,27 @@ type Link = {
     text: string
 }
 
-const links: Link[] = [
-  {
-    route: { name: 'lobby' },
-    img: '/img/lobby.png',
-    text: 'Лобби',
-  },
-  {
-    route: { name: 'players' },
-    img: '/img/players.png',
-    text: 'Игроки',
-  },
-  {
-    route: { name: 'templates.list' },
-    img: '/img/templates.png',
-    text: 'Шаблоны',
-  },
-  {
-    route: { name: 'performance' },
-    img: '/img/performance.png',
-    text: 'Нагрузка',
-  },
+const links: (Link & { style?: { [key: string]: string }})[] = [
+    {
+        route: { name: 'lobby' },
+        img: '/img/lobby.png',
+        text: 'Лобби',
+    },
+    {
+        route: { name: 'players' },
+        img: '/img/players.png',
+        text: 'Игроки',
+    },
+    {
+        route: { name: 'templates' },
+        img: '/img/templates.png',
+        text: 'Шаблоны',
+    },
+    {
+        route: { name: 'performance' },
+        img: '/img/performance.png',
+        text: 'Нагрузка',
+    },
 ]
 
 const route = useRoute()
@@ -58,6 +58,7 @@ onMounted(async () => {
 <style scoped>
 #navigation {
     padding: 20px 0;
+    display: grid;
 }
 .link {
     display: grid;
@@ -84,5 +85,15 @@ onMounted(async () => {
     font-weight: 500;
     font-size: 18px;
     color: white;
+}
+.link.performance .link-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 1px;
+}
+.link.templates .link-icon {
+    width: 18px;
+    height: 18px;
+    margin-left: 2px;
 }
 </style>

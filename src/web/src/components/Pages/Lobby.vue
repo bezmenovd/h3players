@@ -13,7 +13,7 @@
                             :colors="['#19f0af']" 
                             :data="onlineChart.data" 
                             :labels="onlineChart.labels" 
-                            :max="chartMax" 
+                            :max="[chartMax]" 
                             :formatters="onlineChart.formatters"
                             :showNoData="true"
                         />
@@ -260,15 +260,15 @@ onMounted(() => {
         })
     }, 60_000)
 
-    onBeforeUnmount(on('lobby.online-changed', (msg) => {
+    onBeforeUnmount(on('lobby.counter.online.update', (msg) => {
         online.value = msg.value
     }))
 
-    onBeforeUnmount(on('lobby.visitors-changed', (msg) => {
+    onBeforeUnmount(on('lobby.counter.visitors.update', (msg) => {
         visitorsRef.value = msg.value
     }))
 
-    onBeforeUnmount(on('lobby.games-changed', (msg) => {
+    onBeforeUnmount(on('lobby.counter.games.update', (msg) => {
         gamesRef.value = msg.value
 
         getList(8).then(r => {
@@ -282,7 +282,7 @@ onMounted(() => {
         })
     }))
 
-    onBeforeUnmount(on('data.players-update', (msg) => {
+    onBeforeUnmount(on('data.players.update', (msg) => {
         const unknownPlayers: Set<number> = new Set()
 
         lastGames.items.forEach((g, i) => {
@@ -311,7 +311,7 @@ onMounted(() => {
         }
     }))
 
-    onBeforeUnmount(on('data.templates-update', (msg) => {
+    onBeforeUnmount(on('data.templates.update', (msg) => {
         const unknownTemplates: Set<number> = new Set()
 
             lastGames.items.forEach((g, i) => {

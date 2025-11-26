@@ -9,10 +9,10 @@
                         v-if="totalChart.show" 
                         id="chart-performance-total"
                         :height="200" 
-                        :colors="['#ff5e00', '#00d3ff']" 
+                        :colors="['#ff5e00', '#00d3ff', '#ff7700', '#0090ff']" 
                         :data="totalChart.data" 
                         :labels="totalChart.labels" 
-                        :max="totalChartMax" 
+                        :max="max"
                         :formatters="totalChart.formatters"
                         :showNoData="false"
                     />
@@ -28,10 +28,10 @@
                             v-if="chart.show" 
                             :id="`chart-performance-worker-${worker}`"
                             :height="200"
-                            :colors="['#ff5e00', '#00d3ff']" 
+                            :colors="['#ff5e00', '#00d3ff', '#ff7700', '#0090ff']" 
                             :data="chart.data" 
                             :labels="chart.labels" 
-                            :max="totalChartMax" 
+                            :max="max"
                             :formatters="totalChart.formatters"
                             :showNoData="false"
                         />
@@ -51,6 +51,7 @@ import Loader from '../UI/Loader.vue'
 import LineChart from '../UI/Charts/LineChart.vue'
 import { timestamp, datetime } from '../../helpers/timestamp'
 import { formatBytes } from '../../helpers/bytes'
+import { pluralize } from '../../helpers/string'
 
 const totalChart = reactive<{
     size: number,
@@ -66,6 +67,8 @@ const totalChart = reactive<{
     formatters: [
         (value: number) => `отправлено ${formatBytes(value)}`,
         (value: number) => `получено ${formatBytes(value)}`,
+        (value: number) => `отправлено ${value} ${pluralize(value, 'сообщение', 'сообщения', 'сообщений')}`,
+        (value: number) => `получено ${value} ${pluralize(value, 'сообщение', 'сообщения', 'сообщений')}`,
     ],
 })
 
@@ -81,23 +84,20 @@ const workers = reactive<{
     charts: {}
 })
 
-const loading = ref(false)
+const max = computed(() => {
+    if (totalChart.data.length === 0) {
+        return [0,0,0,0]
+    }
 
-const totalChartMax = computed<number>(() => {
-    let max: number = 0
+    let received_bytes_max = Math.max(...totalChart.data.map(i => i ? i[1] : 0).filter(v => v))
+    let received_messages_max = Math.max(...totalChart.data.map(i => i ? i[3] : 0).filter(v => v))
 
-    totalChart.data.forEach(item => {
-        if (item) {
-            item.forEach(val => {
-                if (val > max) {
-                    max = val
-                }
-            })
-        }
-    })
+    console.log([received_bytes_max, received_bytes_max, received_messages_max, received_messages_max])
 
-    return Math.max(1024, Math.ceil(max / 1024) * 1024)
+    return [received_bytes_max, received_bytes_max, received_messages_max, received_messages_max]
 })
+
+const loading = ref(false)
 
 let updateInterval
 
@@ -122,10 +122,12 @@ onMounted(() => {
             
             while (rIndex < r.length && r[rIndex].timestamp === cur) {
                 if (totalChart.data[dIndex] === undefined) {
-                    totalChart.data[dIndex] = [r[rIndex].sent_bytes, r[rIndex].received_bytes]
+                    totalChart.data[dIndex] = [r[rIndex].sent_bytes, r[rIndex].received_bytes, r[rIndex].sent_messages, r[rIndex].received_messages]
                 } else {
                     totalChart.data[dIndex]![0] += r[rIndex].sent_bytes
                     totalChart.data[dIndex]![1] += r[rIndex].received_bytes
+                    totalChart.data[dIndex]![2] += r[rIndex].sent_messages
+                    totalChart.data[dIndex]![3] += r[rIndex].received_messages
                 }
                 if (r[rIndex].name) {
                     let wChartIndex = dIndex - (totalChart.size-50)
@@ -138,10 +140,12 @@ onMounted(() => {
                             }
                         }
                         if (workers.charts[r[rIndex].name].data[wChartIndex] === undefined) {
-                            workers.charts[r[rIndex].name].data[wChartIndex] = [r[rIndex].sent_bytes, r[rIndex].received_bytes]
+                            workers.charts[r[rIndex].name].data[wChartIndex] = [r[rIndex].sent_bytes, r[rIndex].received_bytes, r[rIndex].sent_messages, r[rIndex].received_messages]
                         } else {
                             workers.charts[r[rIndex].name].data[wChartIndex]![0] += r[rIndex].sent_bytes
                             workers.charts[r[rIndex].name].data[wChartIndex]![1] += r[rIndex].received_bytes
+                            workers.charts[r[rIndex].name].data[wChartIndex]![2] += r[rIndex].sent_messages
+                            workers.charts[r[rIndex].name].data[wChartIndex]![3] += r[rIndex].received_messages
                         }
                         workers.charts[r[rIndex].name].labels[wChartIndex] = datetime.from(r[rIndex].timestamp)
                     }
@@ -165,13 +169,6 @@ onMounted(() => {
 
         loading.value = false
     })
-
-    updateInterval = setInterval(() => {
-        getChart(timestamp.now() - 60).then(r => {
-            totalChart.data = [...totalChart.data.slice(1), r[0]? [r.reduce((acc, i) => acc + i.sent_bytes, 0), r.reduce((acc, i) => acc + i.received_bytes, 0)] : undefined]
-            totalChart.labels = [...totalChart.labels.slice(1), r[0] ? datetime.from(r[0].timestamp) : undefined]
-        })
-    }, 60_000)
 })
 
 onUnmounted(() => {

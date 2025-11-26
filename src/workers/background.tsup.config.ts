@@ -1,8 +1,8 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: ['client/headhunter.ts'],
-  outDir: 'client/dist/headhunter',
+  entry: ['client/background.ts'],
+  outDir: 'client/dist/background',
   format: ['esm'],
   dts: false,
   sourcemap: false,

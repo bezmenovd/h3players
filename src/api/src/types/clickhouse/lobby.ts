@@ -14,6 +14,10 @@ export type Template = {
     name: string
 }
 
+export type TemplateWithInfo = Template & {
+    games_count: number
+}
+
 export type GameV = {
     player_id: number
     opponent_id: number

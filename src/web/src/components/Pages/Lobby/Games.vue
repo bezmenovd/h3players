@@ -5,7 +5,7 @@
         <Panel id="games-panel">
             <Header></Header>
             <Loader v-if="loading" :solid="true" />
-            <Games :items="gamesList.items" :class="{'updating': updating}"/>
+            <Games :items="gamesList.items" :class="{'updating': updating}" @wheel="scroll"/>
             <Footer :total="gamesList.total" :limit="gamesList.limit"></Footer>
         </Panel>
     </div>
@@ -27,6 +27,8 @@ import { useRoute } from 'vue-router'
 import { watch } from 'vue'
 import { getList as getPlayersList } from '../../../api/players';
 import { getList as getTemplatesList } from '../../../api/templates';
+import { debounce, throttle } from '../../../helpers/functions';
+import router from '../../../router';
 
 const gamesList = reactive<PaginatedTable<GameWithInfo>>({
     items: [],
@@ -41,7 +43,7 @@ const updating = ref(false)
 const route = useRoute()
 
 const load = (visible: boolean = true) => {
-    const offset = Number(route.query.offset) || 0
+    const offset = Math.min(Math.max(Number(route.query.offset) || 0, 0), gamesList.total)
     
     if (visible) {
         updating.value = true
@@ -62,14 +64,46 @@ const load = (visible: boolean = true) => {
     })
 }
 
+const onUpdate = throttle(load, 1000)
+
+const updateOnScrollFlag = ref(false)
+
+const scrollHeight = ref(0)
+const scroll = (event: WheelEvent) => {
+    const offset = Number.isFinite(Number(route.query.offset)) ? Number(route.query.offset) : 0
+
+    event.stopPropagation()
+    event.preventDefault()
+
+    scrollHeight.value += event.deltaY
+
+    let newOffset = offset + Math.round(scrollHeight.value / 50)
+    newOffset = Math.min(newOffset, gamesList.total - gamesList.limit)
+    newOffset = Math.max(newOffset, 0)
+
+    scrollHeight.value = 0
+
+    updateOnScrollFlag.value = true
+
+    router.replace({
+        query: {
+            ...route.query,
+            offset: String(newOffset)
+        }
+    })
+}
+
 onMounted(() => {
-    pageSize.value = Math.min(Math.floor((getContentSize().height - 150) / 50), 20)
+    pageSize.value = Math.min(Math.floor((getContentSize().height - 170) / 50), 20)
 
-    watch(() => route.query.offset, () => { load(true) }, { immediate: true })
+    watch(() => route.query.offset, () => { 
+        load(! updateOnScrollFlag.value)
+        updateOnScrollFlag.value = false
+    }, { immediate: true })
 
-    onBeforeUnmount(on('data.games-update', () => { load(false) }))
+    onBeforeUnmount(on('data.games.update', () => { onUpdate(false) }))
 
-    onBeforeUnmount(on('data.players-update', (msg) => {
+    onBeforeUnmount(on('data.players.update', (msg) => {
         const unknownPlayers: Set<number> = new Set()
 
         gamesList.items.forEach((g, i) => {
@@ -98,7 +132,7 @@ onMounted(() => {
         }
     }))
 
-    onBeforeUnmount(on('data.templates-update', (msg) => {
+    onBeforeUnmount(on('data.templates.update', (msg) => {
         const unknownTemplates: Set<number> = new Set()
 
         gamesList.items.forEach((g, i) => {

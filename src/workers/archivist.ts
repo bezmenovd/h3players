@@ -17,6 +17,7 @@ import { TemplatesAgent } from './src/agents/templates'
 
 async function main() {
     const USER = String(process.env.USER)
+    const PLAYER_ID = parseInt(process.argv[process.argv.length-1])
 
     logger.info('starting..')
 
@@ -36,15 +37,12 @@ async function main() {
     
     await client.connect()
 
-    process.on('uncaughtException', async (err: Error) => {
-        sendMessage(`${err.message}\n${err.stack}`)
-        await client.disconnect()
-        await client.connect()
-    })
-
     let historyAgent = new HistoryAgent(postman)
     let playersAgent = new PlayersAgent(postman)
     let templatesAgent = new TemplatesAgent(postman)
+
+    let currentId: number = 0
+    let tries: number = 1
 
     while (true) {
         if (! client.isConnected()) {
@@ -53,7 +51,14 @@ async function main() {
             continue
         }
 
-        let currentId = await redis.incr('archivist:currentId')
+        if (PLAYER_ID) {
+            currentId = PLAYER_ID
+            logger.info(`loading player#${PLAYER_ID} only`)
+        } else {
+            if (tries === 1) {
+                currentId = await redis.incr('archivist:currentId')
+            }
+        }
 
         await sleep(500)
 
@@ -279,14 +284,26 @@ async function main() {
                 }
             }
 
+            tries = 1
+
             logger.info(`loaded player#${currentId}`)
+
+            if (PLAYER_ID) {
+                return
+            }
         } catch (e: any) {
             if (! client.isConnected()) {
                 logger.info('error caused by disconnect')
-                continue
             }
 
-            sendMessage(`archivist (currentId=${currentId}): ${e.message}\n${e.stack}`)
+            tries++
+
+            if (tries <= 3) {
+                continue
+            } else {
+                sendMessage(`archivist (currentId=${currentId}): ${e.message}\n${e.stack}`)
+                tries = 1
+            }
         }
     }
 }

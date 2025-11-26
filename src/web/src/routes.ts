@@ -29,8 +29,8 @@ export default [
         component: PlayersDetail,
     },
     {
-        path: '/templates/list',
-        name: 'templates.list',
+        path: '/templates',
+        name: 'templates',
         component: TemplatesList,
     },
     {

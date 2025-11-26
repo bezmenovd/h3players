@@ -37,12 +37,6 @@ async function main() {
     
     await client.connect()
 
-    process.on('uncaughtException', async (err: Error) => {
-        sendMessage(`${err.message}\n${err.stack}`)
-        await client.disconnect()
-        await client.connect()
-    })
-
     let historyAgent = new HistoryAgent(postman)
     let playersAgent = new PlayersAgent(postman)
     let templatesAgent = new TemplatesAgent(postman)

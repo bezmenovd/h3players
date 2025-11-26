@@ -71,16 +71,16 @@ async function main() {
     redisSub.subscribe('live:spectator:online', (data) => {
         const { value } = JSON.parse(data) as { value: number }
 
-        subscribers.get('lobby.online-changed')?.forEach(client => {
-            client.send(JSON.stringify({ route: 'lobby.online-changed', value: value }))
+        subscribers.get('lobby.counter.online.update')?.forEach(client => {
+            client.send(JSON.stringify({ route: 'lobby.counter.online.update', value: value }))
         })
     })
 
     redisSub.subscribe('live:spectator:visitors', (data) => {
         const { value } = JSON.parse(data) as { value: number }
 
-        subscribers.get('lobby.visitors-changed')?.forEach(client => {
-            client.send(JSON.stringify({ route: 'lobby.visitors-changed', value: value }))
+        subscribers.get('lobby.counter.visitors.update')?.forEach(client => {
+            client.send(JSON.stringify({ route: 'lobby.counter.visitors.update', value: value }))
         })
     })
 
@@ -105,34 +105,40 @@ async function main() {
 
         dailyGamesOldValue = count[0].value
 
-        subscribers.get('lobby.games-changed')?.forEach(client => {
-            client.send(JSON.stringify({ route: 'lobby.games-changed', value: count[0].value }))
+        subscribers.get('lobby.counter.games.update')?.forEach(client => {
+            client.send(JSON.stringify({ route: 'lobby.counter.games.update', value: count[0].value }))
         })
     }, 500)
 
     redisSub.subscribe('live:processor:games', async (msg) => {
-        let data = JSON.parse(msg) as { id: number[] }
-
-        subscribers.get('data.games-update')?.forEach(client => {
-            client.send(JSON.stringify({ route: 'data.games-update', ...data }))
+        subscribers.get('data.games.update')?.forEach(client => {
+            client.send(JSON.stringify({ route: 'data.games.update' }))
         })
 
         sendDailyGames()
     })
 
+    redisSub.subscribe('live:processor:games_v', async (msg) => {
+        let data = JSON.parse(msg) as { player_id: number[] }
+
+        subscribers.get('data.games_v.update')?.forEach(client => {
+            client.send(JSON.stringify({ route: 'data.games_v.update', ...data }))
+        })
+    })
+
     redisSub.subscribe('live:processor:players', async (msg) => {
         let data = JSON.parse(msg) as { id: number[] }
 
-        subscribers.get('data.players-update')?.forEach(client => {
-            client.send(JSON.stringify({ route: 'data.players-update', ...data }))
+        subscribers.get('data.players.update')?.forEach(client => {
+            client.send(JSON.stringify({ route: 'data.players.update', ...data }))
         })
     })
 
     redisSub.subscribe('live:processor:templates', async (msg) => {
         let data = JSON.parse(msg) as { id: number[] }
 
-        subscribers.get('data.templates-update')?.forEach(client => {
-            client.send(JSON.stringify({ route: 'data.templates-update', ...data }))
+        subscribers.get('data.templates.update')?.forEach(client => {
+            client.send(JSON.stringify({ route: 'data.templates.update', ...data }))
         })
     })
 }

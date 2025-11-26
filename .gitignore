@@ -7,5 +7,6 @@ dist/workers/journalist/*
 dist/workers/archivist/*
 dist/workers/coordinator/*
 dist/workers/processor/*
+dist/workers/background/*
 yarn-cache
 output

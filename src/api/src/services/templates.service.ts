@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { createClient } from '@clickhouse/client';
-import { Template } from '../types/clickhouse/lobby';
+import { TemplateWithInfo } from '../types/clickhouse/lobby';
 import { Paginated } from '../types/api';
 
 @Injectable()
@@ -12,60 +12,66 @@ export class TemplatesService {
         database: 'lobby',
     })
 
-    async getList(limit: number, offset: number, ids: number[] = []): Promise<Paginated<Template>> {
-        let items = await (await this.clickhouse.query({
-            query: `
-                select * 
-                from templates
-                ${ ids.length > 0 ? `where id in {ids:Array(UInt32)}` : '' }
-                order by id desc
-                limit {limit:UInt32} offset {offset:UInt32}
-            `,
-            query_params: {
-                limit,
-                offset,
-                ids,
-            },
+    async getList(limit: number, offset: number, ids: number[] = [], query: string = ''): Promise<Paginated<TemplateWithInfo>> {
+        const whereClauses: string[] = []
+    
+        if (ids.length > 0) {
+            whereClauses.push('id in {ids:Array(UInt32)}')
+        }
+        if (query.length > 0) {
+            whereClauses.push('positionCaseInsensitive(templates.name, {query:String}) > 0')
+        }
+        whereClauses.push('templates.id != 1')
+    
+        const where = whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''
+    
+        const orderBy = query.length > 0
+            ? 'ORDER BY levenshteinDistanceUTF8(upper(name), {query:String}) ASC, games_count DESC, id DESC'
+            : 'ORDER BY games_count DESC, id DESC'
+    
+        const sql = `
+            SELECT 
+                min(templates.id) as id,
+                templates.name as name,
+                count(games.id) as games_count
+            FROM templates
+            LEFT JOIN games ON templates.id = games.template_id
+            ${where}
+            GROUP BY templates.name
+            ${orderBy}
+            LIMIT {limit:UInt32} OFFSET {offset:UInt32}
+        `
+    
+        const items = await (await this.clickhouse.query({
+            query: sql,
+            query_params: { limit, offset, ids, query },
             format: 'JSONEachRow',
-        })).json<Template>()
-
-        let total = await (await this.clickhouse.query({
+        })).json<TemplateWithInfo>()
+    
+        const totalResult = await (await this.clickhouse.query({
             query: `
-                select count(*) as total
-                from templates
-                ${ ids.length > 0 ? `where id in {ids:Array(UInt32)}` : '' }
+            SELECT count() as total
+            FROM (
+                SELECT 1
+                FROM templates
+                LEFT JOIN games ON templates.id = games.template_id
+                ${where}
+                GROUP BY templates.name
+            )
             `,
-            query_params: {
-                limit,
-                offset,
-                ids,
-            },
+            query_params: { ids, query },
             format: 'JSONEachRow',
         })).json<{ total: number }>()
-
+    
         return {
-            total: Number(total[0].total),
+            total: Number(totalResult[0].total),
             limit,
             offset,
-            items,
+            items: items.map(i => ({
+                id: i.id,
+                name: i.name,
+                games_count: Number(i.games_count),
+            })),
         }
-    }
-
-    async search(query: string, limit: number): Promise<Template[]> {
-        let result = await (await this.clickhouse.query({
-            query: `
-                SELECT * FROM
-                players
-                WHERE positionCaseInsensitive(name, {query:String}) > 0
-                ORDER BY levenshteinDistanceUTF8(upper(name), {query:String}) ASC
-                LIMIT ${limit}
-            `,
-            query_params: {
-                query, 
-            },
-            format: 'JSONEachRow',
-        })).json<Template>()
-
-        return result
     }
 }

@@ -29,9 +29,12 @@ const offset = computed(() => {
 })
 
 const info = computed(() => {
+    if (props.total === 0) {
+        return ''
+    }
     const start = offset.value + 1
     const end = Math.min(offset.value + props.limit, props.total)
-    return `${start}-${end} из ${props.total}`
+    return `${start}-${end} из ${Intl.NumberFormat('ru-RU').format(props.total)}`
 })
 
 function setOffset(v: number) {
@@ -47,8 +50,8 @@ const canPrev = computed(() => offset.value > 0)
 const canNext = computed(() => offset.value + props.limit < props.total)
 
 const toStart = () => setOffset(0)
-const toPrev = () => canPrev.value && setOffset(offset.value - props.limit)
-const toNext = () => canNext.value && setOffset(offset.value + props.limit)
+const toPrev = () => canPrev.value && setOffset(Math.max(offset.value - props.limit, 0))
+const toNext = () => canNext.value && setOffset(Math.min(offset.value + props.limit, props.total))
 const toEnd  = () => {
     const last = Math.floor((props.total - 1) / props.limit) * props.limit
     setOffset(last)

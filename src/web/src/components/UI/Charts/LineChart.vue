@@ -39,7 +39,7 @@
                     <div v-if="props.labels[cursorIndex]" class="cursor-label">{{ props.labels[cursorIndex] }}</div>
                 </div>
                 <template v-for="(color, j) in props.colors">
-                    <div class="cursor-dot" v-if="props.data[cursorIndex]" :style="`bottom: ${ ((props.data[cursorIndex]![j]) / props.max) * props.height }px; background: ${color};`" :key="j"/>
+                    <div class="cursor-dot" v-if="props.data[cursorIndex]" :style="`bottom: ${ ((props.data[cursorIndex]![j]) / props.max[j]) * props.height }px; background: ${color};`" :key="j"/>
                 </template>
             </div>
         </div>
@@ -55,7 +55,7 @@ const props = defineProps<{
     colors: string[],
     data: (number[]|undefined)[]
     labels: (string|undefined)[],
-    max: number,
+    max: number[],
     formatters: ((value: number) => string)[]
     showNoData: boolean,
 }>()
@@ -73,7 +73,7 @@ const lines = computed<[number, number][][][]>(() => {
     for (let i = 0; i < props.data.length; i++) {
         if (props.data[i] !== undefined) {
             for (let j = 0; j < itemLength; j++) {
-                currentLines[j].push([Math.round(i / (props.data.length-1) * widthRef.value), Math.round(props.height - (Number(props.data[i]![j]) / props.max) * props.height)])
+                currentLines[j].push([Math.round(i / (props.data.length-1) * widthRef.value), Math.round(props.height - (Number(props.data[i]![j]) / props.max[j]) * props.height)])
             }
         } else {
             for (let j = 0; j < itemLength; j++) {

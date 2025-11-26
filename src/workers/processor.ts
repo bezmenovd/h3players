@@ -1,12 +1,9 @@
 import { logger } from './src/services/logger'
 import { createClient } from 'redis'
-import { getHdModVersion } from './src/version'
-import { sendMessage } from './src/services/telegram'
 import { sleep } from './src/helpers/sleep'
 import { GameModel, GameVModel, PlayerModel, TemplateModel } from './src/models/lobby'
 import { timestamp } from './src/helpers/timestamp'
 import { lobby } from './src/services/clickhouse'
-import { debounce } from './src/helpers/functions'
 
 
 async function main() {-
@@ -72,9 +69,7 @@ async function main() {-
 
                     logger.info(`${games_to_insert.length} games [${games_to_insert.map(g => g.id).join(',')}]`)
 
-                    redisPub.publish('live:processor:games', JSON.stringify({
-                        id: games_to_insert.map(g => g.id),
-                    }))
+                    redisPub.publish('live:processor:games', '')
                 }
 
                 batch = []
@@ -133,7 +128,6 @@ async function main() {-
                     logger.info(`${games_v_to_insert.length} games_v [${games_v_to_insert.map(g => g.game_id).join(',')}]`)
 
                     redisPub.publish('live:processor:games_v', JSON.stringify({
-                        game_id: [...new Set(games_v_to_insert.map(g => g.game_id))],
                         player_id: [...new Set(games_v_to_insert.map(g => g.player_id))],
                     }))
                 }
