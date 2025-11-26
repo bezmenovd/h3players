@@ -21,12 +21,13 @@ NProgress.configure({
 })
 
 router.beforeEach((to, from, next) => {
-    NProgress.start();
     next();
 
     if (from.name === to.name) {
         return
     }
+    
+    NProgress.start();
 
     const navigationStore = useNavigationStore()
 
