@@ -10,4 +10,5 @@ dist/workers/processor/*
 dist/workers/background/*
 dist/wss/*
 yarn-cache
+docker/nginx/ssl/*
 output
