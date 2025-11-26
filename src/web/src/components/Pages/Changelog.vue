@@ -29,6 +29,10 @@ import changelog from '../../meta/changelog.json';
     grid-template-columns: 60px 100px 1fr;
     gap: 20px;
 }
+.version-changes {
+    gap: 3px;
+    display: grid;
+}
 .version-change {
     display: flex;
     gap: 5px;
@@ -36,12 +40,14 @@ import changelog from '../../meta/changelog.json';
 .version-name {
     font-size: 15px;
     display: flex;
-    align-items: center;
+    align-items: baseline;
     font-weight: bold;
+    padding-top: 1px;
 }
 .version-date {
     font-size: 15px;
     display: flex;
-    align-items: center;
+    align-items: baseline;
+    padding-top: 1px;
 }
 </style>
