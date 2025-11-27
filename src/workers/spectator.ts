@@ -31,16 +31,31 @@ async function main() {
 
     await redisPub.connect()
 
-    const client = new Client('spectator', 'h3players_bot1')
+    const client = new Client('spectator', 'h3players_bot2')
     const postman = new Postman(client)
     
     const supervisor = new Supervisor()
     supervisor.addClient(client)
     
     let state: State;
+
+    let updateOnlineInterval
     
     client.onConnect(() => {
         state = createState()
+        updateOnlineInterval = setInterval(async () => {
+            await lobby().insert({
+                table: 'online',
+                values: [ { online: getOnline() } ],
+                format: 'JSONEachRow',
+            })
+        }, 15_000)
+    })
+
+    client.onDisconnect(() => {
+        if (updateOnlineInterval!) {
+            clearInterval(updateOnlineInterval)
+        }
     })
 
     const getOnline = () => {
@@ -209,14 +224,6 @@ async function main() {
         await client.disconnect()
         await client.connect()
     })
-    
-    setInterval(async () => {
-        await lobby().insert({
-            table: 'online',
-            values: [ { online: getOnline() } ],
-            format: 'JSONEachRow',
-        })
-    }, 60_000)
 }
 
 main()

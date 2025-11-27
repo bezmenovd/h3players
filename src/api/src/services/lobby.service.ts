@@ -33,10 +33,11 @@ export class LobbyService {
             query: `
                 select 
                     toUnixTimestamp(toStartOfMinute(datetime)) as timestamp,
-                    online 
+                    argMax(online, datetime) AS online
                 from online 
                 where datetime > {after:UInt32} 
-                order by datetime asc`,
+                group by timestamp
+                order by timestamp asc`,
             query_params: {
                 after,
             },
