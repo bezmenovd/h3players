@@ -26,7 +26,7 @@ export class TemplatesService {
         const where = whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''
     
         const orderBy = query.length > 0
-            ? 'ORDER BY levenshteinDistanceUTF8(upper(name), {query:String}) ASC, games_count DESC, id DESC'
+            ? 'ORDER BY games_count DESC, levenshteinDistanceUTF8(upper(name), {query:String}) ASC, id DESC'
             : 'ORDER BY games_count DESC, id DESC'
     
         const sql = `

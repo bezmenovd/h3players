@@ -25,11 +25,11 @@ const click = () => {
     width: 36px;
     height: 36px;
     padding: 6px;
-    background-size: 20px 20px;
+    background-size: 18px 18px;
     background-position: center;
     background-repeat: no-repeat;
     left: 54px;
-    top: 38px;
+    top: 39px;
     opacity: .5;
     cursor: pointer;
 }
