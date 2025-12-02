@@ -224,6 +224,11 @@ async function main() {
         await client.disconnect()
         await client.connect()
     })
+
+    setInterval(async () => {
+        await client.disconnect()
+        await client.connect()
+    }, 300_000)
 }
 
 main()
