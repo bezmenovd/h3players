@@ -37,6 +37,7 @@ services:
     volumes:
       - ./:/var/www
       - yarn-cache:/root/.yarn/cache
+    network_mode: host
     command: sleep infinity
 
   wss:
