@@ -13,6 +13,8 @@ import { debounce } from './src/helpers/functions'
 
 async function main() {
     logger.info('starting..')
+
+    const USER = String(process.env.USER)
     
     const redis = createClient({
         socket: {
@@ -31,7 +33,7 @@ async function main() {
 
     await redisPub.connect()
 
-    const client = new Client('spectator', 'h3players_bot2')
+    const client = new Client('spectator', USER)
     const postman = new Postman(client)
     
     const supervisor = new Supervisor()
