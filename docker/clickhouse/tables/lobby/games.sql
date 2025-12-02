@@ -33,4 +33,4 @@ CREATE TABLE games
     opponent_new_rating UInt16
 )
 ENGINE = MergeTree()
-ORDER BY (id);
+ORDER BY (end_timestamp, id);

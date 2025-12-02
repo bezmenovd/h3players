@@ -42,10 +42,7 @@ const end = (game: GameWithInfo): string => {
 }
 
 const duration = (game: GameWithInfo): string => {
-    if (game.end_timestamp === game.start_timestamp) {
-        return `-`
-    }
-    let minutes = Math.floor((game.end_timestamp - game.start_timestamp) / 60)
+    let minutes = Math.floor(Math.max(game.end_timestamp - game.start_timestamp, 60) / 60)
     return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
 }
 
