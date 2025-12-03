@@ -228,74 +228,74 @@ async function main() {
             games_to_insert.forEach(g => redis.rPush('processor:games', JSON.stringify(g)))
             games_v_to_insert.forEach(g => redis.rPush('processor:games_v', JSON.stringify(g)))
 
-            if (games_to_insert.length > 0) {
-                let opponents = games_v_to_insert.map(g => g.opponent_id)
-                let templates = games_to_insert.map(g => g.template_id)
 
-                if (opponents.length > 0) {
-                    let unknownOpponents = (await (await lobby().query({
-                        query: `
-                            SELECT arrayJoin({ids:Array(UInt32)}) AS id
-                            WHERE NOT dictHas('players_dictionary', id)
-                        `,
-                        format: 'JSONEachRow',
-                        query_params: {
-                            ids: opponents.concat([currentId]),
-                        },
-                    })).json<{ id: number }>()).map(r => r.id)
+            let opponents = games_v_to_insert.map(g => g.opponent_id).concat([currentId])
 
-                    if (unknownOpponents.length > 0) {
-                        let players_to_insert: PlayerModel[] = []
-                        let i = 0
+            {
+                let unknownOpponents = (await (await lobby().query({
+                    query: `
+                        SELECT arrayJoin({ids:Array(UInt32)}) AS id
+                        WHERE NOT dictHas('players_dictionary', id)
+                    `,
+                    format: 'JSONEachRow',
+                    query_params: {
+                        ids: opponents,
+                    },
+                })).json<{ id: number }>()).map(r => r.id)
 
-                        while (i < unknownOpponents.length) {
-                            let chunk = unknownOpponents.slice(i, Math.min(i+10, unknownOpponents.length))
-                            let players = await playersAgent.get(chunk)
+                if (unknownOpponents.length > 0) {
+                    let players_to_insert: PlayerModel[] = []
+                    let i = 0
 
-                            players.items.forEach(i => {
-                                players_to_insert.push(i)
-                            })
+                    while (i < unknownOpponents.length) {
+                        let chunk = unknownOpponents.slice(i, Math.min(i+10, unknownOpponents.length))
+                        let players = await playersAgent.get(chunk)
 
-                            i += 10
+                        players.items.forEach(i => {
+                            players_to_insert.push(i)
+                        })
 
-                            await sleep(700)
-                        }
-                        
-                        players_to_insert.forEach(p => redis.rPush('processor:players', JSON.stringify(p)))
+                        i += 10
+
+                        await sleep(700)
                     }
+                    
+                    players_to_insert.forEach(p => redis.rPush('processor:players', JSON.stringify(p)))
                 }
+            }
 
-                if (templates.length > 0) {
-                    let unknownTemplates = (await (await lobby().query({
-                        query: `
-                            SELECT arrayJoin({ids:Array(UInt32)}) AS id
-                            WHERE NOT dictHas('templates_dictionary', id)
-                        `,
-                        format: 'JSONEachRow',
-                        query_params: {
-                            ids: templates,
-                        },
-                    })).json<{ id: number }>()).map(r => r.id)
+            let templates = games_to_insert.map(g => g.template_id)
 
-                    if (unknownTemplates.length > 0) {
-                        let templates_to_insert: TemplateModel[] = []
-                        let i = 0
+            if (templates.length > 0) {
+                let unknownTemplates = (await (await lobby().query({
+                    query: `
+                        SELECT arrayJoin({ids:Array(UInt32)}) AS id
+                        WHERE NOT dictHas('templates_dictionary', id)
+                    `,
+                    format: 'JSONEachRow',
+                    query_params: {
+                        ids: templates,
+                    },
+                })).json<{ id: number }>()).map(r => r.id)
 
-                        while (i < unknownTemplates.length) {
-                            let chunk = unknownTemplates.slice(i, Math.min(i+10, unknownTemplates.length))
-                            let templates = await templatesAgent.get(chunk)
+                if (unknownTemplates.length > 0) {
+                    let templates_to_insert: TemplateModel[] = []
+                    let i = 0
 
-                            templates.items.forEach(i => {
-                                templates_to_insert.push(i)
-                            })
+                    while (i < unknownTemplates.length) {
+                        let chunk = unknownTemplates.slice(i, Math.min(i+10, unknownTemplates.length))
+                        let templates = await templatesAgent.get(chunk)
 
-                            i += 10
+                        templates.items.forEach(i => {
+                            templates_to_insert.push(i)
+                        })
 
-                            await sleep(700)
-                        }
+                        i += 10
 
-                        templates_to_insert.forEach(t => redis.rPush('processor:templates', JSON.stringify(t)))
+                        await sleep(700)
                     }
+
+                    templates_to_insert.forEach(t => redis.rPush('processor:templates', JSON.stringify(t)))
                 }
             }
 
