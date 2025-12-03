@@ -60,6 +60,12 @@ async function main() {
         }
     })
 
+    process.on('uncaughtException', async (err: Error) => {
+        sendMessage(`${err.message}\n${err.stack}`)
+        await client.disconnect()
+        await client.connect()
+    })
+
     const getOnline = () => {
         return state.players.size - state.hiddenPlayers.size
     }
@@ -220,19 +226,6 @@ async function main() {
     })
     
     await client.connect()
-
-    process.on('uncaughtException', async (err: Error) => {
-        sendMessage(`${err.message}\n${err.stack}`)
-        await client.disconnect()
-        await client.connect()
-    })
-
-    setInterval(async () => {
-        if (client.isConnected()) {
-            await client.disconnect()
-            await client.connect()
-        }
-    }, 300_000)
 }
 
 main()

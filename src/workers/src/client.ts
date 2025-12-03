@@ -52,6 +52,10 @@ export class Client {
         }
 
         this.authstr = authstr
+
+        if (String(process.env.DEBUG || '') === 'true') {
+            this.debug()
+        }
     }
 
     public async connect(): Promise<void> {
@@ -64,7 +68,9 @@ export class Client {
 
         this.authstr = this.authstr.substring(0, 482) + bytesToHex(intToBytes(await getHdModVersion()), '') + this.authstr.substring(490)
 
-        return new Promise((resolve) => {
+        const proxy = String(process.env.PROXY || '')
+
+        return new Promise(async (resolve) => {
             this.socket = net.createConnection({
                 host: config.server.ip,
                 port: config.server.port,
@@ -95,7 +101,9 @@ export class Client {
     public debug(value: boolean = true): void {
         this.debugging = value
         if (value) {
-            fs.rmdirSync('output/server/')
+            if (fs.existsSync('output/server/')) {
+                fs.rmdirSync('output/server/')
+            }
         }
     }
     
