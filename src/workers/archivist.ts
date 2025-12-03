@@ -240,7 +240,7 @@ async function main() {
                         `,
                         format: 'JSONEachRow',
                         query_params: {
-                            ids: opponents,
+                            ids: opponents.concat([currentId]),
                         },
                     })).json<{ id: number }>()).map(r => r.id)
 
