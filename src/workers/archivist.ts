@@ -72,6 +72,7 @@ async function main() {
             let games: Game[] = []
 
             let beforeTimestamp: number|undefined = undefined
+            let total = 0
 
             while (true) {
                 let history = await historyAgent.get(currentId, beforeTimestamp)
@@ -89,7 +90,10 @@ async function main() {
                     games.push(history.games[i])
                 }
 
+                total += history.onPage
+
                 if (history.games.length !== 20) break
+                if (total >= history.total) break
 
                 beforeTimestamp = history.games[19].endTimestamp - 1
 
