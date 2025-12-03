@@ -32,9 +32,11 @@ const info = computed(() => {
     if (props.total === 0) {
         return ''
     }
+    
     const start = offset.value + 1
     const end = Math.min(offset.value + props.limit, props.total)
-    return `${start}-${end} из ${Intl.NumberFormat('ru-RU').format(props.total)}`
+
+    return `${Intl.NumberFormat('ru-RU').format(start)}-${Intl.NumberFormat('ru-RU').format(end)} из ${Intl.NumberFormat('ru-RU').format(props.total)}`
 })
 
 function setOffset(v: number) {
