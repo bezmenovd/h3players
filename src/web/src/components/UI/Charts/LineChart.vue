@@ -23,6 +23,20 @@
                     >
                     </div>
                 </div>
+                <div class="chart-grid-yaxis" v-if="props.showGrid">
+                    <template v-for="label in yLabels">
+                        <div class="chart-grid-yaxis-label" :style="`bottom: ${ Math.min(Math.max(Math.round((label / props.max[0]) * heightRef - 7), 0), heightRef-14) }px`">{{ label }}</div>
+                        <div class="chart-grid-yaxis-line" v-if="label > 0 && label < props.max[0]" :style="`bottom: ${ Math.round((label / props.max[0]) * heightRef) }px; width: ${widthRef}px; left: ${ String(label).length * 7.5 + 4 }px`"></div>
+                    </template>
+                </div>
+                <div class="chart-grid-xaxis-wrapper" v-if="props.showGrid">
+                    <div class="chart-grid-xaxis" :style="`width: ${fullWidthRef}px; right: ${right}px`">
+                        <template v-for="(label, pos) in xLabels">
+                            <div class="chart-grid-xaxis-label" :style="`left: ${ Math.min(Math.max(Math.round((pos / props.data.length) * fullWidthRef), 0), fullWidthRef) }px`">{{ label }}</div>
+                            <div class="chart-grid-xaxis-line" :style="`left: ${ Math.min(Math.max(Math.round((pos / props.data.length) * fullWidthRef), 0), fullWidthRef) }px`"></div>
+                        </template>
+                    </div>
+                </div>
                 <div class="chart-ui">
                     <div class="cursor" :style="`left: ${cursorX-1}px`" v-if="mouse.in">
                         <div class="cursor-line" v-if="props.data[cursorIndex]" />
@@ -43,7 +57,7 @@
                             <div v-if="props.labels[cursorIndex]" class="cursor-label">{{ props.labels[cursorIndex] }}</div>
                         </div>
                         <template v-for="(color, j) in props.colors">
-                            <div class="cursor-dot" v-if="props.data[cursorIndex]" :style="`bottom: ${ ((props.data[cursorIndex]![j]) / props.max[j]) * heightRef }px; background: ${color};`" :key="j"/>
+                            <div class="cursor-dot" v-if="props.data[cursorIndex]" :style="`bottom: ${ ((props.data[cursorIndex]![j]) / props.max[j]) * heightRef }px; background: radial-gradient(circle, ${color} 0%, ${color} 33%,transparent 100%);`" :key="j"/>
                         </template>
                     </div>
                 </div>
@@ -57,6 +71,7 @@
 
 <script setup lang="ts">
 import { computed, defineProps, nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
+import { generateYLabels } from './linechart';
 
 const props = defineProps<{
     id: string,
@@ -69,6 +84,7 @@ const props = defineProps<{
     formatters: ((value: number) => string)[]
     showNoData?: boolean,
     showGrid?: boolean,
+    xLabels?: { [key: number]: string },
 }>()
 
 const widthRef = ref(0)
@@ -91,7 +107,7 @@ const lines = computed<[number, number][][][]>(() => {
     for (let i = 0; i < props.data.length; i++) {
         if (props.data[i] !== undefined) {
             for (let j = 0; j < itemLength; j++) {
-                currentLines[j].push([Math.round(i / (props.data.length-1) * fullWidthRef.value), Math.round(heightRef.value - (Number(props.data[i]![j]) / props.max[j]) * heightRef.value)])
+                currentLines[j].push([Math.round(i / (props.data.length-1) * fullWidthRef.value)-1, Math.round(heightRef.value - (Number(props.data[i]![j]) / props.max[j]) * heightRef.value)])
             }
         } else {
             for (let j = 0; j < itemLength; j++) {
@@ -123,7 +139,7 @@ const noData = computed<[number, number][]>(() => {
     for (let i = 0; i < props.data.length; i++) {
         if (props.data[i] !== undefined) {
             if (currentNoDataStart !== -1) {
-                result.push([currentNoDataStart, Math.round(i / (props.data.length-1) * fullWidthRef.value)])
+                result.push([currentNoDataStart-1, Math.round(i / (props.data.length-1) * fullWidthRef.value)])
                 currentNoDataStart = -1
             }
         } else {
@@ -216,6 +232,8 @@ const right = computed<number>(() => {
     return Math.min(0, ((props.data.length - props.size!) - scrollPos.value) * (fullWidthRef.value / props.data.length) * -1)
 })
 
+const yLabels = ref<number[]>([])
+
 let scrollHandler: (event: PointerEvent) => void
 
 onMounted(async () => {
@@ -231,6 +249,13 @@ onMounted(async () => {
     if (showScroll.value) {
         scrollButtonWidth.value = Math.min(Math.round((props.size! / props.data.length) * (widthRef.value - 4)), widthRef.value-4)
         scrollButtonX.value = Math.round(((props.data.length - props.size!) / props.data.length) * (widthRef.value - 2)) + 2
+    }
+
+    if (props.showGrid) {
+        if (props.colors.length === 1) {
+            yLabels.value = generateYLabels(props.max[0])
+            props.max[0] = yLabels.value[yLabels.value.length-1]
+        }
     }
 
     show.value = true
@@ -286,6 +311,7 @@ onMounted(async () => {
             newScrollXValue = Math.min(newScrollXValue, widthRef.value - 2 - scrollButtonWidth.value)
             scrollButtonX.value = newScrollXValue
         })
+
     }
 })
 
@@ -310,6 +336,63 @@ onUnmounted(() => {
     height: 100%;
     position: relative;
 }
+.chart-grid-yaxis {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+}
+.chart-grid-yaxis-label {
+    position: absolute;
+    left: 0;
+    pointer-events: none;
+    opacity: .4;
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+    padding: 1px;
+}
+.chart-grid-yaxis-line {
+    position: absolute;
+    height: 1px;
+    border: 1px dashed #ffffff0f;
+}
+.chart-grid-xaxis {
+    pointer-events: none;
+    position: absolute;
+    bottom: 0;
+    height: 100%;
+    z-index: 1;
+}
+.chart-grid-xaxis-wrapper {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 60px;
+    height: 100%;
+    width: calc(100% - 60px);
+    overflow: hidden;
+}
+.chart-grid-xaxis-label {
+    position: absolute;
+    bottom: 0;
+    pointer-events: none;
+    opacity: .4;
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+    padding: 1px;
+    transform: translateX(-50%);
+}
+.chart-grid-xaxis-line {
+    position: absolute;
+    width: 1px;
+    height: calc(100% - 16px);
+    bottom: 16px;
+    border: 1px dashed #ffffff0f;
+    transform: translateX(-2px);
+}
 .chart-scroll {
     height: 16px;
     width: 100%;
@@ -331,6 +414,7 @@ onUnmounted(() => {
 .chart-line {
     height: 100%;
     position: absolute;
+    z-index: 2;
     top: 0;
     right: 0;
 }
@@ -338,6 +422,7 @@ onUnmounted(() => {
     width: 100%;
     height: 100%;
     position: absolute;
+    z-index: 5;
     top: 0;
     right: 0;
 }

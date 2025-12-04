@@ -20,6 +20,8 @@
                         :labels="ratingChart.labels" 
                         :max="ratingChart.max" 
                         :formatters="ratingChart.formatters"
+                        :show-grid="true"
+                        :x-labels="ratingChart.xLabels"
                     />
                 </div>
             </template>
@@ -39,7 +41,7 @@ import { getPlayer } from '../../../api/players'
 import { GameV, getList } from '../../../api/games_v'
 import { useRoute } from 'vue-router'
 import LineChart from '../../UI/Charts/LineChart.vue'
-import { date, timestamp } from '../../../helpers/timestamp'
+import { date, month, timestamp } from '../../../helpers/timestamp'
 import TabsByHash from '../../UI/Tabs/TabsByHash.vue'
 import router from '../../../router'
 
@@ -81,6 +83,7 @@ const ratingChart = reactive<{
     formatters: ((value: number) => string)[],
     max: number[],
     size: number,
+    xLabels: { [key: number]: string },
 }>({
     data: [],
     labels: [],
@@ -90,6 +93,7 @@ const ratingChart = reactive<{
     ],
     max: [0],
     size: 183,
+    xLabels: {},
 })
 
 
@@ -110,7 +114,7 @@ onMounted(async () => {
     
             ratingChart.data = new Array<number[]|undefined>(ratingChartDataLength)
             ratingChart.labels = new Array<string|undefined>(ratingChartDataLength)
-            ratingChart.max = [1200]
+            ratingChart.max = [0]
     
             let now = timestamp.nowDay()
             let cur = now - ((ratingChartDataLength-1) * 86400)
@@ -135,17 +139,22 @@ onMounted(async () => {
                     }
                 }
     
-                if (ratingChart.data[dIndex] && ratingChart.data[dIndex]![0] > (ratingChart.max[0] + 200)) {
-                    ratingChart.max[0] = ratingChart.data[dIndex]![0] + 200
+                if (ratingChart.data[dIndex] && ratingChart.data[dIndex]![0] > ratingChart.max[0]) {
+                    ratingChart.max[0] = Math.ceil(ratingChart.data[dIndex]![0] / 250) * 250
                 }
     
                 ratingChart.labels[dIndex] = date.from(cur)
+
+                if (cur === timestamp.startOfMonth(cur)) {
+                    ratingChart.xLabels[dIndex] = '01.' + month.from(cur)
+                }
     
                 cur += 86400
                 dIndex++
             }
     
             ratingChart.show = true
+            console.log(ratingChart.xLabels)
 
             loading.value = false
         })
