@@ -23,7 +23,7 @@
         </div>
     </div>
 </template>
-1
+
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { GameVWithInfo } from '../../../../api/games_v';

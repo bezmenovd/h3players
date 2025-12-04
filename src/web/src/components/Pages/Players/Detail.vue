@@ -27,7 +27,7 @@
             </template>
             <template v-if="tab === 'games'">
                 <Header></Header>
-                <Games :items="gamesList.items.slice(gamesListOffset, gamesListOffset+gamesList.limit)" />
+                <Games :items="gamesList.items.slice(gamesListOffset, gamesListOffset+gamesList.limit)" @wheel="scroll"/>
                 <Footer :limit="gamesList.limit" :total="gamesList.total"></Footer>
             </template>
         </Panel>
@@ -67,9 +67,10 @@ const gamesList = reactive<PaginatedTable<GameVWithInfo>>({
     limit: 0,
 })
 
-const gamesListOffset = ref(0)
-
-watch(() => route.query.offset, (newOffset) => gamesListOffset.value = parseInt(String(newOffset)), { immediate: true })
+const gamesListOffset = computed<number>(() => {
+    const v = Number(route.query.offset)
+    return Number.isFinite(v) && v >= 0 ? v : 0
+})
 
 const tab = ref<string>('');
 const tabs = [
@@ -89,6 +90,29 @@ watch(() => route.params.tab, (newTabCode) => {
     tab.value = String(newTabCode);
 }, { immediate: true });
 
+
+const scrollHeight = ref(0)
+const scroll = (event: WheelEvent) => {
+    const offset = Number.isFinite(Number(route.query.offset)) ? Number(route.query.offset) : 0
+
+    event.stopPropagation()
+    event.preventDefault()
+
+    scrollHeight.value += event.deltaY
+
+    let newOffset = offset + Math.round(scrollHeight.value / 50)
+    newOffset = Math.min(newOffset, gamesList.total - gamesList.limit)
+    newOffset = Math.max(newOffset, 0)
+
+    scrollHeight.value = 0
+
+    router.replace({
+        query: {
+            ...route.query,
+            offset: String(newOffset)
+        }
+    })
+}
 
 
 const ratingChart = reactive<{
@@ -123,11 +147,11 @@ onMounted(async () => {
             gamesList.limit = gamesListSize
             gamesList.total = r.total
     
-            let gamesHistorical = r.items.reverse()
+            let gamesHistorical = r.items.slice().reverse()
             let ratingChartDataLength = 183
     
             if (r.items.length > 0) {
-                ratingChartDataLength = Math.max(ratingChartDataLength, Math.ceil((timestamp.now() - gamesHistorical[0].end_timestamp) / 86400))
+                ratingChartDataLength = Math.max(ratingChartDataLength, Math.floor((timestamp.nowDay() - timestamp.startOfDay(gamesHistorical[0].end_timestamp)) / 86400))
             }
             ratingChartDataLength = Math.max(ratingChartDataLength, 183)
     
@@ -136,7 +160,7 @@ onMounted(async () => {
             ratingChart.max = [0]
     
             let now = timestamp.nowDay()
-            let cur = now - ((ratingChartDataLength-1) * 86400)
+            let cur = now - (ratingChartDataLength * 86400)
 
             let dIndex = 0
             let rIndex = 0

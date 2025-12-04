@@ -36,7 +36,7 @@ export type GameVWithInfo = GameV & {
 }
 
 
-export async function getList(playerId: number, limit?: number, offset?: number): Promise<Paginated<GameV>> {
+export async function getList(playerId: number, limit?: number, offset?: number): Promise<Paginated<GameVWithInfo>> {
     return axios.get(`/api/games_v`, {
         params: {
             playerId,
