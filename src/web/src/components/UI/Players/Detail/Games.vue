@@ -1,13 +1,13 @@
 <template>
     <div class="games">
-        <div class="game" v-for="item in props.items" :data-status="item.status">
+        <div class="game" v-for="item in props.items" :data-status="(item.is_win ? 'win' : (item.is_loss ? 'loss' : 'draw'))">
             <div class="game-end">{{ end(item) }}</div>
             <div class="game-duration">{{ duration(item) }}</div>
             <div class="game-players">
-                <div class="game-host">
-                    <router-link :to="{ name: 'players.detail', params: { id: item.host_id }}">{{ item.host_name || '?' }}</router-link>
-                    <Rating :value="item.host_new_rating" />
-                    <RatingDiff :value="item.host_new_rating - item.host_old_rating" />
+                <div class="game-player">
+                    <router-link :to="{ name: 'players.detail', params: { id: item.player_id }}">{{ item.player_name || '?' }}</router-link>
+                    <Rating :value="item.player_new_rating" />
+                    <RatingDiff :value="item.player_new_rating - item.player_old_rating" />
                 </div>
                 <div class="game-vs">
                     VS
@@ -19,29 +19,29 @@
                 </div>
             </div>
             <div :class="`game-template ${templateClass(item)}`">{{ template(item) }}</div>
-            <div class="game-id">{{ item.id }}</div>
+            <div class="game-id">{{ item.game_id }}</div>
         </div>
     </div>
 </template>
-
+1
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
-import { GameWithInfo } from '../../../../api/games';
+import { GameVWithInfo } from '../../../../api/games_v';
 import { datetime, timestamp } from '../../../../helpers/timestamp';
 import RatingDiff from '../../RatingDiff.vue';
 import Rating from '../../Rating.vue';
 
 const props = defineProps<{
-    items: GameWithInfo[],
+    items: GameVWithInfo[],
 }>()
 
 const now = ref(timestamp.now())
 
-const end = (game: GameWithInfo): string => {
+const end = (game: GameVWithInfo): string => {
     return datetime.from(game.end_timestamp)
 }
 
-const duration = (game: GameWithInfo): string => {
+const duration = (game: GameVWithInfo): string => {
     if (game.end_timestamp === game.start_timestamp) {
         return `-`
     }
@@ -49,8 +49,8 @@ const duration = (game: GameWithInfo): string => {
     return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
 }
 
-const template = (game: GameWithInfo): string => {
-    if (game.game_type === 0) {
+const template = (game: GameVWithInfo): string => {
+    if (game.template_id === 1) {
         return `сценарий`
     }
     if (game.template_name === '<Default>') {
@@ -59,7 +59,7 @@ const template = (game: GameWithInfo): string => {
     return game.template_name || '?'
 }
 
-const templateClass = (game: GameWithInfo): string => {
+const templateClass = (game: GameVWithInfo): string => {
     if (game.template_id === 1) {
         return 'scenario'
     }
@@ -123,7 +123,7 @@ onMounted(() => {
     opacity: .9;
     letter-spacing: .5px;
 }
-.game-host {
+.game-player {
     height: 100%;
     padding: 0 10px;
     font-size: 16px;
@@ -170,7 +170,7 @@ onMounted(() => {
 .game-template.gold {
     color: #e6c24c;
 }
-.game[data-status="2"] .game-host::before {
+.game[data-status="loss"] .game-player::before {
     content: '';
     position: absolute;
     left: 0;
@@ -181,7 +181,7 @@ onMounted(() => {
     opacity: .7;
     pointer-events: none;
 }
-.game[data-status="4"] .game-host::before {
+.game[data-status="draw"] .game-player::before {
     content: '';
     position: absolute;
     left: 0;
@@ -192,7 +192,7 @@ onMounted(() => {
     opacity: .7;
     pointer-events: none;
 }
-.game[data-status="8"] .game-host::before {
+.game[data-status="win"] .game-player::before {
     content: '';
     position: absolute;
     left: 0;
@@ -203,7 +203,7 @@ onMounted(() => {
     opacity: .7;
     pointer-events: none;
 }
-.game[data-status="2"] .game-opponent::before {
+.game[data-status="loss"] .game-opponent::before {
     content: '';
     position: absolute;
     left: 0;
@@ -214,7 +214,7 @@ onMounted(() => {
     opacity: .7;
     pointer-events: none;
 }
-.game[data-status="4"] .game-opponent::before {
+.game[data-status="host"] .game-opponent::before {
     content: '';
     position: absolute;
     left: 0;
@@ -225,7 +225,7 @@ onMounted(() => {
     opacity: .7;
     pointer-events: none;
 }
-.game[data-status="8"] .game-opponent::before {
+.game[data-status="win"] .game-opponent::before {
     content: '';
     position: absolute;
     left: 0;

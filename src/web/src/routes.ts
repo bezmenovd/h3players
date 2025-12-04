@@ -25,7 +25,7 @@ export default [
         component: PlayersList,
     },
     {
-        path: '/@:id',
+        path: '/@:id/:tab?',
         name: 'players.detail',
         component: PlayersDetail,
     },

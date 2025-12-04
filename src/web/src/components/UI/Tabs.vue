@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { defineProps, ref, watch } from 'vue'
-import router from '../../../router';
+import router from '../../router';
 import { useRoute } from 'vue-router';
 
 const route = useRoute()
@@ -22,23 +22,34 @@ const props = defineProps<{
 
 const activeTabCode = ref<string>('');
 
-watch(() => route.hash, () => {
-    const hash = route.hash.slice(1);
+watch(() => route.params.tab, (newTabCode) => {
+    const tabCodeFromParam = String(newTabCode || ''); 
     
-    if (props.items.some(item => item.code === hash)) {
-        activeTabCode.value = hash;
+    const isTabValid = props.items.some(item => item.code === tabCodeFromParam);
+
+    if (isTabValid) {
+        activeTabCode.value = tabCodeFromParam;
     } else if (props.items.length > 0) {
         const defaultCode = props.items[0].code;
-        select(defaultCode);
+
+        activeTabCode.value = defaultCode; 
+        
+        if (tabCodeFromParam !== defaultCode) {
+            select(defaultCode);
+        }
     }
 }, { immediate: true });
 
 const select = (code: string) => {
     if (activeTabCode.value !== code) {
         router.push({ 
-            path: route.path,
+            name: 'players.detail', 
+            params: {
+                ...route.params,
+                tab: code
+            },
             query: route.query,
-            hash: code ? `#${code}` : ''
+            hash: route.hash,
         });
     }
 }

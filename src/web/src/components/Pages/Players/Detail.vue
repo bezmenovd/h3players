@@ -2,7 +2,7 @@
     <Loader v-if="loading" :solid="false"/>
     <template v-else>
         <Title :text="info.name || ' '">
-            <TabsByHash :items="tabs"/>
+            <Tabs :items="tabs"/>
         </Title>
         <Panel id="player">
             <template v-if="tab === ''">
@@ -26,7 +26,9 @@
                 </div>
             </template>
             <template v-if="tab === 'games'">
-
+                <Header></Header>
+                <Games :items="gamesList.items.slice(gamesListOffset, gamesListOffset+gamesList.limit)" />
+                <Footer :limit="gamesList.limit" :total="gamesList.total"></Footer>
             </template>
         </Panel>
     </template>
@@ -38,12 +40,17 @@ import Panel from '../../UI/Panel.vue'
 import Loader from '../../UI/Loader.vue'
 import Title from '../../UI/Title.vue'
 import { getPlayer } from '../../../api/players'
-import { GameV, getList } from '../../../api/games_v'
+import {  GameVWithInfo, getList } from '../../../api/games_v'
 import { useRoute } from 'vue-router'
 import LineChart from '../../UI/Charts/LineChart.vue'
 import { date, month, timestamp } from '../../../helpers/timestamp'
-import TabsByHash from '../../UI/Tabs/TabsByHash.vue'
+import Tabs from '../../UI/Tabs.vue'
 import router from '../../../router'
+import Header from '../../UI/Table/Header.vue'
+import Footer from '../../UI/Table/Footer.vue'
+import Games from '../../UI/Players/Detail/Games.vue'
+import { PaginatedTable } from '../../../api/general'
+import { getContentSize } from '../../../helpers/content'
 
 
 const loading = ref(true)
@@ -54,7 +61,15 @@ const info = reactive({
     name: '',
 })
 
-const games = ref<GameV[]>([])
+const gamesList = reactive<PaginatedTable<GameVWithInfo>>({
+    items: [],
+    total: 0,
+    limit: 0,
+})
+
+const gamesListOffset = ref(0)
+
+watch(() => route.query.offset, (newOffset) => gamesListOffset.value = parseInt(String(newOffset)), { immediate: true })
 
 const tab = ref<string>('');
 const tabs = [
@@ -70,8 +85,8 @@ const tabs = [
     }
 ]
 
-watch(() => route.hash, () => {
-    tab.value = route.hash.slice(1);
+watch(() => route.params.tab, (newTabCode) => {
+    tab.value = String(newTabCode);
 }, { immediate: true });
 
 
@@ -98,11 +113,15 @@ const ratingChart = reactive<{
 
 
 onMounted(async () => {
+    let gamesListSize = Math.min(Math.floor((getContentSize().height - 170) / 50), 20)
+
     getPlayer(info.id).then(data => {
         info.name = data.name
 
         getList(info.id).then(r => {
-            games.value = r.items
+            gamesList.items = r.items
+            gamesList.limit = gamesListSize
+            gamesList.total = r.total
     
             let gamesHistorical = r.items.reverse()
             let ratingChartDataLength = 183
