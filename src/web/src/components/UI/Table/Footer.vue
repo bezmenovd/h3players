@@ -43,7 +43,7 @@ function setOffset(v: number) {
     router.replace({
         query: {
             ...route.query,
-            offset: String(v)
+            offset: v,
         }
     })
 }

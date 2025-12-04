@@ -93,7 +93,7 @@ watch(() => route.params.tab, (newTabCode) => {
 
 const scrollHeight = ref(0)
 const scroll = (event: WheelEvent) => {
-    const offset = Number.isFinite(Number(route.query.offset)) ? Number(route.query.offset) : 0
+    const offset = gamesListOffset.value
 
     event.stopPropagation()
     event.preventDefault()
@@ -109,8 +109,8 @@ const scroll = (event: WheelEvent) => {
     router.replace({
         query: {
             ...route.query,
-            offset: String(newOffset)
-        }
+            offset: newOffset,
+        },
     })
 }
 

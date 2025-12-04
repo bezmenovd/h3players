@@ -18,7 +18,7 @@ import Games from '../../UI/Lobby/Games/Games.vue';
 import Header from '../../UI/Table/Header.vue';
 import Footer from '../../UI/Table/Footer.vue';
 import Loader from '../../UI/Loader.vue';
-import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { GameWithInfo, getList } from '../../../api/games';
 import { getContentSize } from '../../../helpers/content';
 import { on } from '../../../modules/websocket';
@@ -42,14 +42,17 @@ const updating = ref(false)
 
 const route = useRoute()
 
-const load = (visible: boolean = true) => {
-    const offset = Math.min(Math.max(Number(route.query.offset) || 0, 0), gamesList.total)
-    
+const offset = computed<number>(() => {
+    const v = Number(route.query.offset)
+    return Number.isFinite(v) && v >= 0 ? v : 0
+})
+
+const load = (visible: boolean = true) => {    
     if (visible) {
         updating.value = true
     }
 
-    getList(pageSize.value, offset).then(r => {
+    getList(pageSize.value, offset.value).then(r => {
         gamesList.items = r.items
         gamesList.total = r.total
         gamesList.limit = r.limit
@@ -69,7 +72,7 @@ const onUpdate = throttle(load, 1000)
 onMounted(() => {
     pageSize.value = Math.min(Math.floor((getContentSize().height - 170) / 50), 20)
 
-    watch(() => route.query.offset, () => load(true), { immediate: true })
+    watch(() => route.hash, () => load(true), { immediate: true })
 
     onBeforeUnmount(on('data.games.update', () => { onUpdate(false) }))
 

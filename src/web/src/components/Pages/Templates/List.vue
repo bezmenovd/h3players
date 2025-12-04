@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import Panel from '../../UI/Panel.vue'
 import Title from '../../UI/Title.vue'
 import Footer from '../../UI/Table/Footer.vue';
@@ -35,7 +35,7 @@ import Header from '../../UI/Table/Header.vue';
 import Query from '../../UI/Inputs/Query.vue';
 import { getList, TemplateWithInfo } from '../../../api/templates'
 import { getContentSize } from '../../../helpers/content'
-import { Paginated } from '../../../api/general';
+import { PaginatedTable } from '../../../api/general';
 import { useRoute } from 'vue-router';
 import { on } from '../../../modules/websocket';
 import TemplatesList from '../../UI/Templates/List/TemplatesList.vue';
@@ -46,25 +46,29 @@ import Loader from '../../UI/Loader.vue';
 const route = useRoute()
 
 const templates = reactive<{
-    list: Paginated<TemplateWithInfo>,
+    list: PaginatedTable<TemplateWithInfo>,
 }>({
     list: {
         items: [],
         total: 0,
         limit: 0,
-        offset: 0,
     },
 })
 
-const query = ref(route.query.query ? String(route.query.query) : '')
+const query = computed<string>(() => {
+    return route.params.query !== undefined ? String(route.params.query) : ''
+})
+const offset = computed<number>(() => {
+    const v = Number(route.query.offset)
+    return Number.isFinite(v) && v >= 0 ? v : 0
+})
 
 const queryOnChange = throttle((event: { value: string }) => {
     router.replace({
         query: {
             ...route.query, 
             query: event.value,
-            offset: event.value.length > 0 ? 0 : route.query.offset,
-        }
+        },
     })
 }, 500)
 
@@ -74,12 +78,9 @@ const loading = ref(true)
 const updating = ref(false)
 
 const load = () => {
-    const query = route.query.query ? String(route.query.query) : ''
-    const offset = Number(route.query.offset) || 0
-
     updating.value = true
 
-    getList(pageSize.value, offset, [], query).then(r => {
+    getList(pageSize.value, offset.value, [], query.value).then(r => {
         templates.list = r
         updating.value = false
 
@@ -95,6 +96,7 @@ onMounted(async () => {
     document.getElementById("filter-query")?.focus()
 
     watch(() => route.query, load, { immediate: true })
+    watch(() => route.hash, load, { immediate: true })
 
     onBeforeUnmount(on('data.templates.update', load))
 })

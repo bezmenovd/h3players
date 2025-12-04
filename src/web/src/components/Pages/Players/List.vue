@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import Panel from '../../UI/Panel.vue'
 import Title from '../../UI/Title.vue'
 import Footer from '../../UI/Table/Footer.vue';
@@ -19,19 +19,18 @@ import Header from '../../UI/Table/Header.vue';
 import { getList } from '../../../api/players'
 import { Player } from '../../../api/players'
 import { getContentSize } from '../../../helpers/content'
-import { Paginated } from '../../../api/general';
+import { PaginatedTable } from '../../../api/general';
 import { useRoute } from 'vue-router';
 import { on } from '../../../modules/websocket';
 import PlayersList from '../../UI/Players/List/PlayersList.vue';
 
 const players = reactive<{
-    list: Paginated<Player>,
+    list: PaginatedTable<Player>,
 }>({
     list: {
         items: [],
         total: 0,
         limit: 0,
-        offset: 0,
     },
 })
 
@@ -41,8 +40,13 @@ const updating = ref(false)
 
 const route = useRoute()
 
+const listOffset = computed<number>(() => {
+    const v = Number(route.query.offset)
+    return Number.isFinite(v) && v >= 0 ? v : 0
+})
+
 const load = (visible: boolean = true) => {
-    const offset = Number(route.query.offset) || 0
+    const offset = listOffset.value
     if (visible) {
         updating.value = true
     }
@@ -62,7 +66,7 @@ const load = (visible: boolean = true) => {
 onMounted(async () => {
     pageSize.value = Math.min(Math.floor((getContentSize().height - 170) / 50), 20)
 
-    watch(() => route.query.offset, () => { load(true) }, { immediate: true })
+    watch(() => route.hash, () => { load(true) }, { immediate: true })
 
     onBeforeUnmount(on('data.players.update', () => { load(false) }))
 })
