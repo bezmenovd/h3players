@@ -13,7 +13,6 @@
                         :labels="totalChart.labels" 
                         :max="max"
                         :formatters="totalChart.formatters"
-                        :showNoData="false"
                     />
                 </div>
             </Panel>
@@ -31,7 +30,6 @@
                             :labels="chart.labels" 
                             :max="max"
                             :formatters="totalChart.formatters"
-                            :showNoData="false"
                         />
                     </Panel>
                 </div>

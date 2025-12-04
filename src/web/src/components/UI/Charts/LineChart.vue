@@ -1,53 +1,62 @@
 <template>
     <div class="chart" :id="id" :style="`height: ${ props.height ?? '100%' }`">
-        <div class="chart-line">
-            <svg width="100%" height="100%" :viewBox="`0 0 ${widthRef} ${heightRef}`">
-                <template v-for="(itemLines, j) in lines">
-                    <polyline v-for="(line, key) in itemLines"
+        <div class="chart-content" :style="`${ showScroll ? `height: calc(100% - 16px)` : `height: 100%` }`">
+            <template v-if="show">
+                <div class="chart-line" :style="`width: ${fullWidthRef}px; right: ${right}px`">
+                    <svg width="100%" height="100%" :viewBox="`0 0 ${fullWidthRef} ${heightRef}`">
+                        <template v-for="(itemLines, j) in lines">
+                            <polyline v-for="(line, key) in itemLines"
+                                :key="key"
+                                fill="none"
+                                :stroke="props.colors[j]"
+                                stroke-width="1"
+                                :points="line.map(([x, y]) => `${x},${y}`).join(' ')"
+                            />
+                        </template>
+                    </svg>
+                </div>
+                <div class="chart-no-data" v-if="props.showNoData" :style="`width: ${fullWidthRef}px; right: ${right}px`">
+                    <div v-for="(block, key) in noData"
+                        class="chart-no-data-item"
                         :key="key"
-                        fill="none"
-                        :stroke="props.colors[j]"
-                        stroke-width="1"
-                        :points="line.map(([x, y]) => `${x},${y}`).join(' ')"
-                    />
-                </template>
-            </svg>
-        </div>
-        <div class="chart-ui">
-            <div v-for="(block, key) in noData"
-                class="no-data"
-                :key="key"
-                :style="`right: ${widthRef - block[1]}px; width: ${block[1] - block[0]}px`"
-            >
-            </div>
-            <div class="cursor" :style="`left: ${cursorX-1}px`" v-if="mouse.in">
-                <div class="cursor-line" v-if="props.data[cursorIndex]" />
-                <div class="cursor-tooltip" v-if="props.data[cursorIndex]" :style="tooltipStyle">
-                    <div class="cursor-values">
-                        <template v-for="(color, j) in props.colors">
-                            <div 
-                                v-if="props.data[cursorIndex]"
-                                :key="j"
-                                class="cursor-value" 
-                                :style="`top: ${(j*16)}px`"
-                            >
-                                <div class="cursor-value-dot" :style="`background-color: ${color};`"/>
-                                {{ props.formatters[j](props.data[cursorIndex]![j]) }}
+                        :style="`right: ${widthRef - block[1]}px; width: ${block[1] - block[0]}px`"
+                    >
+                    </div>
+                </div>
+                <div class="chart-ui">
+                    <div class="cursor" :style="`left: ${cursorX-1}px`" v-if="mouse.in">
+                        <div class="cursor-line" v-if="props.data[cursorIndex]" />
+                        <div class="cursor-tooltip" v-if="props.data[cursorIndex]" :style="tooltipStyle">
+                            <div class="cursor-values">
+                                <template v-for="(color, j) in props.colors">
+                                    <div 
+                                        v-if="props.data[cursorIndex]"
+                                        :key="j"
+                                        class="cursor-value" 
+                                        :style="`top: ${(j*16)}px`"
+                                    >
+                                        <div class="cursor-value-dot" :style="`background-color: ${color};`"/>
+                                        {{ props.formatters[j](props.data[cursorIndex]![j]) }}
+                                    </div>
+                                </template>
                             </div>
+                            <div v-if="props.labels[cursorIndex]" class="cursor-label">{{ props.labels[cursorIndex] }}</div>
+                        </div>
+                        <template v-for="(color, j) in props.colors">
+                            <div class="cursor-dot" v-if="props.data[cursorIndex]" :style="`bottom: ${ ((props.data[cursorIndex]![j]) / props.max[j]) * heightRef }px; background: ${color};`" :key="j"/>
                         </template>
                     </div>
-                    <div v-if="props.labels[cursorIndex]" class="cursor-label">{{ props.labels[cursorIndex] }}</div>
                 </div>
-                <template v-for="(color, j) in props.colors">
-                    <div class="cursor-dot" v-if="props.data[cursorIndex]" :style="`bottom: ${ ((props.data[cursorIndex]![j]) / props.max[j]) * heightRef }px; background: ${color};`" :key="j"/>
-                </template>
-            </div>
+            </template>
+        </div>
+        <div class="chart-scroll" v-if="showScroll">
+            <div class="chart-scroll-button" :style="`width: ${ scrollButtonWidth }px; left: ${ scrollButtonX }px`"/>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, onMounted, reactive, ref } from 'vue';
+import { computed, defineProps, nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 
 const props = defineProps<{
     id: string,
@@ -58,8 +67,18 @@ const props = defineProps<{
     labels: (string|undefined)[],
     max: number[],
     formatters: ((value: number) => string)[]
-    showNoData: boolean,
+    showNoData?: boolean,
+    showGrid?: boolean,
 }>()
+
+// console.log(props.data, props.labels)
+
+const widthRef = ref(0)
+const heightRef = ref(0)
+
+const fullWidthRef = ref(0)
+
+const show = ref(false)
 
 const lines = computed<[number, number][][][]>(() => {
     let result: [number, number][][][] = []
@@ -74,7 +93,7 @@ const lines = computed<[number, number][][][]>(() => {
     for (let i = 0; i < props.data.length; i++) {
         if (props.data[i] !== undefined) {
             for (let j = 0; j < itemLength; j++) {
-                currentLines[j].push([Math.round(i / (props.data.length-1) * widthRef.value), Math.round(heightRef.value - (Number(props.data[i]![j]) / props.max[j]) * heightRef.value)])
+                currentLines[j].push([Math.round(i / (props.data.length-1) * fullWidthRef.value), Math.round(heightRef.value - (Number(props.data[i]![j]) / props.max[j]) * heightRef.value)])
             }
         } else {
             for (let j = 0; j < itemLength; j++) {
@@ -106,29 +125,44 @@ const noData = computed<[number, number][]>(() => {
     for (let i = 0; i < props.data.length; i++) {
         if (props.data[i] !== undefined) {
             if (currentNoDataStart !== -1) {
-                result.push([currentNoDataStart, Math.round(i / (props.data.length-1) * widthRef.value)])
+                result.push([currentNoDataStart, Math.round(i / (props.data.length-1) * fullWidthRef.value)])
                 currentNoDataStart = -1
             }
         } else {
             if (currentNoDataStart === -1) {
-                currentNoDataStart = Math.round(i / (props.data.length-1) * widthRef.value)
+                currentNoDataStart = Math.round(i / (props.data.length-1) * fullWidthRef.value)
             }
         }
     }
 
     if (currentNoDataStart !== -1) {
-        result.push([currentNoDataStart, widthRef.value])
+        result.push([currentNoDataStart, fullWidthRef.value])
     }
 
     return result
 })
 
 const cursorIndex = computed<number>(() => {
-    return props.data.length > 0 ? Math.round((mouse.x / widthRef.value) * (props.data.length-1)) : 0
+    if (props.data.length <= 1 || fullWidthRef.value <= 0) {
+        return 0
+    }
+    
+    const currentShift = fullWidthRef.value - widthRef.value + right.value
+    const absoluteX = mouse.x + currentShift 
+    const index = Math.round((absoluteX / fullWidthRef.value) * props.data.length)
+    
+    return Math.max(0, Math.min(props.data.length, index))
 })
 
 const cursorX = computed<number>(() => {
-    return cursorIndex.value ? cursorIndex.value * (widthRef.value / (props.data.length-1)) : 0
+    if (props.data.length <= 1) {
+        return 0
+    }
+
+    const theoreticalX = (cursorIndex.value / (props.data.length-1)) * fullWidthRef.value
+    const currentShift = fullWidthRef.value - widthRef.value + right.value
+
+    return theoreticalX - currentShift
 })
 
 const mouse = reactive({
@@ -136,41 +170,131 @@ const mouse = reactive({
     x: 0,
 })
 
-const tooltipStyle = computed<string>(() => {
-    let labelPadding = document.querySelector(`#${props.id} .cursor-label`)?.getBoundingClientRect().width ?? 0
+const labelWidth = ref(0)
+const valuesWidth = ref(0)
 
-    if (cursorX.value < labelPadding) {
-        return `transform: translateX(${(labelPadding - cursorX.value)}px)`
+watch(cursorIndex, async () => {
+    await nextTick() 
+    
+    const labelEl = document.querySelector(`#${props.id} .cursor-label`) as HTMLElement
+    const valuesEl = document.querySelector(`#${props.id} .cursor-values`) as HTMLElement
+    
+    labelWidth.value = labelEl ? labelEl.getBoundingClientRect().width : 0
+    valuesWidth.value = valuesEl ? valuesEl.getBoundingClientRect().width : 0
+}, { immediate: true })
+
+const tooltipStyle = computed<string>(() => {
+    const currentLabelWidth = labelWidth.value
+    const currentValuesWidth = valuesWidth.value
+    
+    if (cursorX.value < currentLabelWidth) {
+        return `transform: translateX(${(currentLabelWidth - cursorX.value)}px)`
     }
 
-    let valuePadding = document.querySelector(`#${props.id} .cursor-values`)?.getBoundingClientRect().width ?? 0
-
-    if (widthRef.value - cursorX.value < valuePadding) {
-        return `transform: translateX(-${(valuePadding - (widthRef.value - cursorX.value))}px)`
+    if (widthRef.value - cursorX.value < currentValuesWidth) {
+        return `transform: translateX(-${(currentValuesWidth - (widthRef.value - cursorX.value))}px)`
     }
 
     return ''
 })
 
-const widthRef = ref(0)
-const heightRef = ref(0)
+const showScroll = computed<boolean>(() => {
+    return props.size ? props.size > 0 : false
+})
+const useScroll = computed<boolean>(() => {
+    return props.size ? props.size < props.data.length : false
+})
 
-onMounted(() => {
+const scrollButtonWidth = ref(0)
+const scrollButtonX = ref(0)
+const scrollPos = computed<number>(() => {
+    return Math.round(((scrollButtonX.value - 2) / (widthRef.value - 4)) * props.data.length)
+})
+const right = computed<number>(() => {
+    if (! useScroll.value) {
+        return 0
+    }
+
+    return Math.min(0, ((props.data.length - props.size!) - scrollPos.value) * (fullWidthRef.value / props.data.length) * -1)
+})
+
+let scrollHandler: (event: PointerEvent) => void
+
+onMounted(async () => {
+    let chartContentElement = document.querySelector(`#${props.id} .chart-content`)! as HTMLElement
+    let chartContentRect = chartContentElement.getBoundingClientRect()
+    let offsetLeft = chartContentRect.left
+
+    widthRef.value = chartContentElement.clientWidth
+    heightRef.value = chartContentElement.clientHeight
+
+    fullWidthRef.value = props.size ? (widthRef.value / props.size) * props.data.length : widthRef.value
+
+    if (showScroll.value) {
+        scrollButtonWidth.value = Math.min(Math.round((props.size! / props.data.length) * (widthRef.value - 4)), widthRef.value-4)
+        scrollButtonX.value = Math.round(((props.data.length - props.size!) / props.data.length) * (widthRef.value - 2)) + 2
+    }
+
+    show.value = true
+    
+    await nextTick()
+
     let uiElement = document.querySelector(`#${props.id} .chart-ui`)! as HTMLElement
-    let uiRect = uiElement.getBoundingClientRect()
-    let offsetLeft = uiRect.left
 
-    widthRef.value = uiElement.clientWidth
-    heightRef.value = uiElement.clientHeight
+    {
+        uiElement.addEventListener('mousemove', (event) => {
+            mouse.in = true
+            mouse.x = event.clientX - offsetLeft
+        })
+    
+        uiElement.addEventListener('mouseleave', () => {
+            mouse.in = false
+        })
+    }
 
-    uiElement.addEventListener('mousemove', (event) => {
-        mouse.in = true
-        mouse.x = event.clientX - offsetLeft
-    })
+    if (useScroll.value) {
+        let scrollButtonElement = document.querySelector(`#${props.id} .chart-scroll-button`)! as HTMLElement
+        let scrolling = false
+    
+        scrollButtonElement.addEventListener('pointerdown', (event: PointerEvent) => {
+            scrolling = true
+            scrollButtonElement.setPointerCapture(event.pointerId);
+        })
+        scrollButtonElement.addEventListener('pointerup', (event: PointerEvent) => {
+            if (! scrolling) {
+                return
+            }
+            scrolling = false
+            scrollButtonElement.releasePointerCapture(event.pointerId);
+        })
 
-    uiElement.addEventListener('mouseleave', () => {
-        mouse.in = false
-    })
+        scrollHandler = (event: PointerEvent) => {
+            if (! scrolling) {
+                return
+            }
+
+            let newScrollXValue = scrollButtonX.value + event.movementX
+            newScrollXValue = Math.max(newScrollXValue, 2)
+            newScrollXValue = Math.min(newScrollXValue, widthRef.value - 2 - scrollButtonWidth.value)
+            scrollButtonX.value = newScrollXValue
+        }
+
+        window.addEventListener('pointermove', scrollHandler)
+
+        uiElement.addEventListener('wheel', (event: WheelEvent) => {
+            let delta = Math.round(event.deltaX + event.deltaY) * (widthRef.value / props.size!) / 100
+            let newScrollXValue = scrollButtonX.value + delta
+            newScrollXValue = Math.max(newScrollXValue, 2)
+            newScrollXValue = Math.min(newScrollXValue, widthRef.value - 2 - scrollButtonWidth.value)
+            scrollButtonX.value = newScrollXValue
+        })
+    }
+})
+
+onUnmounted(() => {
+    if (scrollHandler) {
+        window.removeEventListener('pointermove', scrollHandler)
+    }
 })
 
 </script>
@@ -179,14 +303,38 @@ onMounted(() => {
 .chart {
     width: 100%;
     max-width: 100%;
-    position: relative;
     overflow: hidden;
-    border: 1px solid #ffffff1c;
+    outline: 1px solid #454959;
     display: block;
 }
-.chart-line {
+.chart-content {
     width: 100%;
     height: 100%;
+    position: relative;
+}
+.chart-scroll {
+    height: 16px;
+    width: 100%;
+    border-top: 1px solid #454959;
+    padding: 2px;
+    position: relative;
+}
+.chart-scroll-button {
+    background: #ffffff10;
+    position: absolute;
+    top: 2px;
+    height: calc(100% - 4px);
+    width: 100px;
+}
+.chart-scroll-button:hover {
+    background: #ffffff1a;
+    cursor: pointer;
+}
+.chart-line {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 .chart-ui {
     width: 100%;
@@ -199,7 +347,13 @@ onMounted(() => {
     right: 0;
     position: absolute;
 }
-.no-data {
+.chart-no-data {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.chart-no-data-item {
     position: absolute;
     background: #ff000026;
     height: 100%;
@@ -218,7 +372,7 @@ onMounted(() => {
 }
 .cursor-label {    
     position: absolute;
-    border: 1px solid #ffffff1c;
+    border: 1px solid #454959;
     border-right: none;
     padding: 3px 8px 3px 6px;
     white-space: nowrap;
@@ -232,7 +386,7 @@ onMounted(() => {
     left: 0px;
     padding-left: 1px;
     flex-direction: column;
-    border: 1px solid #ffffff1c;
+    border: 1px solid #454959;
     /* border-left: none; */
 }
 .cursor-value {

@@ -218,7 +218,7 @@ onMounted(() => {
         onlineChart.labels = new Array<string|undefined>(chartSize.value)
 
         let now = timestamp.nowMinute()
-        let cur = now - (chartSize.value*60)
+        let cur = now - ((chartSize.value-1)*60)
         let dIndex = 0
         let rIndex = 0
 

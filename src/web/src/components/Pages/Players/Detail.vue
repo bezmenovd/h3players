@@ -14,13 +14,12 @@
                         v-if="ratingChart.show" 
                         id="chart-player-rating"
                         height="400px"
-                        :width="100"
-                        :colors="['#64a477']" 
+                        :size="ratingChart.size"
+                        :colors="['#fff']" 
                         :data="ratingChart.data" 
                         :labels="ratingChart.labels" 
                         :max="ratingChart.max" 
                         :formatters="ratingChart.formatters"
-                        :showNoData="false"
                     />
                 </div>
             </template>
@@ -81,6 +80,7 @@ const ratingChart = reactive<{
     show: boolean,
     formatters: ((value: number) => string)[],
     max: number[],
+    size: number,
 }>({
     data: [],
     labels: [],
@@ -89,6 +89,7 @@ const ratingChart = reactive<{
         (value: number) => `${Intl.NumberFormat('ru-RU').format(value)} птс`,
     ],
     max: [0],
+    size: 200,
 })
 
 
@@ -100,19 +101,20 @@ onMounted(async () => {
             games.value = r.items
     
             let gamesHistorical = r.items.reverse()
-            let ratingChartSize = 100
+            let ratingChartDataLength = 200
     
             if (r.items.length > 0) {
-                ratingChartSize = Math.max(ratingChartSize, Math.floor((timestamp.now() - gamesHistorical[0].end_timestamp) / 86400))
+                ratingChartDataLength = Math.max(ratingChartDataLength, Math.floor((timestamp.now() - gamesHistorical[0].end_timestamp) / 86400))
             }
-            ratingChartSize = Math.max(ratingChartSize, 100)
+            ratingChartDataLength = Math.max(ratingChartDataLength, 200)
+            console.log(ratingChartDataLength)
     
-            ratingChart.data = new Array<number[]|undefined>(ratingChartSize)
-            ratingChart.labels = new Array<string|undefined>(ratingChartSize)
+            ratingChart.data = new Array<number[]|undefined>(ratingChartDataLength)
+            ratingChart.labels = new Array<string|undefined>(ratingChartDataLength)
             ratingChart.max = [1200]
     
             let now = timestamp.nowDay()
-            let cur = now - (ratingChartSize * 86400)
+            let cur = now - ((ratingChartDataLength-1) * 86400)
             let dIndex = 0
             let rIndex = 0
     
