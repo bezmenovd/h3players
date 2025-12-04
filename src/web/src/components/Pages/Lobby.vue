@@ -68,13 +68,13 @@
                             Рейтинг
                         </div>
                         <div class="rating-items">
-                            <div class="rating-item" v-for="(item, key) in dailyTop.byRating">
-                                <div class="rating-place">{{ key+1 }}</div>
+                            <div class="rating-item" v-for="i in 7">
+                                <div class="rating-place">{{ i }}</div>
                                 <div class="rating-user">
-                                    <router-link :to="{ name: 'players.detail', params: { id: item.id }}">{{ item.name || '?' }}</router-link>
+                                    <router-link v-if="dailyTop.byRating[i-1]" :to="{ name: 'players.detail', params: { id: dailyTop.byRating[i-1].id }}">{{ dailyTop.byRating[i-1].name || '?' }}</router-link>
                                 </div>
                                 <div class="rating-value">
-                                    <RatingDiff :value="item.rating_diff" />
+                                    <RatingDiff v-if="dailyTop.byRating[i-1]" :value="dailyTop.byRating[i-1].rating_diff" />
                                 </div>
                             </div>
                         </div>
@@ -84,13 +84,13 @@
                             Рейтинг -
                         </div>
                         <div class="rating-items">
-                            <div class="rating-item" v-for="(item, key) in dailyTop.byRatingAnti">
-                                <div class="rating-place">{{ key+1 }}</div>
+                            <div class="rating-item" v-for="i in 7">
+                                <div class="rating-place">{{ i }}</div>
                                 <div class="rating-user">
-                                    <router-link :to="{ name: 'players.detail', params: { id: item.id }}">{{ item.name || '?' }}</router-link>
+                                    <router-link v-if="dailyTop.byRatingAnti[i-1]" :to="{ name: 'players.detail', params: { id: dailyTop.byRatingAnti[i-1].id }}">{{ dailyTop.byRatingAnti[i-1].name || '?' }}</router-link>
                                 </div>
                                 <div class="rating-value">
-                                    <RatingDiff :value="item.rating_diff" />
+                                    <RatingDiff v-if="dailyTop.byRatingAnti[i-1]" :value="dailyTop.byRatingAnti[i-1].rating_diff" />
                                 </div>
                             </div>
                         </div>
@@ -100,12 +100,12 @@
                             Игры
                         </div>
                         <div class="rating-items">
-                            <div class="rating-item" v-for="(item, key) in dailyTop.byGamesCount">
-                                <div class="rating-place">{{ key+1 }}</div>
+                            <div class="rating-item" v-for="i in 7">
+                                <div class="rating-place">{{ i }}</div>
                                 <div class="rating-user">
-                                    <router-link :to="{ name: 'players.detail', params: { id: item.id }}">{{ item.name || '?' }}</router-link>
+                                    <router-link v-if="dailyTop.byGamesCount[i-1]" :to="{ name: 'players.detail', params: { id: dailyTop.byGamesCount[i-1].id }}">{{ dailyTop.byGamesCount[i-1].name || '?' }}</router-link>
                                 </div>
-                                <div class="rating-value" style="font-weight: bold">{{ item.games_count }}</div>
+                                <div class="rating-value" style="font-weight: bold">{{  dailyTop.byGamesCount[i-1]?.games_count ?? '' }}</div>
                             </div>
                         </div>
                     </div>
