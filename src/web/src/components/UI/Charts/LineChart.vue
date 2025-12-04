@@ -1,7 +1,7 @@
 <template>
-    <div class="chart" :id="id" :style="`height: ${props.height}px`">
+    <div class="chart" :id="id" :style="`height: ${ props.height ?? '100%' }`">
         <div class="chart-line">
-            <svg width="100%" :height="props.height" :viewBox="`0 0 ${widthRef} ${props.height}`">
+            <svg width="100%" height="100%" :viewBox="`0 0 ${widthRef} ${heightRef}`">
                 <template v-for="(itemLines, j) in lines">
                     <polyline v-for="(line, key) in itemLines"
                         :key="key"
@@ -22,7 +22,7 @@
             </div>
             <div class="cursor" :style="`left: ${cursorX-1}px`" v-if="mouse.in">
                 <div class="cursor-line" v-if="props.data[cursorIndex]" />
-                <div class="cursor-tooltip" :style="tooltipStyle">
+                <div class="cursor-tooltip" v-if="props.data[cursorIndex]" :style="tooltipStyle">
                     <div class="cursor-values">
                         <template v-for="(color, j) in props.colors">
                             <div 
@@ -39,7 +39,7 @@
                     <div v-if="props.labels[cursorIndex]" class="cursor-label">{{ props.labels[cursorIndex] }}</div>
                 </div>
                 <template v-for="(color, j) in props.colors">
-                    <div class="cursor-dot" v-if="props.data[cursorIndex]" :style="`bottom: ${ ((props.data[cursorIndex]![j]) / props.max[j]) * props.height }px; background: ${color};`" :key="j"/>
+                    <div class="cursor-dot" v-if="props.data[cursorIndex]" :style="`bottom: ${ ((props.data[cursorIndex]![j]) / props.max[j]) * heightRef }px; background: ${color};`" :key="j"/>
                 </template>
             </div>
         </div>
@@ -51,7 +51,8 @@ import { computed, defineProps, onMounted, reactive, ref } from 'vue';
 
 const props = defineProps<{
     id: string,
-    height: number,
+    height?: string,
+    size?: number,
     colors: string[],
     data: (number[]|undefined)[]
     labels: (string|undefined)[],
@@ -73,7 +74,7 @@ const lines = computed<[number, number][][][]>(() => {
     for (let i = 0; i < props.data.length; i++) {
         if (props.data[i] !== undefined) {
             for (let j = 0; j < itemLength; j++) {
-                currentLines[j].push([Math.round(i / (props.data.length-1) * widthRef.value), Math.round(props.height - (Number(props.data[i]![j]) / props.max[j]) * props.height)])
+                currentLines[j].push([Math.round(i / (props.data.length-1) * widthRef.value), Math.round(heightRef.value - (Number(props.data[i]![j]) / props.max[j]) * heightRef.value)])
             }
         } else {
             for (let j = 0; j < itemLength; j++) {
@@ -105,12 +106,12 @@ const noData = computed<[number, number][]>(() => {
     for (let i = 0; i < props.data.length; i++) {
         if (props.data[i] !== undefined) {
             if (currentNoDataStart !== -1) {
-                result.push([currentNoDataStart, i])
+                result.push([currentNoDataStart, Math.round(i / (props.data.length-1) * widthRef.value)])
                 currentNoDataStart = -1
             }
         } else {
             if (currentNoDataStart === -1) {
-                currentNoDataStart = i
+                currentNoDataStart = Math.round(i / (props.data.length-1) * widthRef.value)
             }
         }
     }
@@ -135,47 +136,24 @@ const mouse = reactive({
     x: 0,
 })
 
-const valuePadding = computed<number>(() => {
-    let maxLength = 0
-
-    props.data.forEach(item => {
-        if (item) {
-            item.forEach((val, j) => {
-                let valStr = props.formatters[j](val)
-                if (valStr.length > maxLength) {
-                    maxLength = valStr.length
-                }
-            })
-        }
-    })
-
-    return 22 + (maxLength * 6.5)
-})
-
-const labelPadding = computed<number>(() => {
-    let maxLength = 0
-
-    props.labels.forEach(label => {
-        if (label && label.length > maxLength) {
-            maxLength = label.length
-        }
-    })
-
-    return 22 + (maxLength * 6.5)
-})
-
 const tooltipStyle = computed<string>(() => {
-    if (cursorX.value < labelPadding.value) {
-        return `transform: translateX(${(labelPadding.value - cursorX.value)}px)`
+    let labelPadding = document.querySelector(`#${props.id} .cursor-label`)?.getBoundingClientRect().width ?? 0
+
+    if (cursorX.value < labelPadding) {
+        return `transform: translateX(${(labelPadding - cursorX.value)}px)`
     }
-    if (widthRef.value - cursorX.value < valuePadding.value) {
-        return `transform: translateX(-${(valuePadding.value - (widthRef.value - cursorX.value))}px)`
+
+    let valuePadding = document.querySelector(`#${props.id} .cursor-values`)?.getBoundingClientRect().width ?? 0
+
+    if (widthRef.value - cursorX.value < valuePadding) {
+        return `transform: translateX(-${(valuePadding - (widthRef.value - cursorX.value))}px)`
     }
 
     return ''
 })
 
 const widthRef = ref(0)
+const heightRef = ref(0)
 
 onMounted(() => {
     let uiElement = document.querySelector(`#${props.id} .chart-ui`)! as HTMLElement
@@ -183,6 +161,7 @@ onMounted(() => {
     let offsetLeft = uiRect.left
 
     widthRef.value = uiElement.clientWidth
+    heightRef.value = uiElement.clientHeight
 
     uiElement.addEventListener('mousemove', (event) => {
         mouse.in = true
@@ -202,7 +181,8 @@ onMounted(() => {
     max-width: 100%;
     position: relative;
     overflow: hidden;
-    background: #171924;
+    border: 1px solid #ffffff1c;
+    display: block;
 }
 .chart-line {
     width: 100%;
@@ -238,11 +218,13 @@ onMounted(() => {
 }
 .cursor-label {    
     position: absolute;
-    background: #2e3245;
+    border: 1px solid #ffffff1c;
+    border-right: none;
     padding: 3px 8px 3px 6px;
     white-space: nowrap;
     font-size: 12px;
     right: 0px;
+    font-variant-numeric: tabular-nums;
 }
 .cursor-values {
     position: absolute;
@@ -250,7 +232,8 @@ onMounted(() => {
     left: 0px;
     padding-left: 1px;
     flex-direction: column;
-    background: #2e3245;
+    border: 1px solid #ffffff1c;
+    /* border-left: none; */
 }
 .cursor-value {
     padding: 3px 6px;
@@ -259,6 +242,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     gap: 5px;
+    font-variant-numeric: tabular-nums;
 }
 .cursor-value-dot {
     width: 4px;
@@ -270,7 +254,7 @@ onMounted(() => {
 .cursor-line {
     height: 100%;
     width: 1px;
-    background: #2e3245c9;
+    background: #ffffff1c;
 }
 .cursor-dot {
     width: 3px;

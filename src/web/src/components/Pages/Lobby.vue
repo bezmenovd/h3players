@@ -9,7 +9,7 @@
                         <LineChart 
                             v-if="onlineChart.show" 
                             id="chart-online"
-                            :height="230" 
+                            height="100%"
                             :colors="['#19f0af']" 
                             :data="onlineChart.data" 
                             :labels="onlineChart.labels" 
@@ -209,7 +209,7 @@ const dailyTop = reactive<DailyTop>({
 let updateInterval
 
 onMounted(() => {
-    chartSize.value = Math.round(document.getElementById('online-chart')!.getBoundingClientRect().width - 5)
+    chartSize.value = Math.round(document.getElementById('online-chart')!.getBoundingClientRect().width - 15)
     
     loading.online = true
 
@@ -373,7 +373,7 @@ onUnmounted(() => {
     grid-gap: 40px;
 }
 #online-chart {
-    padding: 5px 0px 5px 5px;
+    padding: 10px 0px 10px 10px;
 }
 #players {
     margin-top: 40px;

@@ -13,7 +13,7 @@ export class GamesVController {
         @Query('offset') offset?: string,
     ) {
         let p = Number(playerId)
-        let l = Math.min(Number(limit) || 1000, 1000)
+        let l = Number(limit) || 100000
         let o = Number(offset) || 0
 
         let data = await this.gamesVService.getList(p, l, o)

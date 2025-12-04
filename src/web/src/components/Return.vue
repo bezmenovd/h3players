@@ -29,7 +29,7 @@ const click = () => {
     background-position: center;
     background-repeat: no-repeat;
     left: 54px;
-    top: 39px;
+    top: 38px;
     opacity: .5;
     cursor: pointer;
 }

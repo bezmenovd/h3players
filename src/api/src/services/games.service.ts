@@ -17,6 +17,7 @@ export class GamesService {
             query: `
                 SELECT
                     *,
+                    opponent_id, opponent_old_rating, opponent_new_rating,
                     dictGet('players_dictionary', 'name', host_id) AS host_name,
                     dictGet('players_dictionary', 'name', opponent_id) AS opponent_name,
                     dictGet('templates_dictionary', 'name', template_id) AS template_name

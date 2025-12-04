@@ -9,6 +9,7 @@ export type Paginated<T> = {
 export type PlayerInfo = {
     id: number
     name: string
+    rank: number
 }
 
 export type DailyTopPlayerWithRatingDiff = {

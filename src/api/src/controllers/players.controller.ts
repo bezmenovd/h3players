@@ -38,12 +38,16 @@ export class PlayersController {
             return {}
         }
 
-        let info = this.playersService.info(i)
+        let player = await this.playersService.player(i)
 
-        if (! info) {
+        if (! player) {
             throw new NotFoundException()
         }
 
-        return info
+        return {
+            id: player.id,
+            name: player.name,
+            // rank: 
+        }
     }
 }

@@ -69,7 +69,23 @@ export class PlayersService {
         return result
     }
 
-    async info(id: number): Promise<PlayerInfo|null> {
+    async player(id: number): Promise<Player|null> {
+        let result = await (await this.clickhouse.query({
+            query: `
+                SELECT * FROM
+                players
+                WHERE id = {id:UInt32}
+            `,
+            query_params: {
+                id, 
+            },
+            format: 'JSONEachRow',
+        })).json<Player>()
+
+        return result.length === 1 ? result[0] : null
+    }
+
+    async playerRank(id: number): Promise<Player|null> {
         let result = await (await this.clickhouse.query({
             query: `
                 SELECT * FROM

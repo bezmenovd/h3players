@@ -8,7 +8,6 @@
                     <LineChart 
                         v-if="totalChart.show" 
                         id="chart-performance-total"
-                        :height="200" 
                         :colors="['#ff5e00', '#00d3ff', '#ff7700', '#0090ff']" 
                         :data="totalChart.data" 
                         :labels="totalChart.labels" 
@@ -27,7 +26,6 @@
                         <LineChart 
                             v-if="chart.show" 
                             :id="`chart-performance-worker-${worker}`"
-                            :height="200"
                             :colors="['#ff5e00', '#00d3ff', '#ff7700', '#0090ff']" 
                             :data="chart.data" 
                             :labels="chart.labels" 
@@ -181,7 +179,7 @@ onUnmounted(() => {
     height: 210px;
 }
 #performance-chart {
-    padding: 5px 5px 5px 5px;
+    padding: 10px;
     height: 100%;
 }
 #workers {
@@ -196,7 +194,7 @@ onUnmounted(() => {
     grid-template-rows: 50px 210px;
 }
 .worker-chart-inner {
-    padding: 5px;
+    padding: 10px;
 }
 
 @media (max-width: 1600px) {
