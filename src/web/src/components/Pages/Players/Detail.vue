@@ -108,7 +108,7 @@ onMounted(async () => {
             let ratingChartDataLength = 183
     
             if (r.items.length > 0) {
-                ratingChartDataLength = Math.max(ratingChartDataLength, Math.floor((timestamp.now() - gamesHistorical[0].end_timestamp) / 86400))
+                ratingChartDataLength = Math.max(ratingChartDataLength, Math.ceil((timestamp.now() - gamesHistorical[0].end_timestamp) / 86400))
             }
             ratingChartDataLength = Math.max(ratingChartDataLength, 183)
     
@@ -118,6 +118,7 @@ onMounted(async () => {
     
             let now = timestamp.nowDay()
             let cur = now - ((ratingChartDataLength-1) * 86400)
+
             let dIndex = 0
             let rIndex = 0
     
@@ -154,7 +155,6 @@ onMounted(async () => {
             }
     
             ratingChart.show = true
-            console.log(ratingChart.xLabels)
 
             loading.value = false
         })
