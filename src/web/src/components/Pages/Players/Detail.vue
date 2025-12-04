@@ -89,7 +89,7 @@ const ratingChart = reactive<{
         (value: number) => `${Intl.NumberFormat('ru-RU').format(value)} птс`,
     ],
     max: [0],
-    size: 200,
+    size: 183,
 })
 
 
@@ -101,13 +101,12 @@ onMounted(async () => {
             games.value = r.items
     
             let gamesHistorical = r.items.reverse()
-            let ratingChartDataLength = 200
+            let ratingChartDataLength = 183
     
             if (r.items.length > 0) {
                 ratingChartDataLength = Math.max(ratingChartDataLength, Math.floor((timestamp.now() - gamesHistorical[0].end_timestamp) / 86400))
             }
-            ratingChartDataLength = Math.max(ratingChartDataLength, 200)
-            console.log(ratingChartDataLength)
+            ratingChartDataLength = Math.max(ratingChartDataLength, 183)
     
             ratingChart.data = new Array<number[]|undefined>(ratingChartDataLength)
             ratingChart.labels = new Array<string|undefined>(ratingChartDataLength)

@@ -71,8 +71,6 @@ const props = defineProps<{
     showGrid?: boolean,
 }>()
 
-// console.log(props.data, props.labels)
-
 const widthRef = ref(0)
 const heightRef = ref(0)
 
@@ -149,9 +147,9 @@ const cursorIndex = computed<number>(() => {
     
     const currentShift = fullWidthRef.value - widthRef.value + right.value
     const absoluteX = mouse.x + currentShift 
-    const index = Math.round((absoluteX / fullWidthRef.value) * props.data.length)
+    const index = Math.round((absoluteX / fullWidthRef.value) * (props.data.length-1))
     
-    return Math.max(0, Math.min(props.data.length, index))
+    return Math.max(0, Math.min((props.data.length-1), index))
 })
 
 const cursorX = computed<number>(() => {
