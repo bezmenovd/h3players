@@ -107,7 +107,7 @@ const lines = computed<[number, number][][][]>(() => {
     for (let i = 0; i < props.data.length; i++) {
         if (props.data[i] !== undefined) {
             for (let j = 0; j < itemLength; j++) {
-                currentLines[j].push([Math.round(i / (props.data.length-1) * fullWidthRef.value)-1, Math.round(heightRef.value - (Number(props.data[i]![j]) / props.max[j]) * heightRef.value)])
+                currentLines[j].push([Math.round(i / (props.data.length-1) * fullWidthRef.value), Math.round(heightRef.value - (Number(props.data[i]![j]) / props.max[j]) * heightRef.value)])
             }
         } else {
             for (let j = 0; j < itemLength; j++) {
@@ -124,6 +124,8 @@ const lines = computed<[number, number][][][]>(() => {
             result[j].push(currentLines[j])
         }
     }
+
+    console.log(result[0][0].map(xy => xy[0]).join(', '))
     
     return result
 })
@@ -139,7 +141,7 @@ const noData = computed<[number, number][]>(() => {
     for (let i = 0; i < props.data.length; i++) {
         if (props.data[i] !== undefined) {
             if (currentNoDataStart !== -1) {
-                result.push([currentNoDataStart-1, Math.round(i / (props.data.length-1) * fullWidthRef.value)])
+                result.push([currentNoDataStart, Math.round(i / (props.data.length-1) * fullWidthRef.value)])
                 currentNoDataStart = -1
             }
         } else {
@@ -173,10 +175,11 @@ const cursorX = computed<number>(() => {
         return 0
     }
 
-    const theoreticalX = (cursorIndex.value / (props.data.length-1)) * fullWidthRef.value
+    const theoreticalX = Math.round((cursorIndex.value / (props.data.length-1)) * fullWidthRef.value)
     const currentShift = fullWidthRef.value - widthRef.value + right.value
+    const value = theoreticalX - currentShift
 
-    return theoreticalX - currentShift
+    return value
 })
 
 const mouse = reactive({
