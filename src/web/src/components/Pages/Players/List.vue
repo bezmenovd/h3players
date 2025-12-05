@@ -66,7 +66,7 @@ const load = (visible: boolean = true) => {
 onMounted(async () => {
     pageSize.value = Math.min(Math.floor((getContentSize().height - 170) / 50), 20)
 
-    watch(() => route.hash, () => { load(true) }, { immediate: true })
+    watch(() => route.query.offset, () => { load(true) }, { immediate: true })
 
     onBeforeUnmount(on('data.players.update', () => { load(false) }))
 })

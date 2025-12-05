@@ -96,7 +96,6 @@ onMounted(async () => {
     document.getElementById("filter-query")?.focus()
 
     watch(() => route.query, load, { immediate: true })
-    watch(() => route.hash, load, { immediate: true })
 
     onBeforeUnmount(on('data.templates.update', load))
 })

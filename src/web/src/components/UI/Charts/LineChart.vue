@@ -57,7 +57,7 @@
                             <div v-if="props.labels[cursorIndex]" class="cursor-label">{{ props.labels[cursorIndex] }}</div>
                         </div>
                         <template v-for="(color, j) in props.colors">
-                            <div class="cursor-dot" v-if="props.data[cursorIndex]" :style="`bottom: ${ ((props.data[cursorIndex]![j]) / props.max[j]) * heightRef }px; background: radial-gradient(circle, ${color} 0%, ${color} 33%,transparent 100%);`" :key="j"/>
+                            <div class="cursor-dot" v-if="props.data[cursorIndex]" :style="`bottom: ${ ((props.data[cursorIndex]![j]) / props.max[j]) * heightRef }px; background: radial-gradient(circle, ${color} 0%, ${color} 30%, transparent 90%);`" :key="j"/>
                         </template>
                     </div>
                 </div>

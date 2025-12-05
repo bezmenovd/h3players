@@ -49,7 +49,6 @@ const select = (code: string) => {
                 tab: code
             },
             query: route.query,
-            hash: route.hash,
         });
     }
 }

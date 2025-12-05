@@ -72,7 +72,7 @@ const onUpdate = throttle(load, 1000)
 onMounted(() => {
     pageSize.value = Math.min(Math.floor((getContentSize().height - 170) / 50), 20)
 
-    watch(() => route.hash, () => load(true), { immediate: true })
+    watch(() => route.query.offset, () => load(true), { immediate: true })
 
     onBeforeUnmount(on('data.games.update', () => { onUpdate(false) }))
 

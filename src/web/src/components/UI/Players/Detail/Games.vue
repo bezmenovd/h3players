@@ -214,7 +214,7 @@ onMounted(() => {
     opacity: .7;
     pointer-events: none;
 }
-.game[data-status="host"] .game-opponent::before {
+.game[data-status="draw"] .game-opponent::before {
     content: '';
     position: absolute;
     left: 0;

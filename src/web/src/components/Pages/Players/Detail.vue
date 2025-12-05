@@ -212,7 +212,7 @@ onMounted(async () => {
 
 <style scoped>
 #player {
-    min-height: 300px;
+    
 }
 .tabs {
     width: 400px;
