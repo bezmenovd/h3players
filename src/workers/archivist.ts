@@ -39,6 +39,7 @@ async function main() {
 
     process.on('uncaughtException', async (err: Error) => {
         sendMessage(`${err.message}\n${err.stack}`)
+        logger.error(`${err.message}\n${err.stack}`)
         await client.disconnect()
         await client.connect()
     })

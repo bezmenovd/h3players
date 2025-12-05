@@ -1,37 +1,39 @@
 <template>
-    <Loader v-if="loading" :solid="false"/>
-    <template v-else>
-        <Title :text="info.name || ' '">
-            <Tabs :items="tabs"/>
-        </Title>
-        <Panel id="player">
-            <template v-if="tab === ''">
-
-            </template>
-            <template v-if="tab === 'rating'">
-                <div id="player-info">
-                    <LineChart 
-                        v-if="ratingChart.show" 
-                        id="chart-player-rating"
-                        height="400px"
-                        :size="ratingChart.size"
-                        :colors="['#fff']" 
-                        :data="ratingChart.data" 
-                        :labels="ratingChart.labels" 
-                        :max="ratingChart.max" 
-                        :formatters="ratingChart.formatters"
-                        :show-grid="true"
-                        :x-labels="ratingChart.xLabels"
-                    />
-                </div>
-            </template>
-            <template v-if="tab === 'games'">
-                <Header></Header>
-                <Games :items="gamesList.items.slice(gamesListOffset, gamesListOffset+gamesList.limit)" @wheel="scroll"/>
-                <Footer :limit="gamesList.limit" :total="gamesList.total"></Footer>
-            </template>
-        </Panel>
-    </template>
+    <div id="players-detail" :key="String(route.params.id)">
+        <Loader v-if="loading" :solid="false"/>
+        <template v-else>
+            <Title :text="info.name || ' '">
+                <Tabs :items="tabs"/>
+            </Title>
+            <Panel id="player">
+                <template v-if="tab === ''">
+    
+                </template>
+                <template v-if="tab === 'rating'">
+                    <div id="player-info">
+                        <LineChart 
+                            v-if="ratingChart.show" 
+                            id="chart-player-rating"
+                            height="600px"
+                            :size="ratingChart.size"
+                            :colors="['#fff']" 
+                            :data="ratingChart.data" 
+                            :labels="ratingChart.labels" 
+                            :max="ratingChart.max" 
+                            :formatters="ratingChart.formatters"
+                            :show-grid="true"
+                            :x-labels="ratingChart.xLabels"
+                        />
+                    </div>
+                </template>
+                <template v-if="tab === 'games'">
+                    <Header></Header>
+                    <Games :items="gamesList.items.slice(gamesListOffset, gamesListOffset+gamesList.limit)" @wheel="scroll"/>
+                    <Footer :limit="gamesList.limit" :total="gamesList.total"></Footer>
+                </template>
+            </Panel>
+        </template>
+    </div>
 </template>
 
 <script setup lang="ts">

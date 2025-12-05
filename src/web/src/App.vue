@@ -7,12 +7,7 @@
         </div>
         <div id="content">
             <Return />
-            <Transition
-                name="route"
-                mode="out-in"
-            >
-                <router-view key="$route.fullPath" />
-            </Transition>
+            <router-view :key="String($route.name) + String($route.params.id)"/>
         </div>
     </div>
 </template>

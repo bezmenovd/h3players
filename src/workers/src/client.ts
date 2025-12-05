@@ -66,9 +66,11 @@ export class Client {
             throw new Error("no onMessage listeners")
         }
 
-        this.authstr = this.authstr.substring(0, 482) + bytesToHex(intToBytes(await getHdModVersion()), '') + this.authstr.substring(490)
+        const hdModVersion = await getHdModVersion()
 
-        const proxy = String(process.env.PROXY || '')
+        logger.info(`HD Mod version: ${hdModVersion}`)
+
+        this.authstr = this.authstr.substring(0, 482) + bytesToHex(intToBytes(hdModVersion), '') + this.authstr.substring(490)
 
         return new Promise(async (resolve) => {
             this.socket = net.createConnection({

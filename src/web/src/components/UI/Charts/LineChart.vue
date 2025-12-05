@@ -252,10 +252,8 @@ onMounted(async () => {
     }
 
     if (props.showGrid) {
-        if (props.colors.length === 1) {
-            yLabels.value = generateYLabels(props.max[0])
-            props.max[0] = yLabels.value[yLabels.value.length-1]
-        }
+        yLabels.value = generateYLabels(props.max[0])
+        props.max[0] = yLabels.value[yLabels.value.length-1]
     }
 
     show.value = true
