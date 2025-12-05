@@ -252,7 +252,7 @@ async function main() {
         games_v_to_insert.forEach(g => redis.rPush('processor:games_v', JSON.stringify(g)))
 
         if (games_to_insert.length > 0) {
-            logger.info(`player#{playerId}: retrieved games: ${games_to_insert.length}`)
+            logger.info(`player#${playerId}: retrieved games: ${games_to_insert.length}`)
 
             let opponents = games_v_to_insert.map(g => g.opponent_id)
             let templates = games_to_insert.map(g => g.template_id)
