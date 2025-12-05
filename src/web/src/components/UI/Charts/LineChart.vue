@@ -124,8 +124,6 @@ const lines = computed<[number, number][][][]>(() => {
             result[j].push(currentLines[j])
         }
     }
-
-    console.log(result[0][0].map(xy => xy[0]).join(', '))
     
     return result
 })
