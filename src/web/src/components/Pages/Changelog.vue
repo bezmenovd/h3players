@@ -5,7 +5,7 @@
             <div class="version-date">{{ version.date }}</div>
             <div class="version-changes">
                 <div class="version-change" v-for="change in version.changes">
-                    <div class="version-change-type">{{ {'feature': '+', 'fix': '*'}[change.type] }}</div>
+                    <!-- <div class="version-change-type">{{ {'feature': '+', 'fix': '*'}[change.type] }}</div> -->
                     <div class="version-change-description">{{ change.description }}</div>
                 </div>
             </div>
