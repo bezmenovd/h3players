@@ -251,6 +251,8 @@ async function main() {
                     let chunk = unknownOpponents.slice(i, Math.min(i+10, unknownOpponents.length))
                     let players: Players
 
+                    i += 10
+
                     try {
                         players = await playersAgent.get(chunk)
                     } catch (e: any) {
@@ -261,8 +263,6 @@ async function main() {
                     players!.items.forEach(i => {
                         players_to_insert.push(i)
                     })
-
-                    i += 10
                 }
                 
                 players_to_insert.forEach(p => redis.rPush('processor:players', JSON.stringify(p)))
@@ -295,6 +295,8 @@ async function main() {
                     let chunk = unknownTemplates.slice(i, Math.min(i+10, unknownTemplates.length))
                     let templates: Templates
 
+                    i += 10
+
                     try {
                         templates = await templatesAgent.get(chunk)
                     } catch (e: any) {
@@ -305,8 +307,6 @@ async function main() {
                     templates!.items.forEach(i => {
                         templates_to_insert.push(i)
                     })
-
-                    i += 10
                 }
 
                 templates_to_insert.forEach(t => redis.rPush('processor:templates', JSON.stringify(t)))
