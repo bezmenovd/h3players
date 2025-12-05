@@ -4,6 +4,8 @@ import { bytesToHex, hexDump, intToBytes } from './helpers/bytes';
 import config from '../config';
 import { getHdModVersion } from './version';
 import fs from 'node:fs'
+import { sendMessage } from './services/telegram';
+import { sleep } from './helpers/sleep';
 
 
 export type Listener = (data: Buffer) => void;
@@ -73,15 +75,7 @@ export class Client {
         this.authstr = this.authstr.substring(0, 482) + bytesToHex(intToBytes(hdModVersion), '') + this.authstr.substring(490)
 
         return new Promise(async (resolve) => {
-            this.socket = net.createConnection({
-                host: config.server.ip,
-                port: config.server.port,
-                timeout: config.connection.timeout,
-            })
-    
-            this.socket.on('connect', () => {
-                this.write(Buffer.from(this.authstr, 'hex'), false)
-            })
+            this.socket = new net.Socket()
 
             this.socket.on('data', (data: Buffer) => {
                 if (this.connected) {
@@ -93,10 +87,21 @@ export class Client {
                     resolve()
                 }
             })
+    
+            this.socket.on('connect', () => {
+                this.write(Buffer.from(this.authstr, 'hex'), false)
+            })
 
             this.socket.on('error', (err: Error) => this.onError(err))
             this.socket.on('timeout', () => this.onTimeout())
             this.socket.on('close', () => this.onClose())
+
+            this.socket.setTimeout(config.connection.timeout)
+
+            this.socket.connect({
+                host: config.server.ip,
+                port: config.server.port,
+            })
         })
     }
 
@@ -246,8 +251,12 @@ export class Client {
         this.disconnect()
     }
 
-    private onTimeout(): void {
+    private async onTimeout(): Promise<void> {
         logger.info(`client(${this.name}) timeout`)
+
+        if (! this.connected) {
+            throw new Error(`authorization failed`)
+        }
 
         this.disconnect()
     }

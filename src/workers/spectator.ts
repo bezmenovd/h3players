@@ -3,16 +3,18 @@ import { createState, State } from './src/state'
 import { Room, RoomRemove, User51, User52, UserDisconnect107, UserDisconnect108, UserDisconnect83 } from './src/types/msgin'
 import { logger } from './src/services/logger'
 import { Supervisor } from './src/supervisor'
-import { sendMessage } from './src/services/telegram'
 import { timestamp, date } from './src/helpers/timestamp'
 import { lobby } from './src/services/clickhouse'
 import { Postman } from './src/postman'
 import { createClient } from 'redis'
 import { debounce } from './src/helpers/functions'
+import { initWorker } from './src/worker'
 
 
 async function main() {
     logger.info('starting..')
+
+    initWorker()
 
     const USER = String(process.env.USER)
     
@@ -58,13 +60,6 @@ async function main() {
         if (updateOnlineInterval!) {
             clearInterval(updateOnlineInterval)
         }
-    })
-
-    process.on('uncaughtException', async (err: Error) => {
-        sendMessage(`${err.message}\n${err.stack}`)
-        logger.error(`${err.message}\n${err.stack}`)
-        await client.disconnect()
-        await client.connect()
     })
 
     const getOnline = () => {
