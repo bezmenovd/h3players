@@ -76,6 +76,8 @@ async function main() {
                 break
             }
 
+            logger.info(`player#${currentId}: ${history.total} games total`)
+
             for (let i = 0; i < history.games.length; i++) {
                 if (history.games[i].status === GameStatus.NotFinished) {
                     continue
