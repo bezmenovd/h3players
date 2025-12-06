@@ -76,8 +76,6 @@ async function main() {
                 break
             }
 
-            logger.info(`player#${currentId}: ${history.total} games total`)
-
             for (let i = 0; i < history.games.length; i++) {
                 if (history.games[i].status === GameStatus.NotFinished) {
                     continue
@@ -93,6 +91,7 @@ async function main() {
 
             if (! beforeTimestamp) {
                 total = history.total
+                logger.info(`player#${currentId}: ${history.total} games total`)
             }
 
             read += history.onPage
