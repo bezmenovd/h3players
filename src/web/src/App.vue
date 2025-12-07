@@ -82,6 +82,11 @@ a:hover {
     display: grid;
     grid-template-columns: 200px 1fr;
 }
+@media (max-width: 1600px) {
+    #app {
+        grid-template-columns: 160px 1fr;
+    }
+}
 #left {
     background: #2e3245;
     backdrop-filter: blur(1px);

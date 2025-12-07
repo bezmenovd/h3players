@@ -4,6 +4,7 @@ import router from './router'
 import i18n from './i18n'
 import axios from 'axios'
 import App from './App.vue'
+import './css/h3.css'
 
 // Setup axios defaults
 axios.defaults.baseURL = window.location.origin

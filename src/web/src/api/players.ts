@@ -23,6 +23,7 @@ export async function search(query: string): Promise<Player[]> {
 export type PlayerDetailInfo = {
     id: number
     name: string
+    rank: number
 }
 
 export async function getPlayer(id: number): Promise<PlayerDetailInfo> {

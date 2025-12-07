@@ -3,15 +3,6 @@
         <Title text="Шаблоны"></Title>
         <Panel id="templates-list-panel">
             <Header>
-                <!-- <input 
-                    id="filter-query" 
-                    type="text" 
-                    v-model="query" 
-                    spellcheck="false" 
-                    autocomplete="one-time-code" 
-                    placeholder="Введите название"
-                    @keyup="updateOnQuery"
-                /> -->
                 <Query 
                     v-model="query"
                     width="300px"
@@ -56,7 +47,7 @@ const templates = reactive<{
 })
 
 const query = computed<string>(() => {
-    return route.params.query !== undefined ? String(route.params.query) : ''
+    return route.query.query !== undefined ? String(route.query.query) : ''
 })
 const offset = computed<number>(() => {
     const v = Number(route.query.offset)
@@ -95,7 +86,7 @@ onMounted(async () => {
 
     document.getElementById("filter-query")?.focus()
 
-    watch(() => route.query, load, { immediate: true })
+    watch(() => route.query, () => load(), { immediate: true })
 
     onBeforeUnmount(on('data.templates.update', load))
 })

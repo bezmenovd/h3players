@@ -1,11 +1,9 @@
 import net, { Socket } from 'net'
 import { logger } from './services/logger';
 import { bytesToHex, hexDump, intToBytes } from './helpers/bytes';
-import config from '../config';
 import { getHdModVersion } from './version';
 import fs from 'node:fs'
-import { sendMessage } from './services/telegram';
-import { sleep } from './helpers/sleep';
+import config from './../../../config.json'
 
 
 export type Listener = (data: Buffer) => void;

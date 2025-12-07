@@ -12,3 +12,4 @@ dist/wss/*
 yarn-cache
 docker/nginx/ssl/*
 output
+config.json

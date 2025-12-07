@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 
+
 export default defineConfig({
     base: '/',
     publicDir: 'public',
@@ -18,5 +19,7 @@ export default defineConfig({
             interval: 100,
         }
     },
-    plugins: [vue()]
+    plugins: [
+        vue(),
+    ]
 });

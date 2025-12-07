@@ -44,10 +44,12 @@ export class PlayersController {
             throw new NotFoundException()
         }
 
+        let rank = await this.playersService.playerRank(i)
+
         return {
             id: player.id,
             name: player.name,
-            // rank: 
+            rank: rank,
         }
     }
 }

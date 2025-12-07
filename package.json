@@ -37,7 +37,8 @@
     "wss": "node dist/wss/server.js",
     "wss:dev": "tsx src/wss/server.ts",
     "wss:build": "tsup --config src/wss/tsup.config.ts --clean",
-    "workers:build": "yarn workers:spectator:build && yarn workers:journalist:build && yarn workers:archivist:build && yarn workers:coordinator:build && yarn workers:processor:build"
+    "workers:build": "yarn workers:spectator:build && yarn workers:journalist:build && yarn workers:archivist:build && yarn workers:coordinator:build && yarn workers:processor:build && yarn workers:background:build",
+    "web:spritesmith": "node src/web/spritesmith.js"
   },
   "dependencies": {
     "@clickhouse/client": "^1.12.1",
@@ -58,6 +59,7 @@
     "rotating-file-stream": "^3.2.7",
     "rxjs": "^7.8.1",
     "socks": "^2.8.7",
+    "spritesmith": "^3.5.1",
     "tsup": "^8.5.0",
     "tsx": "^4.20.6",
     "vite": "^7.1.12",

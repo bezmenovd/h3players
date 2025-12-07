@@ -2,42 +2,93 @@
     <div id="players-detail" :key="String(route.params.id)">
         <Loader v-if="loading" :solid="false"/>
         <template v-else>
-            <Title :text="info.name || ' '">
+            <Title :text="player.name || ' '">
+                <template #in-text>
+                    <template v-if="player.rank !== -1">
+                        <div :class="{'top-rank': true, 'top-1': player.rank === 1 }" v-if="player.rank <= 100">#{{ player.rank }} в лобби</div>
+                    </template>
+                </template>
                 <Tabs :items="tabs"/>
             </Title>
-            <Panel id="player">
-                <template v-if="tab === ''">
-    
-                </template>
-                <template v-if="tab === 'rating'">
+
+            <template v-if="tab === ''">
+                <Panel id="player-overview">
                     <div id="player-info">
-                        <LineChart 
-                            v-if="ratingChart.show" 
-                            id="chart-player-rating"
-                            height="600px"
-                            :size="ratingChart.size"
-                            :colors="['#fff']" 
-                            :data="ratingChart.data" 
-                            :labels="ratingChart.labels" 
-                            :max="ratingChart.max" 
-                            :formatters="ratingChart.formatters"
-                            :show-grid="true"
-                            :x-labels="ratingChart.xLabels"
-                        />
+                        <div class="player-info-column">
+                            <div class="player-info-item">
+                                <div class="player-info-item-label">Игр</div>
+                                <div class="player-info-item-value">
+                                    {{ info.games_count }}
+                                </div>
+                            </div>
+                            <div class="player-info-item">
+                                <div class="player-info-item-label">Побед</div>
+                                <div class="player-info-item-value">{{ info.games_count_wins }}</div>
+                            </div>
+                            <div class="player-info-item">
+                                <div class="player-info-item-label">Поражений</div>
+                                <div class="player-info-item-value">{{ info.games_count_loses }}</div>
+                            </div>
+                            <div class="player-info-item">
+                                <div class="player-info-item-label">Ничьих</div>
+                                <div class="player-info-item-value">{{ info.games_count_draws }}</div>
+                            </div>
+                            <div class="player-info-item">
+                                <div class="player-info-item-label">Винрейт</div>
+                                <div class="player-info-item-value">{{ Math.floor(info.games_count_winrate * 1000) / 10 }}%</div>
+                            </div>
+                        </div>
+                        <div class="player-info-column">
+                            <div class="player-info-item">
+                                <div class="player-info-item-label">Рейтинг</div>
+                                <div class="player-info-item-value">{{ info.rating }}</div>
+                            </div>
+                            <div class="player-info-item">
+                                <div class="player-info-item-label">Позиция</div>
+                                <div class="player-info-item-value">{{ player.rank !== -1 ? player.rank : '?' }}</div>
+                            </div>
+                            <div class="player-info-item">
+                                <div class="player-info-item-label">Макс. рейтинг</div>
+                                <div class="player-info-item-value">
+                                    {{ info.max_rating }} 
+                                    <div class="max-rating-datetime">
+                                        {{ datetime.from(info.max_rating_timestamp) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="player-info-item">
+                                <div class="player-info-item-label">Время в играх</div>
+                                <div class="player-info-item-value">{{ info.games_duration }} {{ pluralize(info.games_duration, 'час', 'часа', 'часов') }}</div>
+                            </div>
+                        </div>
                     </div>
-                </template>
-                <template v-if="tab === 'games'">
+                    <LineChart 
+                        v-if="ratingChart.show" 
+                        id="chart-player-rating"
+                        :size="ratingChart.size"
+                        :colors="['#fff']" 
+                        :data="ratingChart.data" 
+                        :labels="ratingChart.labels" 
+                        :max="ratingChart.max" 
+                        :formatters="ratingChart.formatters"
+                        :show-grid="true"
+                        :x-labels="ratingChart.xLabels"
+                    />
+                </Panel>
+            </template>
+            <template v-if="tab === 'games'">
+                <Panel>
                     <Header></Header>
                     <Games :items="gamesList.items.slice(gamesListOffset, gamesListOffset+gamesList.limit)" @wheel="scroll"/>
                     <Footer :limit="gamesList.limit" :total="gamesList.total"></Footer>
-                </template>
-            </Panel>
+                </Panel>
+            </template>
         </template>
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import Panel from '../../UI/Panel.vue'
 import Loader from '../../UI/Loader.vue'
 import Title from '../../UI/Title.vue'
@@ -45,7 +96,7 @@ import { getPlayer } from '../../../api/players'
 import {  GameVWithInfo, getList } from '../../../api/games_v'
 import { useRoute } from 'vue-router'
 import LineChart from '../../UI/Charts/LineChart.vue'
-import { date, month, timestamp } from '../../../helpers/timestamp'
+import { date, datetime, month, timestamp } from '../../../helpers/timestamp'
 import Tabs from '../../UI/Tabs.vue'
 import router from '../../../router'
 import Header from '../../UI/Table/Header.vue'
@@ -53,20 +104,70 @@ import Footer from '../../UI/Table/Footer.vue'
 import Games from '../../UI/Players/Detail/Games.vue'
 import { PaginatedTable } from '../../../api/general'
 import { getContentSize } from '../../../helpers/content'
+import { pluralize } from '../../../helpers/string'
 
 
 const loading = ref(true)
 const route = useRoute()
 
-const info = reactive({
+const player = reactive({
     id: parseInt(String(route.params.id)),
     name: '',
+    rank: -1,
 })
 
 const gamesList = reactive<PaginatedTable<GameVWithInfo>>({
     items: [],
     total: 0,
     limit: 0,
+})
+
+const info = computed(() => {
+    let games_count = gamesList.items.length
+    let games_count_wins = 0
+    let games_count_loses = 0
+    let games_count_draws = 0
+    let games_duration = 0
+    let max_rating = 0
+    let max_rating_timestamp = 0
+    let rating = gamesList.items[0].player_new_rating
+
+    for (let i = 0; i < gamesList.items.length; i++) {
+        let g = gamesList.items[i]
+
+        if (g.is_win) {
+            games_count_wins++
+        } else if (g.is_loss) {
+            games_count_loses++
+        } else {
+            games_count_draws++
+        }
+
+        if ((g.end_timestamp - g.start_timestamp) < 16*3600) {
+            games_duration += g.end_timestamp - g.start_timestamp
+        }
+
+        if (g.player_old_rating > max_rating) {
+            max_rating = g.player_old_rating
+            max_rating_timestamp = g.start_timestamp
+        }
+        if (g.player_new_rating > max_rating) {
+            max_rating = g.player_new_rating
+            max_rating_timestamp = g.end_timestamp
+        }
+    }
+
+    return {
+        games_count: games_count,
+        games_count_wins: games_count_wins,
+        games_count_loses: games_count_loses,
+        games_count_draws: games_count_draws,
+        games_count_winrate: games_count_wins / games_count,
+        games_duration: Math.floor(games_duration / 3600),
+        rating: rating,
+        max_rating: max_rating,
+        max_rating_timestamp: max_rating_timestamp,
+    }
 })
 
 const gamesListOffset = computed<number>(() => {
@@ -80,16 +181,13 @@ const tabs = [
         code: '', 
         name: 'Основное' 
     }, { 
-        code: 'rating', 
-        name: 'Рейтинг' 
-    }, { 
         code: 'games', 
         name: 'Игры' 
     }
 ]
 
 watch(() => route.params.tab, (newTabCode) => {
-    tab.value = String(newTabCode);
+    tab.value = newTabCode !== undefined ? String(newTabCode) : '';
 }, { immediate: true });
 
 
@@ -141,10 +239,11 @@ const ratingChart = reactive<{
 onMounted(async () => {
     let gamesListSize = Math.min(Math.floor((getContentSize().height - 170) / 50), 20)
 
-    getPlayer(info.id).then(data => {
-        info.name = data.name
+    getPlayer(player.id).then(data => {
+        player.name = data.name
+        player.rank = data.rank
 
-        getList(info.id).then(r => {
+        getList(player.id).then(r => {
             gamesList.items = r.items
             gamesList.limit = gamesListSize
             gamesList.total = r.total
@@ -211,13 +310,81 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-#player {
-    
-}
 .tabs {
-    width: 400px;
+    width: 240px;
+}
+#player-overview {
+    display: grid;
+    grid-template-rows: 200px 560px;
+    padding: 20px;
+}
+@media (max-width: 1600px) {
+    #player-overview {
+        grid-template-rows: 170px 420px;
+    }
 }
 #player-info {
-    padding: 20px;
+    display: flex;
+    gap: 100px;
+}
+.player-info-column {
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+}
+@media (max-width: 1600px) {
+    .player-info-column {
+        gap: 12px;
+    }
+}
+#chart-player-rating{
+    height: 560px;
+}
+@media (max-width: 1600px) {
+    #chart-player-rating{
+        height: 420px;
+    }
+}
+.player-info-item {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 10px;
+}
+.player-info-item-label {
+    opacity: .7;
+    font-weight: 500;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.player-info-item-value {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-variant-numeric: tabular-nums;
+}
+.games_count {
+    display: inline-block;
+    margin-left: 22px;
+    opacity: .8;
+}
+.max-rating-datetime {    
+    opacity: .7;
+    margin-left: 12px;
+    font-size: 13px;
+    padding-top: 2px;
+}
+.top-rank {
+    font-size: 16px;
+    margin-left: 30px;
+    background: #fdd807c2;
+    padding: 4px 8px 5px;
+    margin-top: 2px;
+    color: #272c3a;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+}
+.top-rank.top-1 {
+    background: #9007fdc2;
 }
 </style>

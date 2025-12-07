@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { createClient } from '@clickhouse/client';
+import { createClient as createClientRedis } from 'redis'
 import { Player } from '../types/clickhouse/lobby';
 import { Paginated, PlayerInfo } from '../types/api';
 
@@ -11,6 +12,20 @@ export class PlayersService {
         password: 'xQm8LpsLOolVLryE',
         database: 'lobby',
     })
+    
+    private redis = createClientRedis({
+        socket: {
+            host: 'redis',
+        }
+    })
+
+    async onModuleInit() {
+        await this.redis.connect()
+    }
+
+    async onModuleDestroy() {
+        this.redis.destroy()
+    }
 
     async getList(limit: number, offset: number, ids: number[] = []): Promise<Paginated<Player>> {
         let items = await (await this.clickhouse.query({
@@ -85,19 +100,10 @@ export class PlayersService {
         return result.length === 1 ? result[0] : null
     }
 
-    async playerRank(id: number): Promise<Player|null> {
-        let result = await (await this.clickhouse.query({
-            query: `
-                SELECT * FROM
-                players
-                WHERE id = {id:UInt32}
-            `,
-            query_params: {
-                id, 
-            },
-            format: 'JSONEachRow',
-        })).json<Player>()
+    async playerRank(id: number): Promise<number> {
+        let rank = Number(await this.redis.zRevRank('rank', String(id)))
+        rank = Number.isFinite(rank) ? rank+1 : -1
 
-        return result.length === 1 ? result[0] : null
+        return rank
     }
 }

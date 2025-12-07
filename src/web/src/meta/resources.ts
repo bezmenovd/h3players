@@ -22,6 +22,7 @@ export default {
         '/img/list.png',
         '/img/table/page.png',
         '/img/table/end.png',
+        '/img/h3.png',
     ]
 } as {
     [key: string]: (string | Font)[]

@@ -25,4 +25,10 @@ const version = computed<string>(() => {
     font-size: 14px;
     width: fit-content;
 }
+
+@media (max-width: 1600px) {
+    #version-value {
+        font-size: 12px;
+    }
+}
 </style>

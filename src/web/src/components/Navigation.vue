@@ -68,6 +68,12 @@ onMounted(async () => {
     opacity: .4;
     padding: 14px 22px;
 }
+@media (max-width: 1600px) {
+    .link {
+        grid-template-columns: 26px 1fr;
+        padding: 10px 16px;
+    }
+}
 .link.active {
     opacity: 1;
     background: #ffffff1a;
@@ -86,6 +92,11 @@ onMounted(async () => {
     font-size: 18px;
     color: white;
 }
+@media (max-width: 1600px) {
+    .link-text {
+        font-size: 15px;
+    }
+}
 .link.performance .link-icon {
     width: 20px;
     height: 20px;
@@ -95,5 +106,19 @@ onMounted(async () => {
     width: 18px;
     height: 18px;
     margin-left: 2px;
+}
+@media (max-width: 1600px) {
+    .link-icon {
+        width: 17px;
+        height: 17px;
+    }
+    .link.performance .link-icon {
+        width: 14px;
+        height: 14px;
+    }
+    .link.templates .link-icon {
+        width: 13px;
+        height: 13px;
+    }
 }
 </style>

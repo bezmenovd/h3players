@@ -6,7 +6,7 @@ const LOG_PATH = process.env.LOG_PATH;
 export const logger = createLogger({
     level: 'info',
     format: format.combine(
-        format.timestamp({ format: 'D.M.YYYY H:mm:ss' }),
+        format.timestamp({ format: 'DD.MM.YYYY H:mm:ss' }),
         format.errors({ stack: true }),
         format.printf(({ timestamp, message, stack }) => `[${timestamp}]: ${stack || message}`)
     ),
@@ -23,7 +23,7 @@ export const logger = createLogger({
         new transports.Console({
             format: format.combine(
                 format.colorize(),
-                format.timestamp({ format: 'D.M.YYYY H:mm:ss' }),
+                format.timestamp({ format: 'DD.MM.YYYY H:mm:ss' }),
                 format.printf(({ timestamp, message, stack }) => `[${timestamp}]: ${stack || message}`)
             ),
         }),

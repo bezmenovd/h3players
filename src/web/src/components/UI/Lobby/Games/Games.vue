@@ -3,7 +3,9 @@
         <div class="game" v-for="item in props.items" :data-status="item.status">
             <div class="game-end">{{ end(item) }}</div>
             <div class="game-duration">{{ duration(item) }}</div>
+            <div class="game-end-day">{{ endDay(item) }}</div>
             <div class="game-players">
+                <div :class="`game-host-town h3 h3-towns-${ (h3.towns as any)[item.host_town] }`"></div>
                 <div class="game-host">
                     <router-link :to="{ name: 'players.detail', params: { id: item.host_id }}">{{ item.host_name || '?' }}</router-link>
                     <Rating :value="item.host_new_rating" />
@@ -17,7 +19,9 @@
                     <Rating :value="item.opponent_new_rating" />
                     <RatingDiff :value="item.opponent_new_rating - item.opponent_old_rating" />
                 </div>
+                <div :class="`game-opponent-town h3 h3-towns-${ (h3.towns as any)[item.opponent_town] }`"></div>
             </div>
+            <div class="game-size">{{ size(item) }}</div>
             <div :class="`game-template ${templateClass(item)}`">{{ template(item) }}</div>
             <div class="game-id">{{ item.id }}</div>
         </div>
@@ -30,6 +34,7 @@ import { GameWithInfo } from '../../../../api/games';
 import { datetime, timestamp } from '../../../../helpers/timestamp';
 import RatingDiff from '../../RatingDiff.vue';
 import Rating from '../../Rating.vue';
+import h3 from '../../../../meta/h3.json'
 
 const props = defineProps<{
     items: GameWithInfo[],
@@ -44,6 +49,28 @@ const end = (game: GameWithInfo): string => {
 const duration = (game: GameWithInfo): string => {
     let minutes = Math.floor(Math.max(game.end_timestamp - game.start_timestamp, 60) / 60)
     return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
+}
+
+const endDay = (game: GameWithInfo): string => {
+    if (game.end_day < 1) {
+        return '?'
+    }
+    return `${Math.floor((game.end_day - 1) / 28) + 1} ${Math.floor((game.end_day - 1) / 7) % 4 + 1} ${(game.end_day - 1) % 7 + 1}`
+}
+
+const size = (game: GameWithInfo): string => {
+    if (game.size === 0) {
+        return ''
+    }
+    return ({
+        36: 'S',
+        72: 'M',
+        108: 'L',
+        144: 'XL',
+        180: 'H',
+        216: 'XH',
+        252: 'G'
+    }[game.size] ?? '') + (game.levels === 2 ? '+U' : '')
 }
 
 const template = (game: GameWithInfo): string => {
@@ -86,11 +113,16 @@ onMounted(() => {
     height: 50px;
     width: 100%;
     display: grid;
-    grid-template-columns: 120px 45px 590px 6fr 100px;
+    grid-template-columns: 120px 45px 50px 640px 40px 6fr 100px;
     gap: 10px;
     align-items: center;
     background: #2e3245;
     padding: 0 10px;
+    position: relative;
+}
+.h3 {
+    opacity: .7;
+    filter: grayscale(.4);
 }
 .game:not(:last-of-type) {
     border-bottom: 1px solid #272c3a;
@@ -100,7 +132,8 @@ onMounted(() => {
 }
 .game-players {
     display: grid;
-    grid-template-columns: 1fr 40px 1fr;
+    padding: 0 30px;
+    grid-template-columns: 48px 1fr 40px 1fr 48px;
     align-items: center;
     height: 100%;
 }
@@ -119,6 +152,20 @@ onMounted(() => {
     text-align: center;
     opacity: .9;
     letter-spacing: .5px;
+}
+.game-end-day {
+    font-size: 12px;
+    padding: 0 5px;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    opacity: .9;
+    letter-spacing: .5px;
+    text-align: right;
+}
+.game-size {
+    text-align: center;
+    opacity: .7;
+    font-size: 14px;
 }
 .game-host {
     height: 100%;
@@ -240,5 +287,11 @@ onMounted(() => {
     text-align: center;
     opacity: .9;
     letter-spacing: .5px;
+}
+.game-host-town {
+    width: 48px;
+}
+.game-opponent-town {
+    width: 48px;
 }
 </style>
