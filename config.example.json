@@ -12,8 +12,7 @@
     },
     "background": {
         "rank": {
-            "init": false,
-            "listen": false
+            "enabled": true
         }
     },
     "users": [
