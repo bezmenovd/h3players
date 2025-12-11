@@ -5,9 +5,8 @@
             <div class="game-duration">{{ duration(item) }}</div>
             <div class="game-end-day">{{ endDay(item) }}</div>
             <div class="game-players">
-                <div :class="`game-host-town h3 h3-towns-${ (h3.towns as any)[item.player_town] }`"></div>
-                <div :class="`game-host-hero h3 h3-heroes-small-${ (h3.heroes as any)[item.player_hero] }`"></div>
-                {{ item.player_hero }}
+                <div :class="`game-host-town h3 h3-towns-${ item.template_id > 1 ? (h3.towns as any)[item.player_town] : '' }`"></div>
+                <div :class="`game-host-hero h3 h3-heroes-small-${ item.template_id > 1 ? (h3.heroes as any)[item.player_hero] : '' }`"></div>
                 <div class="game-player">
                     <router-link :to="{ name: 'players.detail', params: { id: item.player_id }}">{{ item.player_name || '?' }}</router-link>
                     <Rating :value="item.player_new_rating" />
@@ -21,9 +20,8 @@
                     <Rating :value="item.opponent_new_rating" />
                     <RatingDiff :value="item.opponent_new_rating - item.opponent_old_rating" />
                 </div>
-                <div :class="`game-opponent-town h3 h3-towns-${ (h3.towns as any)[item.opponent_town] }`"></div>
-                <div :class="`game-opponent-hero h3 h3-heroes-small-${ (h3.heroes as any)[item.opponent_hero] }`"></div>
-                {{ item.opponent_hero }}
+                <div :class="`game-opponent-town h3 h3-towns-${ item.template_id > 1 ? (h3.towns as any)[item.opponent_town] : '' }`"></div>
+                <div :class="`game-opponent-hero h3 h3-heroes-small-${ item.template_id > 1 ? (h3.heroes as any)[item.opponent_hero] : '' }`"></div>
             </div>
             <div class="game-size">{{ size(item) }}</div>
             <div :class="`game-template ${templateClass(item)}`">{{ template(item) }}</div>
@@ -138,7 +136,7 @@ onMounted(() => {
 .game-players {
     display: grid;
     padding: 0 30px;
-    grid-template-columns: 48px 48px 20px 1fr 40px 1fr 48px 48px 20px;
+    grid-template-columns: 48px 48px 1fr 40px 1fr 48px 48px;
     align-items: center;
     height: 100%;
 }

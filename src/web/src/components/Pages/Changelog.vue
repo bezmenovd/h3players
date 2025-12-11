@@ -49,5 +49,6 @@ import changelog from '../../meta/changelog.json';
     display: flex;
     align-items: baseline;
     padding-top: 1px;
+    opacity: .8;
 }
 </style>

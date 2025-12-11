@@ -315,12 +315,13 @@ onMounted(async () => {
 }
 #player-overview {
     display: grid;
-    grid-template-rows: 200px 560px;
+    grid-template-rows: 1fr 560px;
+    gap: 30px;
     padding: 20px;
 }
 @media (max-width: 1600px) {
     #player-overview {
-        grid-template-rows: 170px 420px;
+        grid-template-rows: 1fr 420px;
     }
 }
 #player-info {

@@ -5,7 +5,8 @@
             <div class="game-duration">{{ duration(item) }}</div>
             <div class="game-end-day">{{ endDay(item) }}</div>
             <div class="game-players">
-                <div :class="`game-host-town h3 h3-towns-${ (h3.towns as any)[item.host_town] }`"></div>
+                <div :class="`game-host-town h3 h3-towns-${ item.template_id > 1 ? (h3.towns as any)[item.host_town] : '' }`"></div>
+                <div :class="`game-host-hero h3 h3-heroes-small-${ item.template_id > 1 ? (h3.heroes as any)[item.host_hero] : '' }`"></div>
                 <div class="game-host">
                     <router-link :to="{ name: 'players.detail', params: { id: item.host_id }}">{{ item.host_name || '?' }}</router-link>
                     <Rating :value="item.host_new_rating" />
@@ -19,7 +20,8 @@
                     <Rating :value="item.opponent_new_rating" />
                     <RatingDiff :value="item.opponent_new_rating - item.opponent_old_rating" />
                 </div>
-                <div :class="`game-opponent-town h3 h3-towns-${ (h3.towns as any)[item.opponent_town] }`"></div>
+                <div :class="`game-opponent-town h3 h3-towns-${ item.template_id > 1 ? (h3.towns as any)[item.opponent_town]: '' }`"></div>
+                <div :class="`game-opponent-hero h3 h3-heroes-small-${ item.template_id > 1 ? (h3.heroes as any)[item.opponent_hero] : '' }`"></div>
             </div>
             <div class="game-size">{{ size(item) }}</div>
             <div :class="`game-template ${templateClass(item)}`">{{ template(item) }}</div>
@@ -113,7 +115,7 @@ onMounted(() => {
     height: 50px;
     width: 100%;
     display: grid;
-    grid-template-columns: 120px 45px 50px 640px 40px 6fr 100px;
+    grid-template-columns: 120px 45px 50px 780px 40px 6fr 100px;
     gap: 10px;
     align-items: center;
     background: #2e3245;
@@ -133,7 +135,7 @@ onMounted(() => {
 .game-players {
     display: grid;
     padding: 0 30px;
-    grid-template-columns: 48px 1fr 40px 1fr 48px;
+    grid-template-columns: 48px 48px 1fr 40px 1fr 48px 48px;
     align-items: center;
     height: 100%;
 }
