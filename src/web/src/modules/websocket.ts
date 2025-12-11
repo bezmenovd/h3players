@@ -49,16 +49,15 @@ let queue: (string | ArrayBuffer)[] = []
 export function on<R extends MsgAvailable['route']>(
     route: R,
     listener: (msg: Extract<MsgAvailable, { route: R }>) => void,
-) {
+    params: object = {}
+): () => void {
     if (! listeners.has(route)) {
         listeners.set(route, [])
     }
-    if (listeners.get(route)!.length === 0) {
-        if (websocket?.readyState === WebSocket.OPEN) {
-            websocket!.send(JSON.stringify({ type: 'subscribe', route: route }))
-        } else {
-            queue.push(JSON.stringify({ type: 'subscribe', route: route }))
-        }
+    if (websocket?.readyState === WebSocket.OPEN) {
+        websocket!.send(JSON.stringify({ type: 'subscribe', route: route, params }))
+    } else {
+        queue.push(JSON.stringify({ type: 'subscribe', route: route, params }))
     }
 
     listeners.get(route)!.push(listener)
@@ -70,9 +69,9 @@ export function on<R extends MsgAvailable['route']>(
             if (idx > -1) arr.splice(idx, 1)
             if (arr.length === 0) {
                 if (websocket?.readyState === WebSocket.OPEN) {
-                    websocket!.send(JSON.stringify({ type: 'unsubscribe', route: route }))
+                    websocket!.send(JSON.stringify({ type: 'unsubscribe', route: route, params }))
                 } else {
-                    queue.push(JSON.stringify({ type: 'unsubscribe', route: route }))
+                    queue.push(JSON.stringify({ type: 'unsubscribe', route: route, params }))
                 }
             }
         }

@@ -8,6 +8,7 @@ dist/workers/archivist/*
 dist/workers/coordinator/*
 dist/workers/processor/*
 dist/workers/background/*
+dist/workers/h3players/*
 dist/wss/*
 yarn-cache
 docker/nginx/ssl/*

@@ -8,73 +8,84 @@
                         <div :class="{'top-rank': true, 'top-1': player.rank === 1 }" v-if="player.rank <= 100">#{{ player.rank }} в лобби</div>
                     </template>
                 </template>
-                <Tabs :items="tabs"/>
+                <template v-if="gamesList.items.length > 0">
+                    <Tabs :items="tabs"/>
+                </template>
             </Title>
 
             <template v-if="tab === ''">
-                <Panel id="player-overview">
-                    <div id="player-info">
-                        <div class="player-info-column">
-                            <div class="player-info-item">
-                                <div class="player-info-item-label">Игр</div>
-                                <div class="player-info-item-value">
-                                    {{ info.games_count }}
-                                </div>
-                            </div>
-                            <div class="player-info-item">
-                                <div class="player-info-item-label">Побед</div>
-                                <div class="player-info-item-value">{{ info.games_count_wins }}</div>
-                            </div>
-                            <div class="player-info-item">
-                                <div class="player-info-item-label">Поражений</div>
-                                <div class="player-info-item-value">{{ info.games_count_loses }}</div>
-                            </div>
-                            <div class="player-info-item">
-                                <div class="player-info-item-label">Ничьих</div>
-                                <div class="player-info-item-value">{{ info.games_count_draws }}</div>
-                            </div>
-                            <div class="player-info-item">
-                                <div class="player-info-item-label">Винрейт</div>
-                                <div class="player-info-item-value">{{ Math.floor(info.games_count_winrate * 1000) / 10 }}%</div>
-                            </div>
+                <template v-if="gamesList.items.length === 0">
+                    <Panel>
+                        <div id="player-no-data">
+                            Не найдено ни одной игры
                         </div>
-                        <div class="player-info-column">
-                            <div class="player-info-item">
-                                <div class="player-info-item-label">Рейтинг</div>
-                                <div class="player-info-item-value">{{ info.rating }}</div>
-                            </div>
-                            <div class="player-info-item">
-                                <div class="player-info-item-label">Позиция</div>
-                                <div class="player-info-item-value">{{ player.rank !== -1 ? player.rank : '?' }}</div>
-                            </div>
-                            <div class="player-info-item">
-                                <div class="player-info-item-label">Макс. рейтинг</div>
-                                <div class="player-info-item-value">
-                                    {{ info.max_rating }} 
-                                    <div class="max-rating-datetime">
-                                        {{ datetime.from(info.max_rating_timestamp) }}
+                    </Panel>
+                </template>
+                <template v-else>
+                    <Panel id="player-overview">
+                        <div id="player-info">
+                            <div class="player-info-column">
+                                <div class="player-info-item">
+                                    <div class="player-info-item-label">Игр</div>
+                                    <div class="player-info-item-value">
+                                        {{ info.games_count }}
                                     </div>
                                 </div>
+                                <div class="player-info-item">
+                                    <div class="player-info-item-label">Побед</div>
+                                    <div class="player-info-item-value">{{ info.games_count_wins }}</div>
+                                </div>
+                                <div class="player-info-item">
+                                    <div class="player-info-item-label">Поражений</div>
+                                    <div class="player-info-item-value">{{ info.games_count_loses }}</div>
+                                </div>
+                                <div class="player-info-item">
+                                    <div class="player-info-item-label">Ничьих</div>
+                                    <div class="player-info-item-value">{{ info.games_count_draws }}</div>
+                                </div>
+                                <div class="player-info-item">
+                                    <div class="player-info-item-label">Винрейт</div>
+                                    <div class="player-info-item-value">{{ Math.floor(info.games_count_winrate * 1000) / 10 }}%</div>
+                                </div>
                             </div>
-                            <div class="player-info-item">
-                                <div class="player-info-item-label">Время в играх</div>
-                                <div class="player-info-item-value">{{ info.games_duration }} {{ pluralize(info.games_duration, 'час', 'часа', 'часов') }}</div>
+                            <div class="player-info-column">
+                                <div class="player-info-item">
+                                    <div class="player-info-item-label">Рейтинг</div>
+                                    <div class="player-info-item-value">{{ info.rating }}</div>
+                                </div>
+                                <div class="player-info-item">
+                                    <div class="player-info-item-label">Позиция</div>
+                                    <div class="player-info-item-value">{{ player.rank !== -1 ? player.rank : '?' }}</div>
+                                </div>
+                                <div class="player-info-item">
+                                    <div class="player-info-item-label">Макс. рейтинг</div>
+                                    <div class="player-info-item-value">
+                                        {{ info.max_rating }} 
+                                        <div class="max-rating-datetime">
+                                            {{ datetime.from(info.max_rating_timestamp) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="player-info-item">
+                                    <div class="player-info-item-label">Время в играх</div>
+                                    <div class="player-info-item-value">{{ info.games_duration }} {{ pluralize(info.games_duration, 'час', 'часа', 'часов') }}</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <LineChart 
-                        v-if="ratingChart.show" 
-                        id="chart-player-rating"
-                        :size="ratingChart.size"
-                        :colors="['#fff']" 
-                        :data="ratingChart.data" 
-                        :labels="ratingChart.labels" 
-                        :max="ratingChart.max" 
-                        :formatters="ratingChart.formatters"
-                        :show-grid="true"
-                        :x-labels="ratingChart.xLabels"
-                    />
-                </Panel>
+                        <LineChart 
+                            v-if="ratingChart.show" 
+                            id="chart-player-rating"
+                            :size="ratingChart.size"
+                            :colors="['#fff']" 
+                            :data="ratingChart.data" 
+                            :labels="ratingChart.labels" 
+                            :max="ratingChart.max" 
+                            :formatters="ratingChart.formatters"
+                            :show-grid="true"
+                            :x-labels="ratingChart.xLabels"
+                        />
+                    </Panel>
+                </template>
             </template>
             <template v-if="tab === 'games'">
                 <Panel>
@@ -318,6 +329,14 @@ onMounted(async () => {
     grid-template-rows: 1fr 560px;
     gap: 30px;
     padding: 20px;
+}
+#player-no-data {
+    opacity: .5;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
 }
 @media (max-width: 1600px) {
     #player-overview {

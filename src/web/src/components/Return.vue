@@ -30,7 +30,7 @@ const click = () => {
     background-repeat: no-repeat;
     left: 54px;
     top: 38px;
-    opacity: .5;
+    opacity: .3;
     cursor: pointer;
 }
 #return-button:hover {

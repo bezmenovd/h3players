@@ -66,7 +66,7 @@ onMounted(async () => {
     gap: 6px;
     align-items: center;
     opacity: .4;
-    padding: 14px 22px;
+    padding: 14px 20px;
 }
 @media (max-width: 1600px) {
     .link {

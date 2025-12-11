@@ -34,10 +34,13 @@
     "workers:background:dev": "tsx src/workers/background.ts",
     "workers:background:build": "tsup --config src/workers/background.tsup.config.ts --clean",
     "workers:background": "node dist/workers/background/background.js",
+    "workers:h3players:dev": "tsx src/workers/h3players.ts",
+    "workers:h3players:build": "tsup --config src/workers/h3players.tsup.config.ts --clean",
+    "workers:h3players": "node dist/workers/h3players/h3players.js",
     "wss": "node dist/wss/server.js",
     "wss:dev": "tsx src/wss/server.ts",
     "wss:build": "tsup --config src/wss/tsup.config.ts --clean",
-    "workers:build": "yarn workers:spectator:build && yarn workers:journalist:build && yarn workers:archivist:build && yarn workers:coordinator:build && yarn workers:processor:build && yarn workers:background:build",
+    "workers:build": "yarn workers:spectator:build && yarn workers:journalist:build && yarn workers:archivist:build && yarn workers:coordinator:build && yarn workers:processor:build && yarn workers:background:build && yarn workers:h3players:build",
     "web:spritesmith": "node src/web/spritesmith.js"
   },
   "dependencies": {
@@ -49,6 +52,7 @@
     "@vitejs/plugin-vue": "^6.0.1",
     "axios": "^1.13.1",
     "debounce": "^3.0.0",
+    "mysql2": "^3.15.3",
     "nprogress": "^0.2.0",
     "pinia": "^3.0.3",
     "pino-pretty": "^13.1.2",

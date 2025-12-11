@@ -69,12 +69,13 @@ services:
     image: mysql/mysql-server:8.0
     container_name: h3players-mysql
     environment:
-      MYSQL_DATABASE: database
+      MYSQL_DATABASE: h3players
       MYSQL_USER: user
       MYSQL_PASSWORD: jk7S91xAC5bE5l3I
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
     volumes:
       - mysql-volume:/var/lib/mysql
+      - ./docker/mysql/:/usr/src
 
   redis:
     image: redis:alpine

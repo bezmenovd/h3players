@@ -1,6 +1,7 @@
 <template>
-    <div id="version">
+    <div id="version-and-api">
         <router-link :to="{ name: 'changelog' }" id="version-value">v{{ version }}</router-link>
+        <router-link :to="{ name: 'for-devs' }" id="version-value">Разработчикам</router-link>
     </div>
 </template>
 
@@ -15,9 +16,11 @@ const version = computed<string>(() => {
 </script>
 
 <style scoped>
-#version {
-    padding: 20px;
-    display: grid;
+#version-and-api {
+    padding: 20px 20px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 #version-value {
     font-variant-numeric: tabular-nums;

@@ -253,92 +253,93 @@ async function main() {
 
         if (games_to_insert.length > 0) {
             logger.info(`player#${playerId}: retrieved games: ${games_to_insert.length}`)
+        }
 
-            let opponents = games_v_to_insert.map(g => g.opponent_id)
-            let templates = games_to_insert.map(g => g.template_id)
+        let opponents = games_v_to_insert.map(g => g.opponent_id).concat([playerId])
 
-            if (opponents.length > 0) {
-                let unknownOpponents = (await (await lobby().query({
-                    query: `
-                        SELECT arrayJoin({ids:Array(UInt32)}) AS id
-                        WHERE NOT dictHas('players_dictionary', id)
-                    `,
-                    format: 'JSONEachRow',
-                    query_params: {
-                        ids: opponents,
-                    },
-                })).json<{ id: number }>()).map(r => r.id)
+        {
+            let unknownOpponents = (await (await lobby().query({
+                query: `
+                    SELECT arrayJoin({ids:Array(UInt32)}) AS id
+                    WHERE NOT dictHas('players_dictionary', id)
+                `,
+                format: 'JSONEachRow',
+                query_params: {
+                    ids: opponents,
+                },
+            })).json<{ id: number }>()).map(r => r.id)
 
-                if (unknownOpponents.length > 0) {
-                    let players_to_insert: PlayerModel[] = []
-                    let i = 0
+            if (unknownOpponents.length > 0) {
+                let players_to_insert: PlayerModel[] = []
+                let i = 0
 
-                    while (i < unknownOpponents.length) {
-                        if (i > 0) {
-                            await sleep(500)
-                        }
-
-                        let chunk = unknownOpponents.slice(i, Math.min(i+10, unknownOpponents.length))
-                        let players: Players
-
-                        i += 10
-
-                        try {
-                            players = await playersAgent.get(chunk)
-                        } catch (e: any) {
-                            logger.error(`player#${playerId}: opponents: ${e.message}`)
-                            continue
-                        }
-
-                        players!.items.forEach(i => {
-                            players_to_insert.push(i)
-                        })
+                while (i < unknownOpponents.length) {
+                    if (i > 0) {
+                        await sleep(500)
                     }
-                    
-                    players_to_insert.forEach(p => redis.rPush('processor:players', JSON.stringify(p)))
+
+                    let chunk = unknownOpponents.slice(i, Math.min(i+10, unknownOpponents.length))
+                    let players: Players
+
+                    i += 10
+
+                    try {
+                        players = await playersAgent.get(chunk)
+                    } catch (e: any) {
+                        logger.error(`player#${playerId}: opponents: ${e.message}`)
+                        continue
+                    }
+
+                    players!.items.forEach(i => {
+                        players_to_insert.push(i)
+                    })
                 }
+                
+                players_to_insert.forEach(p => redis.rPush('processor:players', JSON.stringify(p)))
             }
+        }
 
-            if (templates.length > 0) {
-                let unknownTemplates = (await (await lobby().query({
-                    query: `
-                        SELECT arrayJoin({ids:Array(UInt32)}) AS id
-                        WHERE NOT dictHas('templates_dictionary', id)
-                    `,
-                    format: 'JSONEachRow',
-                    query_params: {
-                        ids: templates,
-                    },
-                })).json<{ id: number }>()).map(r => r.id)
+        let templates = games_to_insert.map(g => g.template_id)
 
-                if (unknownTemplates.length > 0) {
-                    let templates_to_insert: TemplateModel[] = []
-                    let i = 0
+        if (templates.length > 0) {
+            let unknownTemplates = (await (await lobby().query({
+                query: `
+                    SELECT arrayJoin({ids:Array(UInt32)}) AS id
+                    WHERE NOT dictHas('templates_dictionary', id)
+                `,
+                format: 'JSONEachRow',
+                query_params: {
+                    ids: templates,
+                },
+            })).json<{ id: number }>()).map(r => r.id)
 
-                    while (i < unknownTemplates.length) {
-                        if (i > 0) {
-                            await sleep(500)
-                        }
+            if (unknownTemplates.length > 0) {
+                let templates_to_insert: TemplateModel[] = []
+                let i = 0
 
-                        let chunk = unknownTemplates.slice(i, Math.min(i+10, unknownTemplates.length))
-                        let templates: Templates
-
-                        i += 10
-
-                        try {
-                            templates = await templatesAgent.get(chunk)
-                        } catch (e: any) {
-                            logger.error(`player#${playerId}: templates: ${e.message}`)
-                            continue
-                        }
-
-                        templates!.items.forEach(i => {
-                            templates_to_insert.push(i)
-                        })
+                while (i < unknownTemplates.length) {
+                    if (i > 0) {
+                        await sleep(500)
                     }
 
-                    templates_to_insert.forEach(t => redis.rPush('processor:templates', JSON.stringify(t)))
+                    let chunk = unknownTemplates.slice(i, Math.min(i+10, unknownTemplates.length))
+                    let templates: Templates
+
+                    i += 10
+
+                    try {
+                        templates = await templatesAgent.get(chunk)
+                    } catch (e: any) {
+                        logger.error(`player#${playerId}: templates: ${e.message}`)
+                        continue
+                    }
+
+                    templates!.items.forEach(i => {
+                        templates_to_insert.push(i)
+                    })
                 }
+
+                templates_to_insert.forEach(t => redis.rPush('processor:templates', JSON.stringify(t)))
             }
         }
     }

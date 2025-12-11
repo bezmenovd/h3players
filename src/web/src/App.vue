@@ -3,7 +3,8 @@
     <div id="app" key="app" v-if="! loading.is">
         <div id="left">
             <Navigation />
-            <Version />
+            <User />
+            <VersionAndForDevs />
         </div>
         <div id="content">
             <Return />
@@ -17,9 +18,10 @@ import { ref } from 'vue';
 import resources from './meta/resources';
 import MainLoader from './components/UI/MainLoader.vue';
 import Navigation from './components/Navigation.vue';
+import User from './components/User.vue';
 import Return from './components/Return.vue';
 import { preload } from './modules/preload';
-import Version from './components/Version.vue';
+import VersionAndForDevs from './components/VersionAndForDevs.vue';
 
 
 const loading = ref({
@@ -160,5 +162,21 @@ a:hover {
     background: black;
     opacity: .03;
     z-index: 999;
+}
+.btn {
+    padding: 8px 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    background: #ffffff10;
+}
+.btn:hover {
+    cursor: pointer;
+    background: #ffffff1f;
+}
+.btn:active {
+    cursor: pointer;
+    background: #ffffff2f;
 }
 </style>

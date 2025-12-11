@@ -60,7 +60,6 @@ const select = (code: string) => {
     display: flex;
     background: #2e3245;
     gap: 1px;
-    padding: 0 1px;
     height: 70px;
 }
 .tab {
@@ -68,7 +67,7 @@ const select = (code: string) => {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #272c3a;
+    background: #292e3d;
     font-size: 17px;
     font-weight: 500;
     color: #82848f;

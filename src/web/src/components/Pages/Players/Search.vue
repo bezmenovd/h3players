@@ -6,7 +6,9 @@
 
         <Panel id="players-search">
             <div id="players-search-top">
-                <Search :maxlength="16" @select="searchSelect" :func="searchFunc" id="players" placeholder="Введите ник"/>
+                <div id="players-search-input-wrapper">
+                    <Search :maxlength="16" @select="searchSelect" :func="searchFunc" id="players" placeholder="Введите ник"/>
+                </div>
             </div>
             <div id="players-search-bottom">
                 <div class="players-search-history" v-if="searchHistory.items.value.length > 0">
@@ -72,7 +74,7 @@ onMounted(() => {
 })
 </script>
 
-<style>
+<style scoped>
 #players {
     
 }
@@ -88,7 +90,7 @@ onMounted(() => {
     align-items: center;
     margin-top: 50px;
 }
-#players-search-input {
+#players-search-input-wrapper {
     width: 400px;
 }
 #players-search-bottom {

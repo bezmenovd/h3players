@@ -101,8 +101,14 @@ export class PlayersService {
     }
 
     async playerRank(id: number): Promise<number> {
-        let rank = Number(await this.redis.zRevRank('rank', String(id)))
-        rank = Number.isFinite(rank) ? rank+1 : -1
+        let rank = await this.redis.zRevRank('rank', String(id))
+        
+        if (rank !== null) {
+            rank = Number(rank)
+            rank = Number.isFinite(rank) ? rank+1 : -1
+        } else {
+            rank = -1
+        }
 
         return rank
     }

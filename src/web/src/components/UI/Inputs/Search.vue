@@ -149,9 +149,11 @@ const selectItem = function(item: SearchItem) {
 <style scoped>
 .search-input {
     height: fit-content;
+    width: 100%;
 }
 .search-input-box {
     position: relative;
+    width: 100%;
 }
 .search-input-box.empty::before {
     content: attr(data-placeholder);
@@ -191,6 +193,7 @@ const selectItem = function(item: SearchItem) {
     top: 100%;
     width: 100%;
     background: #272c3a;
+    z-index: 99999;
 }
 .search-top-title {
     margin-right: 20px;

@@ -35,6 +35,11 @@ interface DateTemplatesUpdate {
     id: number[]
 }
 
+interface Auth {
+    route: 'auth'
+    token: string
+}
+
 
 export type MsgAvailable = LobbyOnlineChanged 
     | LobbyVisitorsChanged
@@ -43,3 +48,4 @@ export type MsgAvailable = LobbyOnlineChanged
     | DataGamesUpdate
     | DataPlayersUpdate
     | DateTemplatesUpdate
+    | Auth
