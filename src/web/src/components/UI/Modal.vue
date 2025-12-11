@@ -2,6 +2,9 @@
     <Teleport to="body">
         <div id="modal-wrapper">
             <div id="modal">
+                <div id="modal-close" @click="close">
+                    <div id="modal-close-icon"></div>
+                </div>
                 <slot />
             </div>
         </div>
@@ -10,6 +13,12 @@
 
 <script setup lang="ts">
 import { computed, Teleport } from 'vue';
+
+const emit = defineEmits(['close'])
+
+const close = () => {
+    emit('close')
+}
 
 </script>
 
@@ -29,5 +38,34 @@ import { computed, Teleport } from 'vue';
 }
 #modal {
     background: #2e3245;
+    position: relative;
+    max-height: calc(100vh - 100px);
+}
+#modal-close {
+    background: #2e3245;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translateY(-100%);
+    z-index: 999;
+    padding: 10px;
+    opacity: .7;
+    cursor: pointer;
+}
+#modal-close:hover {
+    opacity: .8;
+}
+#modal-close:active {
+    opacity: .9;
+}
+#modal-close-icon {
+    background: url('/img/close.png');
+    filter: invert(1);
+    width: 20px;
+    height: 20px;
+    background-size: 20px 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: .7;
 }
 </style>

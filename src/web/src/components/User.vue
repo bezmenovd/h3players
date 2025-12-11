@@ -8,7 +8,7 @@
         </div>
     </div>
 
-    <Modal v-if="showAuthModal">
+    <Modal v-if="showAuthModal" @close="showAuthModal = false">
         <div id="user-auth-modal">
             <div id="user-auth-modal-info" @click.stop>
                 Для авторизации нужно отправить сообщение с кодом на аккаунт <span id="user-auth-modal-info-h3players" @click="copy('h3players')">h3players</span> в лобби
@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import Modal from './UI/Modal.vue';
 import Search from './UI/Inputs/Search.vue'
 import { search, Player } from '../api/players'
@@ -55,7 +55,6 @@ const searchFunc = async (value: string): Promise<SearchItem[]> => {
 }
 
 const searchSelect = (item: SearchItem) => {
-
     playerId.value = item.id
     code.value = String(Math.round(Math.random() * 899999 + 100000))
 
@@ -70,6 +69,11 @@ const searchSelect = (item: SearchItem) => {
 const copy = (value: string) => {
     navigator.clipboard.writeText(value)
 }
+
+onMounted(() => {
+    code.value = ''
+    playerId.value = 0
+})
 
 </script>
 
@@ -95,7 +99,6 @@ const copy = (value: string) => {
 }
 #user-auth-modal {
     width: 400px;
-    height: 370px;
     padding: 40px 20px;
 }
 #user-auth-modal-info {
