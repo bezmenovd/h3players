@@ -36,6 +36,36 @@ export class LimiterInterceptor implements NestInterceptor {
         const startOfHour = Math.floor(now / 3600) * 3600
         const startOfDay = Math.floor(now / 86400) * 86400
 
+        if (token) {
+            let hits = await this.redis.mGet([
+                `api:limiter:hits:day:${startOfDay}:token:${token}`,
+                `api:limiter:hits:total:token:${token}`
+            ])
+            let [dayHits, totalHits] = [Number(hits[0]), Number(hits[1])]
+            if (dayHits >= 3) {
+                logger.info(`forbidden (day): ${ip_hash}:${token || ''}`)
+                throw new HttpException(`Forbidden`, 403)
+            }
+            if (totalHits >= 10) {
+                logger.info(`forbidden (total): ${ip_hash}:${token || ''}`)
+                throw new HttpException(`Forbidden`, 403)
+            }
+        } else {
+            let hits = await this.redis.mGet([
+                `api:limiter:hits:day:${startOfDay}:ip_hash:${ip_hash}`,
+                `api:limiter:hits:total:ip_hash:${ip_hash}`
+            ])
+            let [dayHits, totalHits] = [Number(hits[0]), Number(hits[1])]
+            if (dayHits >= 3) {
+                logger.info(`forbidden (day): ${ip_hash}:${token || ''}`)
+                throw new HttpException(`Forbidden`, 403)
+            }
+            if (totalHits >= 10) {
+                logger.info(`forbidden (total): ${ip_hash}:${token || ''}`)
+                throw new HttpException(`Forbidden`, 403)
+            }
+        }
+
         let quotas
 
         if (token) {
@@ -65,10 +95,16 @@ export class LimiterInterceptor implements NestInterceptor {
         }
 
         if (minuteQuota >= minuteLimit || hourQuota >= hourLimit || dayQuota >= dayLimit) {
-            await this.redis.incr(`api:limiter:hits:ip_hash:${ip_hash}`)
+            let multi = this.redis.multi()
+
+            multi.incr(`api:limiter:hits:day:${startOfDay}:ip_hash:${ip_hash}`)
+            multi.incr(`api:limiter:hits:total:ip_hash:${ip_hash}`)
             if (token) {
-                await this.redis.incr(`api:limiter:hits:token:${token}`)
+                multi.incr(`api:limiter:hits:day:${startOfDay}:token:${token}`)
+                multi.incr(`api:limiter:hits:total:token:${token}`)
             }
+
+            multi.exec()
 
             logger.info(`rate limit exceeded: ${ip_hash}:${token || ''}`)
 
