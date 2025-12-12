@@ -88,7 +88,7 @@ onMounted(async () => {
 
     watch(() => route.query, () => load(), { immediate: true })
 
-    onBeforeUnmount(on('data.templates.update', load))
+    onBeforeUnmount(on('data.templates.update', load).unsubscribe)
 })
 
 </script>

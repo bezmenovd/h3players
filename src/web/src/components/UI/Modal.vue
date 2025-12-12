@@ -49,11 +49,11 @@ const close = () => {
     transform: translateY(-100%);
     z-index: 999;
     padding: 10px;
-    opacity: .7;
+    opacity: .5;
     cursor: pointer;
 }
 #modal-close:hover {
-    opacity: .8;
+    opacity: .7;
 }
 #modal-close:active {
     opacity: .9;

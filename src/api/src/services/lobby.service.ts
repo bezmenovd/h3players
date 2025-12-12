@@ -25,7 +25,7 @@ export class LobbyService {
     }
 
     async onModuleDestroy() {
-        this.redis.destroy()
+        await this.redis.quit()
     }
 
     async getChartData(after: number): Promise<Online[]> {

@@ -2,29 +2,17 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
 export const useUserStore = defineStore('user', () => {
-  // State
-  const user = ref<any>(null)
-  const isAuthenticated = ref(false)
+    const token = ref<string|null>(null)
 
-  // Getters
-  const userName = computed(() => user.value?.name || 'Guest')
+    const isAuthenticated = computed(() => token.value !== null)
 
-  // Actions
-  function setUser(userData: any) {
-    user.value = userData
-    isAuthenticated.value = !!userData
-  }
+    async function setToken(value: string) {
+        token.value = value
+    }
 
-  function logout() {
-    user.value = null
-    isAuthenticated.value = false
-  }
-
-  return {
-    user,
-    isAuthenticated,
-    userName,
-    setUser,
-    logout
-  }
+    return {
+        token,
+        isAuthenticated,
+        setToken,
+    }
 })

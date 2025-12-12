@@ -32,15 +32,13 @@ async function main() {-
 
         while (true) {
             let event = await redis.lPop('processor:games')
-            if (! event) {
-                await sleep(500)
-                continue
-            }
 
-            let game = JSON.parse(event) as GameModel
-
-            if (! batch.find(g => g.id === game.id)) {
-                batch.push(game)
+            if (event) {
+                let game = JSON.parse(event) as GameModel
+    
+                if (! batch.find(g => g.id === game.id)) {
+                    batch.push(game)
+                }
             }
 
             if (batch.length >= 30 || lastInsert + 1 <= timestamp.now()) {
@@ -75,6 +73,9 @@ async function main() {-
                 batch = []
                 lastInsert = timestamp.now()
             }
+
+            await sleep(100)
+            continue
         }
     }
 
@@ -90,15 +91,12 @@ async function main() {-
 
         while (true) {
             let event = await redis.lPop('processor:games_v')
-            if (! event) {
-                await sleep(500)
-                continue
-            }
-
-            let game_v = JSON.parse(event) as GameVModel
-
-            if (! batch.find(g => g.game_id === game_v.game_id && g.player_id === game_v.player_id)) {
-                batch.push(game_v)
+            if (event) {
+                let game_v = JSON.parse(event) as GameVModel
+    
+                if (! batch.find(g => g.game_id === game_v.game_id && g.player_id === game_v.player_id)) {
+                    batch.push(game_v)
+                }
             }
 
             if (batch.length >= 30 || lastInsert + 1 <= timestamp.now()) {
@@ -135,6 +133,9 @@ async function main() {-
                 batch = []
                 lastInsert = timestamp.now()
             }
+    
+            await sleep(100)
+            continue
         }
     }
 
@@ -150,15 +151,13 @@ async function main() {-
 
         while (true) {
             let event = await redis.lPop('processor:players')
-            if (! event) {
-                await sleep(500)
-                continue
-            }
 
-            let player = JSON.parse(event) as PlayerModel
-
-            if (! batch.find(p => p.id === player.id)) {
-                batch.push(player)
+            if (event) {
+                let player = JSON.parse(event) as PlayerModel
+    
+                if (! batch.find(p => p.id === player.id)) {
+                    batch.push(player)
+                }
             }
 
             if (batch.length >= 30 || lastInsert + 1 <= timestamp.now()) {
@@ -197,6 +196,9 @@ async function main() {-
                 batch = []
                 lastInsert = timestamp.now()
             }
+
+            await sleep(100)
+            continue
         }
     }
 
@@ -212,15 +214,13 @@ async function main() {-
 
         while (true) {
             let event = await redis.lPop('processor:templates')
-            if (! event) {
-                await sleep(500)
-                continue
-            }
 
-            let template = JSON.parse(event) as TemplateModel
-
-            if (! batch.find(t => t.id === template.id)) {
-                batch.push(template)
+            if (event) {
+                let template = JSON.parse(event) as TemplateModel
+    
+                if (! batch.find(t => t.id === template.id)) {
+                    batch.push(template)
+                }
             }
 
             if (batch.length >= 30 || lastInsert + 1 <= timestamp.now()) {
@@ -259,6 +259,9 @@ async function main() {-
                 batch = []
                 lastInsert = timestamp.now()
             }
+
+            await sleep(100)
+            continue
         }
     }
 

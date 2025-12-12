@@ -23,7 +23,7 @@ export class CounterService {
     }
 
     async onModuleDestroy() {
-        this.redis.destroy()
+        await this.redis.quit()
     }
 
     async getVisitors(): Promise<number> {

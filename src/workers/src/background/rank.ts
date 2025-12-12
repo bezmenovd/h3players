@@ -32,7 +32,7 @@ export async function update() {
         }))
     }
 
-    redis.destroy()
+    redis.quit()
 
     logger.info('rank updated')
 }

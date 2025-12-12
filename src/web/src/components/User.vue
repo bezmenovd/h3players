@@ -11,7 +11,7 @@
     <Modal v-if="showAuthModal" @close="showAuthModal = false">
         <div id="user-auth-modal">
             <div id="user-auth-modal-info" @click.stop>
-                Для авторизации нужно отправить сообщение с кодом на аккаунт <span id="user-auth-modal-info-h3players" @click="copy('h3players')">h3players</span> в лобби
+                Для авторизации нужно отправить сообщение с кодом аккаунту <span id="user-auth-modal-info-h3players" @click="copy('h3players')">h3players</span> в лобби
             </div>
             <div id="user-auth-modal-search-input">
                 <Search :maxlength="16" @select="searchSelect" :func="searchFunc" id="auth-player" placeholder="Введите ваш ник в лобби"/>
@@ -26,7 +26,7 @@
             </template>
             <template v-else>
                 <div id="user-auth-modal-no-code">
-                    Код появится после выбора игрока
+                    Код появится после ввода ника
                 </div>
             </template>
         </div>
@@ -39,13 +39,17 @@ import Modal from './UI/Modal.vue';
 import Search from './UI/Inputs/Search.vue'
 import { search, Player } from '../api/players'
 import { SearchItem } from './UI/Inputs/search'
-import { on } from '../modules/websocket';
+import { Listener, on } from '../modules/websocket';
+import { useUserStore } from '../stores/user';
 
 const showAuthModal = ref(false)
 
 const code = ref('')
 const playerId = ref(0)
 const authDone = ref(false)
+let authListener: Listener
+
+const userStore = useUserStore()
 
 const searchFunc = async (value: string): Promise<SearchItem[]> => {
     return search(value).then((players: Player[]) => players.map((p: Player): SearchItem => ({
@@ -55,15 +59,24 @@ const searchFunc = async (value: string): Promise<SearchItem[]> => {
 }
 
 const searchSelect = (item: SearchItem) => {
+    if (authListener) {
+        authListener.unsubscribe()
+    }
+
     playerId.value = item.id
     code.value = String(Math.round(Math.random() * 899999 + 100000))
 
-    on('auth', (msg) => {
+    authListener = on('auth', (msg) => {
         authDone.value = true
+        userStore.setToken(msg.token)
         setTimeout(() => {
             showAuthModal.value = false
         }, 3000)
     }, { playerId: playerId.value, code: code.value })
+
+    authListener.onDisconnect(() => {
+
+    })
 }
 
 const copy = (value: string) => {
@@ -71,6 +84,10 @@ const copy = (value: string) => {
 }
 
 onMounted(() => {
+    if (authListener) {
+        authListener.unsubscribe()
+    }
+
     code.value = ''
     playerId.value = 0
 })

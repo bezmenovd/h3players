@@ -68,7 +68,7 @@ onMounted(async () => {
 
     watch(() => route.query.offset, () => { load(true) }, { immediate: true })
 
-    onBeforeUnmount(on('data.players.update', () => { load(false) }))
+    onBeforeUnmount(on('data.players.update', () => { load(false) }).unsubscribe)
 })
 
 </script>

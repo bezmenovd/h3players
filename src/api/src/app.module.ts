@@ -14,6 +14,9 @@ import { TemplatesController } from './controllers/templates.controller';
 import { TemplatesService } from './services/templates.service';
 import { GamesController } from './controllers/games.controller';
 import { GamesService } from './services/games.service';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { LogRequestsInterceptor } from './interceptors/log_requests';
+import { LimiterInterceptor } from './interceptors/limiter';
 
 
 @Module({
@@ -29,13 +32,15 @@ import { GamesService } from './services/games.service';
         FunctionsController,
     ],
     providers: [
+        { provide: APP_INTERCEPTOR, useClass: LimiterInterceptor },
+        { provide: APP_INTERCEPTOR, useClass: LogRequestsInterceptor },
         LobbyService,
+        PerformanceService,
         CounterService,
         PlayersService,
         TemplatesService,
         GamesService,
         GamesVService,
-        PerformanceService,
     ],
 })
 export class AppModule {}

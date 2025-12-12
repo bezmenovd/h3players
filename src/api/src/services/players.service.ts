@@ -24,7 +24,7 @@ export class PlayersService {
     }
 
     async onModuleDestroy() {
-        this.redis.destroy()
+        await this.redis.quit()
     }
 
     async getList(limit: number, offset: number, ids: number[] = []): Promise<Paginated<Player>> {

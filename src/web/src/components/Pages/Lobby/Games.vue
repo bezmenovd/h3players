@@ -74,7 +74,7 @@ onMounted(() => {
 
     watch(() => route.query.offset, () => load(true), { immediate: true })
 
-    onBeforeUnmount(on('data.games.update', () => { onUpdate(false) }))
+    onBeforeUnmount(on('data.games.update', () => { onUpdate(false) }).unsubscribe)
 
     onBeforeUnmount(on('data.players.update', (msg) => {
         const unknownPlayers: Set<number> = new Set()
@@ -103,7 +103,7 @@ onMounted(() => {
                 })
             })
         }
-    }))
+    }).unsubscribe)
 
     onBeforeUnmount(on('data.templates.update', (msg) => {
         const unknownTemplates: Set<number> = new Set()
@@ -126,7 +126,7 @@ onMounted(() => {
                 })
             })
         }
-    }))
+    }).unsubscribe)
 })
 
 </script>

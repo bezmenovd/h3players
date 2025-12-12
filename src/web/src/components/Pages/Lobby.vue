@@ -262,11 +262,11 @@ onMounted(() => {
 
     onBeforeUnmount(on('lobby.counter.online.update', (msg) => {
         online.value = msg.value
-    }))
+    }).unsubscribe)
 
     onBeforeUnmount(on('lobby.counter.visitors.update', (msg) => {
         visitorsRef.value = msg.value
-    }))
+    }).unsubscribe)
 
     onBeforeUnmount(on('lobby.counter.games.update', (msg) => {
         gamesRef.value = msg.value
@@ -280,7 +280,7 @@ onMounted(() => {
             dailyTop.byRatingAnti = r.byRatingAnti
             dailyTop.byGamesCount = r.byGamesCount
         })
-    }))
+    }).unsubscribe)
 
     onBeforeUnmount(on('data.players.update', (msg) => {
         const unknownPlayers: Set<number> = new Set()
@@ -309,7 +309,7 @@ onMounted(() => {
                 })
             })
         }
-    }))
+    }).unsubscribe)
 
     onBeforeUnmount(on('data.templates.update', (msg) => {
         const unknownTemplates: Set<number> = new Set()
@@ -332,7 +332,7 @@ onMounted(() => {
                 })
             })
         }
-    }))
+    }).unsubscribe)
 
     getList(8).then(r => {
         lastGames.items = r.items
