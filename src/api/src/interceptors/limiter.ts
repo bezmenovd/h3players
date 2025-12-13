@@ -1,5 +1,5 @@
 import { CallHandler, ExecutionContext, HttpException, Injectable, NestInterceptor } from "@nestjs/common"
-import { catchError, tap, throwError } from "rxjs"
+import { finalize } from "rxjs"
 import { createClient as createClientRedis } from 'redis'
 import crypto from 'crypto'
 import { logger } from "../helpers/logger"
@@ -27,7 +27,7 @@ export class LimiterInterceptor implements NestInterceptor {
         const ip_hash = crypto.createHash('sha256').update(req.headers['x-real-ip'] || req.ip || 'unknown')
             .digest('hex')
             .substring(0, 32)
-        const token = req.headers['x-real-ip']
+        const token = req.headers['token']
 
         const url = String(req.url).split('?')[0].replace(/\d+/g, '#')
 
@@ -36,36 +36,66 @@ export class LimiterInterceptor implements NestInterceptor {
         const startOfHour = Math.floor(now / 3600) * 3600
         const startOfDay = Math.floor(now / 86400) * 86400
 
-        let hits
+        let multi = this.redis.multi()
+
+        multi.incr(`api:quota:${url}:minute:${startOfMinute}:ip_hash:${ip_hash}`)
+        multi.incr(`api:quota:${url}:hour:${startOfHour}:ip_hash:${ip_hash}`)
+        multi.incr(`api:quota:${url}:day:${startOfDay}:ip_hash:${ip_hash}`)
+        multi.expireAt(`api:quota:${url}:minute:${startOfMinute}:ip_hash:${ip_hash}`, startOfMinute+60)
+        multi.expireAt(`api:quota:${url}:hour:${startOfHour}:ip_hash:${ip_hash}`, startOfHour+3600)
+        multi.expireAt(`api:quota:${url}:day:${startOfDay}:ip_hash:${ip_hash}`, startOfDay+86400)
+
+        multi.get(`api:limiter:restriction:minute:${startOfMinute}:ip_hash:${ip_hash}`)
+        multi.get(`api:limiter:restriction:hour:${startOfHour}:ip_hash:${ip_hash}`)
+        multi.get(`api:limiter:restriction:day:${startOfDay}:ip_hash:${ip_hash}`)
+
+        multi.incr(`api:limiter:hits:ip_hash:${ip_hash}`)
+        multi.expire(`api:limiter:hits:ip_hash:${ip_hash}`, 86400*30)
 
         if (token) {
-            hits = Number(await this.redis.get(`api:limiter:hits:token:${token}`))   
-        } else {
-            hits = Number(await this.redis.get(`api:limiter:hits:ip_hash:${ip_hash}`))
+            multi.incr(`api:quota:${url}:minute:${startOfMinute}:token:${token}`)
+            multi.incr(`api:quota:${url}:hour:${startOfHour}:token:${token}`)
+            multi.incr(`api:quota:${url}:day:${startOfDay}:token:${token}`)
+            multi.expireAt(`api:quota:${url}:minute:${startOfMinute}:token:${token}`, startOfMinute+60)
+            multi.expireAt(`api:quota:${url}:hour:${startOfHour}:token:${token}`, startOfHour+3600)
+            multi.expireAt(`api:quota:${url}:day:${startOfDay}:token:${token}`, startOfDay+86400)
+
+            multi.get(`api:limiter:restriction:minute:token:${token}`)
+            multi.get(`api:limiter:restriction:hour:token:${token}`)
+            multi.get(`api:limiter:restriction:day:token:${token}`)
+
+            multi.incr(`api:limiter:hits:token:${token}`)
+            multi.expire(`api:limiter:hits:token:${token}`, 86400*30)
         }
-        
-        if (hits >= 3) {
-            logger.info(`forbidden: ${ip_hash}:${token || ''}`)
+
+        let data = await multi.exec()
+
+        if (data[6] || data[17]) {
+            logger.info(`forbidden (for a minute): ${ip_hash}:${token || ''}`)
+            throw new HttpException(`Too Many Requests. Rate Limit exceeded. Restriction will be lifted in the next minute`, 429)
+        }
+
+        if (data[7] || data[18]) {
+            logger.info(`forbidden (for a hour): ${ip_hash}:${token || ''}`)
+            throw new HttpException(`Too Many Requests. Rate Limit exceeded. Restriction will be lifted in the next hour`, 429)
+        }
+
+        if (data[8] || data[19]) {
+            logger.info(`forbidden (for a day): ${ip_hash}:${token || ''}`)
+            throw new HttpException(`Too Many Requests. Rate Limit exceeded. Restriction will be lifted in the next day`, 429)
+        }
+
+        if (Number(data[9]) >= 3 || Number(data[20]) >= 3) {
+            logger.info(`forbidden (for a month): ${ip_hash}:${token || ''}`)
             throw new HttpException(`Forbidden`, 403)
         }
 
-        let quotas
+
+        let [minuteQuota, hourQuota, dayQuota] = [Number(data[0]), Number(data[1]), Number(data[2])]
 
         if (token) {
-            quotas = await this.redis.mGet([
-                `api:quota:${url}:minute:${startOfMinute}:token:${token}`,
-                `api:quota:${url}:hour:${startOfHour}:token:${token}`,
-                `api:quota:${url}:day:${startOfDay}:token:${token}`
-            ]);
-        } else {
-            quotas = await this.redis.mGet([
-                `api:quota:${url}:minute:${startOfMinute}:ip_hash:${ip_hash}`,
-                `api:quota:${url}:hour:${startOfHour}:ip_hash:${ip_hash}`,
-                `api:quota:${url}:day:${startOfDay}:ip_hash:${ip_hash}`
-            ]);
+            [minuteQuota, hourQuota, dayQuota] = [minuteQuota + Number(data[10]), hourQuota + Number(data[11]), dayQuota + Number(data[12])]
         }
-
-        let [minuteQuota, hourQuota, dayQuota] = [Number(quotas[0]), Number(quotas[1]), Number(quotas[2])]
 
         let minuteLimit = (config.limits.ip as any)[url].minute
         let hourLimit = (config.limits.ip as any)[url].hour
@@ -81,10 +111,10 @@ export class LimiterInterceptor implements NestInterceptor {
             let multi = this.redis.multi()
 
             multi.set(`api:limiter:restriction:minute:${startOfMinute}:ip_hash:${ip_hash}`, '1')
-            multi.incr(`api:limiter:hits:ip_hash:${ip_hash}`)
+            multi.expireAt(`api:limiter:restriction:minute:${startOfMinute}:ip_hash:${ip_hash}`, startOfMinute+60)
             if (token) {
                 multi.set(`api:limiter:restriction:minute:${startOfMinute}:token:${token}`, '1')
-                multi.incr(`api:limiter:hits:token:${token}`)
+                multi.expireAt(`api:limiter:restriction:minute:${startOfMinute}:token:${token}`, startOfMinute+60)
             }
 
             multi.exec()
@@ -97,11 +127,11 @@ export class LimiterInterceptor implements NestInterceptor {
         if (hourQuota >= hourLimit) {
             let multi = this.redis.multi()
 
-            multi.set(`api:limiter:restriction:hour:${startOfHour}:ip_hash:${ip_hash}`, '1')
-            multi.incr(`api:limiter:hits:ip_hash:${ip_hash}`)
+            multi.set(`api:limiter:restriction:hour:ip_hash:${ip_hash}`, '1')
+            multi.expireAt(`api:limiter:restriction:hour:ip_hash:${ip_hash}`, startOfHour+3600)
             if (token) {
-                multi.set(`api:limiter:restriction:hour:${startOfHour}:token:${token}`, '1')
-                multi.incr(`api:limiter:hits:token:${token}`)
+                multi.set(`api:limiter:restriction:hour:token:${token}`, '1')
+                multi.expireAt(`api:limiter:restriction:hour:token:${token}`, startOfHour+3600)
             }
 
             multi.exec()
@@ -114,11 +144,11 @@ export class LimiterInterceptor implements NestInterceptor {
         if (dayQuota >= dayLimit) {
             let multi = this.redis.multi()
 
-            multi.set(`api:limiter:restriction:day:${startOfDay}:ip_hash:${ip_hash}`, '1')
-            multi.incr(`api:limiter:hits:ip_hash:${ip_hash}`)
+            multi.set(`api:limiter:restriction:day:ip_hash:${ip_hash}`, '1')
+            multi.expireAt(`api:limiter:restriction:day:ip_hash:${ip_hash}`, startOfDay+86400)
             if (token) {
-                multi.set(`api:limiter:restriction:day:${startOfDay}:token:${token}`, '1')
-                multi.incr(`api:limiter:hits:token:${token}`)
+                multi.set(`api:limiter:restriction:day:token:${token}`, '1')
+                multi.expireAt(`api:limiter:restriction:day:token:${token}`, startOfDay+86400)
             }
 
             multi.exec()
@@ -128,26 +158,6 @@ export class LimiterInterceptor implements NestInterceptor {
             throw new HttpException(`Too Many Requests. Rate Limit exceeded`, 429)
         }
 
-        return next.handle().pipe(tap(() => {
-            const multi = this.redis.multi()
-
-            multi.incr(`api:quota:${url}:minute:${startOfMinute}:ip_hash:${ip_hash}`)
-            multi.incr(`api:quota:${url}:hour:${startOfHour}:ip_hash:${ip_hash}`)
-            multi.incr(`api:quota:${url}:day:${startOfDay}:ip_hash:${ip_hash}`)
-            multi.expireAt(`api:quota:${url}:minute:${startOfMinute}:ip_hash:${ip_hash}`, startOfMinute+60)
-            multi.expireAt(`api:quota:${url}:hour:${startOfHour}:ip_hash:${ip_hash}`, startOfHour+3600)
-            multi.expireAt(`api:quota:${url}:day:${startOfDay}:ip_hash:${ip_hash}`, startOfDay+86400)
-
-            if (token) {
-                multi.incr(`api:quota:${url}:minute:${startOfMinute}:token:${token}`)
-                multi.incr(`api:quota:${url}:hour:${startOfHour}:token:${token}`)
-                multi.incr(`api:quota:${url}:day:${startOfDay}:token:${token}`)
-                multi.expireAt(`api:quota:${url}:minute:${startOfMinute}:token:${token}`, startOfMinute+60)
-                multi.expireAt(`api:quota:${url}:hour:${startOfHour}:token:${token}`, startOfHour+3600)
-                multi.expireAt(`api:quota:${url}:day:${startOfDay}:token:${token}`, startOfDay+86400)
-            }
-
-            multi.exec()
-        }));
+        return next.handle().pipe();
     }
 }
