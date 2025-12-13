@@ -411,7 +411,7 @@ onMounted(async () => {
 .top-rank {
     font-size: 16px;
     margin-left: 30px;
-    background: #fdd807c2;
+    background: #fdd807e0;
     padding: 4px 8px 5px;
     margin-top: 2px;
     color: #272c3a;
@@ -419,6 +419,6 @@ onMounted(async () => {
     font-variant-numeric: tabular-nums;
 }
 .top-rank.top-1 {
-    background: #9007fdc2;
+    background: #9007fde0;
 }
 </style>

@@ -7,17 +7,17 @@
                 "day": 3000
             },
             "/api/lobby/dailyTop": {
-                "minute": 10,
+                "minute": 30,
                 "hour": 300,
                 "day": 10000
             },
             "/api/lobby/counter/games": {
-                "minute": 10,
+                "minute": 30,
                 "hour": 300,
                 "day": 10000
             },
             "/api/lobby/counter/visitors": {
-                "minute": 10,
+                "minute": 30,
                 "hour": 300,
                 "day": 10000
             },
@@ -27,7 +27,7 @@
                 "day": 6000
             },
             "/api/games_v": {
-                "minute": 15,
+                "minute": 20,
                 "hour": 100,
                 "day": 300
             },
