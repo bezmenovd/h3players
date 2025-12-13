@@ -18,7 +18,8 @@ export async function update() {
         query: `
             SELECT 
                 player_id,
-                argMax(player_new_rating, end_timestamp) AS last_rating
+                argMax(player_new_rating, end_timestamp) AS last_rating,
+                max(end_timestamp) as last_timestamp
             FROM games_v
             GROUP BY player_id
         `,
@@ -27,7 +28,11 @@ export async function update() {
 
     for await (const rows of gamesStream) {
         await Promise.all(rows.map(async (row: Row) => {
-            let item = row.json() as { player_id: number, last_rating: number }
+            let item = row.json() as { player_id: number, last_rating: number, last_timestamp: number }
+            if (item.last_timestamp <= 1703970000) {
+                item.last_rating = Math.min(Math.round(item.last_rating * 0.5), 500)
+            }
+
             return redis.zAdd('rank', { value: String(item.player_id), score: item.last_rating })
         }))
     }

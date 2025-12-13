@@ -143,6 +143,10 @@ const info = computed(() => {
     let max_rating_timestamp = 0
     let rating = gamesList.items[0].player_new_rating
 
+    if (gamesList.items[0].end_timestamp < 1703970000) {
+        rating = Math.min(Math.round(rating * 0.5), 500)
+    }
+
     for (let i = 0; i < gamesList.items.length; i++) {
         let g = gamesList.items[i]
 
@@ -276,6 +280,7 @@ onMounted(async () => {
 
             let dIndex = 0
             let rIndex = 0
+            let wiped = false
     
             while (cur <= now) {
                 while (rIndex < gamesHistorical.length && timestamp.startOfDay(gamesHistorical[rIndex].end_timestamp) < cur) {
@@ -292,6 +297,15 @@ onMounted(async () => {
                 if (ratingChart.data[dIndex] === undefined) {
                     if (dIndex > 0 && ratingChart.data[dIndex-1] && rIndex > 0) {
                         ratingChart.data[dIndex] = [ratingChart.data[dIndex-1]![0]]
+
+                        if (cur > 1703970000 && ! wiped) {
+                            if (rIndex < gamesHistorical.length) {
+                                ratingChart.data[dIndex]![0] = gamesHistorical[rIndex].player_old_rating
+                            } else {
+                                ratingChart.data[dIndex]![0] = Math.min(Math.round(ratingChart.data[dIndex-1]![0] * 0.5), 500)
+                            }
+                            wiped = true
+                        }
                     }
                 }
     

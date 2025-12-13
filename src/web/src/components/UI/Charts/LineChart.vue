@@ -70,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import { generateYLabels } from './linechart';
 
 const props = defineProps<{
@@ -309,6 +309,8 @@ onMounted(async () => {
             newScrollXValue = Math.max(newScrollXValue, 2)
             newScrollXValue = Math.min(newScrollXValue, widthRef.value - 2 - scrollButtonWidth.value)
             scrollButtonX.value = newScrollXValue
+
+            event.stopPropagation()
         })
 
     }
