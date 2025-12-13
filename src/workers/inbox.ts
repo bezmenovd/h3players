@@ -11,7 +11,7 @@ import config from '../../config.json'
 async function main() {
     logger.info('starting..')
 
-    if (! config.workers.h3players.enabled) {
+    if (! config.workers.inbox.enabled) {
         logger.info('disabled by config.json')
         process.exit(0)
         return
@@ -51,6 +51,8 @@ async function main() {
             return
         }
 
+        logger.info(`${msg.userName} (#${msg.userId}): ${msg.text}`)
+
         if (! /^\d{6}$/.test(msg.text)) {
             return
         }
@@ -69,6 +71,8 @@ async function main() {
         if (playerCounter[msg.userId] > 10) {
             return
         }
+
+        logger.info(`${msg.userName} (#${msg.userId}): ${msg.text}`)
 
         if (! /^\d{6}$/.test(msg.text)) {
             return

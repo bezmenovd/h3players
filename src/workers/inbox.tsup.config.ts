@@ -1,8 +1,8 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-    entry: ['src/workers/h3players.ts'],
-    outDir: 'dist/workers/h3players',
+    entry: ['src/workers/inbox.ts'],
+    outDir: 'dist/workers/inbox',
     format: ['cjs'],
     dts: false,
     sourcemap: false,

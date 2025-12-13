@@ -54,17 +54,19 @@ async function main() {
     ])
 
     wss.on('connection', (ws, req) => {
-        let ip = crypto.createHash('sha256')
-            .update(String(Array.isArray(req.headers['X-Real-IP']) ? req.headers['X-Real-IP'] : 'unknown'))
+        const headerIp = req.headers['x-real-ip']
+        const ip = crypto.createHash('sha256')
+            .update(Array.isArray(headerIp) ? headerIp[0] : headerIp || 'unknown')
             .digest('hex')
             .substring(0, 32)
 
-        if (clients.has(ip)) {
-            logger.info(`duplicate ip connection: ${ip}`)
+        const id = ip + String(Date.now())
+
+        if (clients.has(id)) {
             return
         }
 
-        clients.set(ip, ws)
+        clients.set(id, ws)
 
         ws.on('message', (data) => {
             const msg = JSON.parse(data.toString()) as { 
@@ -78,7 +80,7 @@ async function main() {
                 if (msg.route === 'auth') {
                     let foundSame = false
                     let msgParams = msg.params as { playerId: number, code: string }
-                    subscribers.get('auth')!.forEach((subscriber, id) => {
+                    subscribers.get('auth')!.forEach(subscriber => {
                         let subscriberParams = subscriber.params as { playerId: number, code: string }
                         if (subscriberParams.playerId === msgParams.playerId && subscriberParams.code === msgParams.code) {
                             logger.info(`subscribe.auth: foundSame: player#${msgParams.playerId} code=${msgParams.code}}`)
@@ -86,13 +88,13 @@ async function main() {
                         }
                     })
                     if (! foundSame) {
-                        subscribers.get(msg.route)?.set(ip, {
+                        subscribers.get(msg.route)?.set(id, {
                             time: timestamp.now(),
                             params: msg.params ?? {},
                         })
                     }
                 } else {
-                    subscribers.get(msg.route)?.set(ip, {
+                    subscribers.get(msg.route)?.set(id, {
                         time: timestamp.now(),
                         params: msg.params ?? {},
                     })
@@ -100,32 +102,32 @@ async function main() {
             }
 
             else if (msg.type === 'unsubscribe' && msg.route) {
-                subscribers.get(msg.route)?.delete(ip)
+                subscribers.get(msg.route)?.delete(id)
             }
         })
 
         ws.on('close', () => {
             for (const [name, line] of subscribers) {
-                line.delete(ip)
+                line.delete(id)
             }
 
-            clients.delete(ip)
+            clients.delete(id)
         })
     })
 
     redisSub.subscribe('live:spectator:online', (data) => {
         const { value } = JSON.parse(data) as { value: number }
 
-        subscribers.get('lobby.counter.online.update')!.keys().forEach(ip => {
-            clients.get(ip)!.send(JSON.stringify({ route: 'lobby.counter.online.update', value: value }))
+        subscribers.get('lobby.counter.online.update')!.keys().forEach(id => {
+            clients.get(id)!.send(JSON.stringify({ route: 'lobby.counter.online.update', value: value }))
         })
     })
 
     redisSub.subscribe('live:spectator:visitors', (data) => {
         const { value } = JSON.parse(data) as { value: number }
 
-        subscribers.get('lobby.counter.visitors.update')!.keys().forEach(ip => {
-            clients.get(ip)!.send(JSON.stringify({ route: 'lobby.counter.visitors.update', value: value }))
+        subscribers.get('lobby.counter.visitors.update')!.keys().forEach(id => {
+            clients.get(id)!.send(JSON.stringify({ route: 'lobby.counter.visitors.update', value: value }))
         })
     })
 
@@ -150,14 +152,14 @@ async function main() {
 
         dailyGamesOldValue = count[0].value
 
-        subscribers.get('lobby.counter.games.update')!.keys().forEach(ip => {
-            clients.get(ip)!.send(JSON.stringify({ route: 'lobby.counter.games.update', value: count[0].value }))
+        subscribers.get('lobby.counter.games.update')!.keys().forEach(id => {
+            clients.get(id)!.send(JSON.stringify({ route: 'lobby.counter.games.update', value: count[0].value }))
         })
     }, 500)
 
     redisSub.subscribe('live:processor:games', async (msg) => {
-        subscribers.get('data.games.update')!.keys().forEach(ip => {
-            clients.get(ip)!.send(JSON.stringify({ route: 'data.games.update' }))
+        subscribers.get('data.games.update')!.keys().forEach(id => {
+            clients.get(id)!.send(JSON.stringify({ route: 'data.games.update' }))
         })
 
         sendDailyGames()
@@ -166,43 +168,43 @@ async function main() {
     redisSub.subscribe('live:processor:games_v', async (msg) => {
         let data = JSON.parse(msg) as { player_id: number[] }
 
-        subscribers.get('data.games_v.update')!.keys().forEach(ip => {
-            clients.get(ip)!.send(JSON.stringify({ route: 'data.games_v.update', ...data }))
+        subscribers.get('data.games_v.update')!.keys().forEach(id => {
+            clients.get(id)!.send(JSON.stringify({ route: 'data.games_v.update', ...data }))
         })
     })
 
     redisSub.subscribe('live:processor:players', async (msg) => {
         let data = JSON.parse(msg) as { id: number[] }
 
-        subscribers.get('data.players.update')!.keys().forEach(ip => {
-            clients.get(ip)!.send(JSON.stringify({ route: 'data.players.update', ...data }))
+        subscribers.get('data.players.update')!.keys().forEach(id => {
+            clients.get(id)!.send(JSON.stringify({ route: 'data.players.update', ...data }))
         })
     })
 
     redisSub.subscribe('live:processor:templates', async (msg) => {
         let data = JSON.parse(msg) as { id: number[] }
 
-        subscribers.get('data.templates.update')!.keys().forEach(ip => {
-            clients.get(ip)!.send(JSON.stringify({ route: 'data.templates.update', ...data }))
+        subscribers.get('data.templates.update')!.keys().forEach(id => {
+            clients.get(id)!.send(JSON.stringify({ route: 'data.templates.update', ...data }))
         })
     })
 
     redisSub.subscribe('h3players:message', async (msg) => {
         let data = JSON.parse(msg) as { playerId: number, message: string }
 
-        let receiverIp: string | null = null
+        let receiverId: string | null = null
 
-        for (const [ip, sub] of subscribers.get('auth')!) {
+        for (const [id, sub] of subscribers.get('auth')!) {
             let subParams = sub.params as { playerId: number, code: string }
 
             if (data.playerId === subParams.playerId && data.message === subParams.code) {
-                receiverIp = ip
+                receiverId = id
                 break
             }
         }
 
-        if (receiverIp !== null) {
-            const client = clients.get(receiverIp)!
+        if (receiverId !== null) {
+            const client = clients.get(receiverId)!
 
             subscribers.get('auth')!.forEach((subscriber, id) => {
                 if ((subscriber.params as { playerId: number }).playerId === data.playerId) {

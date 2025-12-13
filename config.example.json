@@ -29,7 +29,7 @@
         "coordinator": {
             "enabled": true
         },
-        "h3players": {
+        "inbox": {
             "enabled": true
         },
         "journalist": {
