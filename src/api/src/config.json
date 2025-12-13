@@ -55,6 +55,11 @@
                 "minute": 10,
                 "hour": 30,
                 "day": 60
+            },
+            "/api/performance/chart": {
+                "minute": 10,
+                "hour": 50,
+                "day": 200
             }
         },
         "token": {}

@@ -112,12 +112,12 @@ onMounted(() => {
     align-items: center;
     padding: 8px 0;
     display: flex;
-    gap: 5px;
 }
 #user-info #user-icon {
     position: relative;
     top: 1.3px;
     opacity: .4;
+    left: -4px;
 }
 #user-auth-btn {
     display: flex;
