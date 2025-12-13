@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, defineProps } from 'vue'
+import { reactive, ref } from 'vue'
 import { SearchItem } from './search'
 
 const props = defineProps<{
@@ -44,7 +44,7 @@ const searchFocus = reactive({
         this.is = true
     },
     blur() {
-        setTimeout(() => { this.is = false }, 200)
+        setTimeout(() => { this.is = false }, 50)
     }
 })
 
@@ -76,12 +76,14 @@ const searchKeyDown = async function(event: KeyboardEvent) {
         if (searchResult.selected === -1) {
             return
         }
+        if (! searchDisabled.value) {
+            emit('select', searchResult.items[searchResult.selected])
+        }
 
         searchDisabled.value = true
         searchResult.match = false
         searchValue.value = searchResult.items[searchResult.selected].text
         searchFocus.blur()
-        emit('select', searchResult.items[searchResult.selected])
         return
     }
 

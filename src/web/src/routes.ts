@@ -7,7 +7,7 @@ import Performance from './components/Pages/Performance.vue';
 import Games from './components/Pages/Lobby/Games.vue';
 import NotFound from './components/Pages/NotFound.vue';
 import Changelog from './components/Pages/Changelog.vue'
-import ForDevs from './components/Pages/ForDevs.vue'
+import About from './components/Pages/About.vue'
 
 export default [
     {
@@ -51,9 +51,9 @@ export default [
         component: Changelog,
     },
     { 
-        path: '/for-devs',
-        name: 'for-devs',
-        component: ForDevs,
+        path: '/about',
+        name: 'about',
+        component: About,
     },
     { 
         path: '/:pathMatch(.*)*',

@@ -42,7 +42,7 @@ let connect = () => {
                 connect()
                 clearInterval(reconnectionInterval)
             } catch (e) {}
-        }, 10000)
+        }, 30000)
     }
 }
 

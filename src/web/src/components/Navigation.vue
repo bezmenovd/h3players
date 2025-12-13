@@ -10,6 +10,9 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 type Link = {
     route: {
@@ -24,22 +27,22 @@ const links: (Link & { style?: { [key: string]: string }})[] = [
     {
         route: { name: 'lobby' },
         img: '/img/lobby.png',
-        text: 'Лобби',
+        text: t('navigation.lobby'),
     },
     {
         route: { name: 'players' },
         img: '/img/players.png',
-        text: 'Игроки',
+        text: t('navigation.players'),
     },
     {
         route: { name: 'templates' },
         img: '/img/templates.png',
-        text: 'Шаблоны',
+        text: t('navigation.templates'),
     },
     {
         route: { name: 'performance' },
         img: '/img/performance.png',
-        text: 'Нагрузка',
+        text: t('navigation.performance'),
     },
 ]
 

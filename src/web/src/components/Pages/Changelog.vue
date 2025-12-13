@@ -1,6 +1,6 @@
 <template>
     <div id="changelog">
-        <div class="version" v-for="version in changelog">
+        <div class="version" v-for="version in changelog()">
             <div class="version-name">{{ version.version }}</div>
             <div class="version-date">{{ version.date }}</div>
             <div class="version-changes">
@@ -14,7 +14,35 @@
 </template>
 
 <script setup lang="ts">
-import changelog from '../../meta/changelog.json';
+import ru from '../../meta/changelog/ru.json';
+import en from '../../meta/changelog/en.json';
+import pl from '../../meta/changelog/pl.json';
+import { useSettingsStore } from '../../stores/settings';
+
+const settingsStore = useSettingsStore()
+
+type ChangelogItem = {
+    version: string
+    date: string
+    changes: {
+        type: string
+        description: string
+    }[]
+}
+
+const changelog = (): ChangelogItem[] => {
+    if (settingsStore.language === 1) {
+        return ru
+    }
+    if (settingsStore.language === 2) {
+        return en
+    }
+    if (settingsStore.language === 3) {
+        return pl
+    }
+    throw new Error('unknown language')
+}
+
 
 </script>
 
@@ -45,7 +73,7 @@ import changelog from '../../meta/changelog.json';
     padding-top: 1px;
 }
 .version-date {
-    font-size: 15px;
+    font-size: 14px;
     display: flex;
     align-items: baseline;
     padding-top: 1px;

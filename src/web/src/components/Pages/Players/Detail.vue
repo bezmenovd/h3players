@@ -44,14 +44,19 @@
                                     <div class="player-info-item-value">{{ info.games_count_draws }}</div>
                                 </div>
                                 <div class="player-info-item">
-                                    <div class="player-info-item-label">Винрейт</div>
+                                    <div class="player-info-item-label">Процент побед</div>
                                     <div class="player-info-item-value">{{ Math.floor(info.games_count_winrate * 1000) / 10 }}%</div>
                                 </div>
                             </div>
                             <div class="player-info-column">
                                 <div class="player-info-item">
                                     <div class="player-info-item-label">Рейтинг</div>
-                                    <div class="player-info-item-value">{{ info.rating }}</div>
+                                    <div class="player-info-item-value">
+                                        {{ info.rating }}
+                                        <div class="today-rating-diff" v-if="info.today_games_duration > 0" hint="Изменение за сегодня">
+                                            <RatingDiff :value="info.today_rating_diff" />
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="player-info-item">
                                     <div class="player-info-item-label">Позиция</div>
@@ -68,7 +73,18 @@
                                 </div>
                                 <div class="player-info-item">
                                     <div class="player-info-item-label">Время в играх</div>
-                                    <div class="player-info-item-value">{{ info.games_duration }} {{ pluralize(info.games_duration, 'час', 'часа', 'часов') }}</div>
+                                    <div class="player-info-item-value">
+                                        {{ info.games_duration }} {{ pluralize(info.games_duration, 'час', 'часа', 'часов') }}
+                                        <div class="today-games-duration" v-if="info.today_games_duration > 0" hint="За сегодня">
+                                            +
+                                            <template v-if="info.today_games_duration >= 3600">
+                                                {{ Math.floor(info.today_games_duration / 3600) }} ч.
+                                            </template>
+                                            <template v-if="true">
+                                                {{ Math.floor((info.today_games_duration % 3600) / 60) }} мин.
+                                            </template>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -116,6 +132,7 @@ import Games from '../../UI/Players/Detail/Games.vue'
 import { PaginatedTable } from '../../../api/general'
 import { getContentSize } from '../../../helpers/content'
 import { pluralize } from '../../../helpers/string'
+import RatingDiff from '../../UI/RatingDiff.vue'
 
 
 const loading = ref(true)
@@ -142,6 +159,8 @@ const info = computed(() => {
     let max_rating = 0
     let max_rating_timestamp = 0
     let rating = gamesList.items[0].player_new_rating
+    let today_rating_diff = 0
+    let today_games_duration = 0
 
     if (gamesList.items[0].end_timestamp < 1703970000) {
         rating = Math.min(Math.round(rating * 0.5), 500)
@@ -158,9 +177,9 @@ const info = computed(() => {
             games_count_draws++
         }
 
-        if ((g.end_timestamp - g.start_timestamp) < 16*3600) {
-            games_duration += g.end_timestamp - g.start_timestamp
-        }
+        let game_duration = (g.end_timestamp - g.start_timestamp) < 16*3600 ? g.end_timestamp - g.start_timestamp : 0
+
+        games_duration += game_duration
 
         if (g.player_old_rating > max_rating) {
             max_rating = g.player_old_rating
@@ -169,6 +188,11 @@ const info = computed(() => {
         if (g.player_new_rating > max_rating) {
             max_rating = g.player_new_rating
             max_rating_timestamp = g.end_timestamp
+        }
+
+        if (g.end_timestamp >= timestamp.nowDay()) {
+            today_rating_diff += g.player_new_rating - g.player_old_rating
+            today_games_duration += game_duration
         }
     }
 
@@ -182,6 +206,8 @@ const info = computed(() => {
         rating: rating,
         max_rating: max_rating,
         max_rating_timestamp: max_rating_timestamp,
+        today_rating_diff: today_rating_diff,
+        today_games_duration: today_games_duration,
     }
 })
 
@@ -420,5 +446,15 @@ onMounted(async () => {
 }
 .top-rank.top-1 {
     background: #9007fde0;
+}
+.today-games-duration {
+    margin-left: 10px;
+    opacity: .7;
+    font-size: 15px;
+}
+.today-rating-diff {
+    margin-left: 10px;
+    position: relative;
+    top: -1px;
 }
 </style>

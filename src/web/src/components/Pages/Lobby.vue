@@ -1,7 +1,7 @@
 <template>
     <div id="lobby">
         <div id="online">
-            <Title text="Лобби"></Title>
+            <Title :text="t('lobby.title')"></Title>
             <Panel id="online-panel">
                 <Loader v-if="loading.online" :solid="false"/>
                 <template v-else>
@@ -29,15 +29,15 @@
                             <template v-else>
                                 <div class="metric-value">-</div>
                             </template>
-                            <div class="metric-name">онлайн</div>
+                            <div class="metric-name">{{ t('lobby.counters.online') }}</div>
                         </div>
-                        <div class="metric" hint="Число игр, завершённых сегодня">
+                        <div class="metric" :hint="t('lobby.counters.games.hint')">
                             <div class="metric-value">{{ gamesFormatted }}</div>
-                            <div class="metric-name">игр</div>
+                            <div class="metric-name">{{ t('lobby.counters.games.text') }}</div>
                         </div>
-                        <div class="metric" hint="Число пользователей, посетивших лобби сегодня">
+                        <div class="metric" :hint="t('lobby.counters.visitors.hint')">
                             <div class="metric-value">{{ visitorsFormatted }}</div>
-                            <div class="metric-name">посетителей</div>
+                            <div class="metric-name">{{ t('lobby.counters.visitors.text') }}</div>
                         </div>
                     </div>
                 </template>
@@ -45,9 +45,9 @@
         </div>
         <div id="live">
             <div id="last-games">
-                <Subtitle text="Последние игры">
+                <Subtitle :text="t('lobby.last_games.title')">
                     <template #in-text>
-                        <Questionmark hint="Только завершенные рейтинговые игры"/>
+                        <Questionmark :hint="t('lobby.last_games.hint')"/>
                     </template>
                     <ListButton @click="router.push({ name: 'lobby.games' })"/>
                 </Subtitle>
@@ -57,15 +57,15 @@
                 </Panel>
             </div>
             <div id="daily-top">
-                <Subtitle text="Топ за день">
+                <Subtitle :text="t('lobby.daily_top.title')">
                     <template #in-text>
-                        <Questionmark hint="По UTC"/>
+                        <Questionmark :hint="t('lobby.daily_top.hint')"/>
                     </template>
                 </Subtitle>
                 <Panel id="daily-top-panel">
                     <div class="rating">
-                        <div class="rating-title" hint="Все игры">
-                            Рейтинг
+                        <div class="rating-title" :hint="t('lobby.daily_top.by_rating.hint')">
+                            {{ t('lobby.daily_top.by_rating.title') }}
                         </div>
                         <div class="rating-items">
                             <div class="rating-item" v-for="i in 7">
@@ -80,8 +80,8 @@
                         </div>
                     </div>
                     <div class="rating">
-                        <div class="rating-title" hint="Все игры">
-                            Рейтинг -
+                        <div class="rating-title" :hint="t('lobby.daily_top.by_rating_anti.hint')">
+                            {{ t('lobby.daily_top.by_rating_anti.title') }}
                         </div>
                         <div class="rating-items">
                             <div class="rating-item" v-for="i in 7">
@@ -96,8 +96,8 @@
                         </div>
                     </div>
                     <div class="rating">
-                        <div class="rating-title" hint="Только рейтинговые игры на случайных картах">
-                            Игры
+                        <div class="rating-title" :hint="t('lobby.daily_top.by_games_count.hint')">
+                            {{ t('lobby.daily_top.by_games_count.title') }}
                         </div>
                         <div class="rating-items">
                             <div class="rating-item" v-for="i in 7">
@@ -136,6 +136,9 @@ import ListButton from '../UI/Buttons/ListButton.vue'
 import router from '../../router'
 import { getList as getPlayersList } from '../../api/players';
 import { getList as getTemplatesList } from '../../api/templates';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 
 const onlineChart = reactive<{

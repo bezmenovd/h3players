@@ -1,5 +1,5 @@
 <template>
-    <div id="for-devs">
+    <div id="about">
         
     </div>
 </template>
@@ -9,7 +9,7 @@
 </script>
 
 <style scoped>
-#for-devs {
+#about {
     display: grid;
     gap: 20px;
 }

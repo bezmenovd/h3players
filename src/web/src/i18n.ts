@@ -1,15 +1,27 @@
 import { createI18n } from 'vue-i18n'
-import en from './locales/en'
 import ru from './locales/ru'
+import en from './locales/en'
+import pl from './locales/pl'
+import { useSettingsStore } from './stores/settings'
+import languages from './meta/languages.json'
 
-const i18n = createI18n({
-  legacy: false,
-  locale: localStorage.getItem('locale') || 'en',
-  fallbackLocale: 'en',
-  messages: {
-    en,
-    ru
-  }
+
+export const i18n = createI18n({
+    legacy: false,
+    locale: 'en',
+    fallbackLocale: 'ru',
+    messages: {
+        en,
+        ru,
+        pl
+    }
 })
+
+export function setupI18n() {
+    const settingsStore = useSettingsStore()
+
+    // @ts-ignore
+    i18n.global.locale.value = languages.find(l => l.id === settingsStore.language)?.code || 'en'
+}
 
 export default i18n

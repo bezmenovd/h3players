@@ -1,0 +1,5 @@
+[
+    { "id": 1, "code": "ru", "text": "Русский"}, 
+    { "id": 2, "code": "en", "text": "English"}, 
+    { "id": 3, "code": "pl", "text": "Polski"}
+]

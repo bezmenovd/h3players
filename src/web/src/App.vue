@@ -4,7 +4,7 @@
         <div id="left">
             <Navigation />
             <User />
-            <VersionAndForDevs />
+            <VersionAndAbout />
         </div>
         <div id="content">
             <Return />
@@ -21,7 +21,7 @@ import Navigation from './components/Navigation.vue';
 import User from './components/User.vue';
 import Return from './components/Return.vue';
 import { preload } from './modules/preload';
-import VersionAndForDevs from './components/VersionAndForDevs.vue';
+import VersionAndAbout from './components/VersionAndAbout.vue';
 
 
 const loading = ref({

@@ -12,6 +12,10 @@ export const useUserStore = defineStore('user', () => {
         name: localStorage.getItem('user:player:name'),
     })
 
+    token.value = 'asdads'
+    player.value.id = 1
+    player.value.name = "Temnotta"
+
     if (token.value && (! player.value.id || ! player.value.name)) {
         getMe(token.value).then(p => {
             if (! p) {
@@ -43,6 +47,14 @@ export const useUserStore = defineStore('user', () => {
         }).catch(() => {})
     }
 
+    async function logout() {
+        localStorage.removeItem('user:token')
+        localStorage.removeItem('user:player:id')
+        localStorage.removeItem('user:player:name')
+
+        location.reload()
+    }
+
     const isAuthenticated = computed(() => token.value !== null)
 
     return {
@@ -50,5 +62,6 @@ export const useUserStore = defineStore('user', () => {
         player,
         isAuthenticated,
         setToken,
+        logout,
     }
 })

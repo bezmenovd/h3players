@@ -2,10 +2,17 @@
     <Teleport to="body">
         <div id="modal-wrapper">
             <div id="modal">
-                <div id="modal-close" @click="close">
-                    <div id="modal-close-icon"></div>
+                <div id="modal-title">
+                    <div id="modal-title-text">
+                        {{ props.title }}
+                    </div>
+                    <div id="modal-close" @click="close">    
+                        <div id="modal-close-icon"></div>
+                    </div>
                 </div>
-                <slot />
+                <div id="modal-body">
+                    <slot />
+                </div>
             </div>
         </div>
     </Teleport>
@@ -15,6 +22,10 @@
 import { computed, Teleport } from 'vue';
 
 const emit = defineEmits(['close'])
+
+const props = defineProps<{
+    title: string,
+}>()
 
 const close = () => {
     emit('close')
@@ -37,26 +48,38 @@ const close = () => {
     z-index: 999;
 }
 #modal {
+}
+#modal-body {
     background: #2e3245;
     position: relative;
     max-height: calc(100vh - 100px);
+    min-height: 50px;
+    min-width: 200px;
+}
+#modal-title {
+    width: 100%;
+    height: 20px;
+    background: #2e3245;
+    opacity: .5;
+    display: grid;
+    grid-template-columns: 1fr 40px;
+    gap: 10px;
+    align-items: center;
+    height: 40px;
+}
+#modal-title-text {
+    padding: 10px;
+    font-size: 17px;
 }
 #modal-close {
     background: #2e3245;
-    position: absolute;
-    top: 0;
-    right: 0;
-    transform: translateY(-100%);
-    z-index: 999;
-    padding: 10px;
-    opacity: .5;
     cursor: pointer;
-}
-#modal-close:hover {
-    opacity: .7;
-}
-#modal-close:active {
-    opacity: .9;
+    opacity: 1;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 #modal-close-icon {
     background: url('/img/close.png');
@@ -66,6 +89,9 @@ const close = () => {
     background-size: 20px 20px;
     background-position: center;
     background-repeat: no-repeat;
-    opacity: .7;
+    opacity: .5;
+}
+#modal-close:hover #modal-close-icon {
+    opacity: 1;
 }
 </style>
