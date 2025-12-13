@@ -33,8 +33,6 @@ export class LogRequestsInterceptor implements NestInterceptor {
             .substring(0, 32)
 
         const token = req.headers['x-real-ip']
-        
-        const body = JSON.stringify(req.body)
     
         return next.handle().pipe(
             catchError((error) => {
@@ -52,7 +50,6 @@ export class LogRequestsInterceptor implements NestInterceptor {
                     token,
                     method,
                     url,
-                    body,
                     status,
                 })).catch(err => logger.error(err.message))
 
@@ -69,7 +66,6 @@ export class LogRequestsInterceptor implements NestInterceptor {
                     token,
                     method,
                     url,
-                    body,
                     status: 200,
                 })).catch(err => logger.error(err.message))
             })

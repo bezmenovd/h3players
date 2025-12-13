@@ -9,7 +9,6 @@ CREATE TABLE requests (
     `token` String,
     `method` String,
     `url` String,
-    `body` String,
     `status` UInt16
 )
 ENGINE = MergeTree()
