@@ -106,7 +106,7 @@ export class LimiterInterceptor implements NestInterceptor {
 
             multi.exec()
 
-            logger.info(`rate limit exceeded: ${ip_hash}:${token || ''}`)
+            logger.info(`${url}: rate limit (${ minuteQuota >= minuteLimit ? 'minute' : hourQuota >= hourLimit ? 'hour' : 'day' }) exceeded: ${ip_hash}:${token || ''}`)
 
             throw new HttpException(`Too Many Requests. Rate Limit exceeded`, 429)
         }
