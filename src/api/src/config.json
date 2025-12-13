@@ -4,25 +4,25 @@
             "/api/lobby/chart": {
                 "minute": 10,
                 "hour": 100,
-                "day": 3000
+                "day": 2500
             },
             "/api/lobby/dailyTop": {
                 "minute": 30,
-                "hour": 300,
+                "hour": 1000,
                 "day": 10000
             },
             "/api/lobby/counter/games": {
                 "minute": 30,
-                "hour": 300,
+                "hour": 1000,
                 "day": 10000
             },
             "/api/lobby/counter/visitors": {
                 "minute": 30,
-                "hour": 300,
+                "hour": 1000,
                 "day": 10000
             },
             "/api/games": {
-                "minute": 30,
+                "minute": 60,
                 "hour": 1000,
                 "day": 6000
             },
