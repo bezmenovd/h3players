@@ -1,0 +1,62 @@
+{
+    "limits": {
+        "ip": {
+            "/api/lobby/chart": {
+                "minute": 10,
+                "hour": 100,
+                "day": 3000
+            },
+            "/api/lobby/dailyTop": {
+                "minute": 10,
+                "hour": 300,
+                "day": 10000
+            },
+            "/api/lobby/counter/games": {
+                "minute": 10,
+                "hour": 300,
+                "day": 10000
+            },
+            "/api/lobby/counter/visitors": {
+                "minute": 10,
+                "hour": 300,
+                "day": 10000
+            },
+            "/api/games": {
+                "minute": 30,
+                "hour": 1000,
+                "day": 6000
+            },
+            "/api/games_v": {
+                "minute": 15,
+                "hour": 100,
+                "day": 300
+            },
+            "/api/players": {
+                "minute": 30,
+                "hour": 1000,
+                "day": 6000
+            },
+            "/api/players/#": {
+                "minute": 30,
+                "hour": 300,
+                "day": 600
+            },
+            "/api/players/search": {
+                "minute": 300,
+                "hour": 1000,
+                "day": 3000
+            },
+            "/api/templates": {
+                "minute": 60,
+                "hour": 1000,
+                "day": 3000
+            },
+            "/api/user/me": {
+                "minute": 10,
+                "hour": 30,
+                "day": 60
+            }
+        },
+        "token": {}
+    }
+}
