@@ -1,5 +1,12 @@
 [
     {
+        "version": "0.4.0",
+        "date": "2025-12-13",
+        "changes": [
+            { "type": "feature", "description": "Реализована авторизация через лобби" }
+        ]
+    },
+    {
         "version": "0.3.0",
         "date": "2025-12-11",
         "changes": [
