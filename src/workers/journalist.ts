@@ -19,20 +19,26 @@ import { initWorker } from './src/worker'
 async function main() {
     logger.info('starting..')
 
+    if (! config.workers.journalist.enabled) {
+        logger.info('disabled by config.json')
+        process.exit(0)
+        return
+    }
+
     initWorker()
-
-    const USER = String(process.env.USER)
-    const LAST_ONLY_MODE = String(process.env.LAST_ONLY_MODE) === 'true'
-
+    
     const redis = createClient({
         socket: {
             host: 'redis',
         }
     })
-
+    
     await redis.connect()
 
-    const client = new Client('journalist', USER)
+    // @ts-ignore
+    const user = String(config.workers.journalist.users[String(process.env.NAME)])
+    
+    const client = new Client('journalist', user)
     const postman = new Postman(client)
     
     const supervisor = new Supervisor()
@@ -120,7 +126,7 @@ async function main() {
 
             read += history.onPage
 
-            if (LAST_ONLY_MODE) break
+            if (config.workers.journalist.last_only_mode) break
             if (history.onPage < 20) break
             if (read >= total) break
             if (lastExistingGameId >= history.games[19].id) break

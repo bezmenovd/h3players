@@ -5,10 +5,17 @@ import { Supervisor } from './src/supervisor'
 import { Postman } from './src/postman'
 import { createClient } from 'redis'
 import { initWorker } from './src/worker'
+import config from '../../config.json'
 
 
 async function main() {
     logger.info('starting..')
+
+    if (! config.workers.h3players.enabled) {
+        logger.info('disabled by config.json')
+        process.exit(0)
+        return
+    }
 
     initWorker()
 

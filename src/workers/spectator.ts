@@ -9,10 +9,17 @@ import { Postman } from './src/postman'
 import { createClient } from 'redis'
 import { debounce } from './src/helpers/functions'
 import { initWorker } from './src/worker'
+import config from './../../config.json'
 
 
 async function main() {
     logger.info('starting..')
+
+    if (! config.workers.spectator.enabled) {
+        logger.info('disabled by config.json')
+        process.exit(0)
+        return
+    }
 
     initWorker()
 
@@ -35,7 +42,7 @@ async function main() {
 
     await redisPub.connect()
 
-    const client = new Client('spectator', USER)
+    const client = new Client('spectator', config.workers.spectator.user)
     const postman = new Postman(client)
     
     const supervisor = new Supervisor()

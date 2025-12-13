@@ -112,7 +112,7 @@ onMounted(() => {
     align-items: center;
     padding: 8px 0;
     display: flex;
-    gap: 8px;
+    gap: 5px;
 }
 #user-info #user-icon {
     position: relative;

@@ -18,10 +18,14 @@ import { initWorker } from './src/worker'
 
 async function main() {
     logger.info('starting..')
+
+    if (! config.workers.archivist.enabled) {
+        logger.info('disabled by config.json')
+        process.exit(0)
+        return
+    }
     
     initWorker()
-
-    const USER = String(process.env.USER)
 
     const redis = createClient({
         socket: {
@@ -31,7 +35,10 @@ async function main() {
 
     await redis.connect()
 
-    const client = new Client('archivist', USER)
+    // @ts-ignore
+    const user = String(config.workers.archivist.users[String(process.env.NAME)])
+
+    const client = new Client('archivist', user)
     const postman = new Postman(client)
     
     const supervisor = new Supervisor()

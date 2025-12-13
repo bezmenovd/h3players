@@ -2,10 +2,17 @@ import { logger } from './src/services/logger'
 import { createClient } from 'redis'
 import { getHdModVersion } from './src/version'
 import { sendMessage } from './src/services/telegram'
+import config from '../../config.json'
 
 
 async function main() {-
     logger.info('starting..')
+
+    if (! config.workers.coordinator.enabled) {
+        logger.info('disabled by config.json')
+        process.exit(0)
+        return
+    }
 
     const redis = createClient({
         socket: {

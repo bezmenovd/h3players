@@ -15,6 +15,40 @@
             "enabled": true
         }
     },
+    "workers": {
+        "archivist": {
+            "enabled": true,
+            "users": {
+                "archivist-1": "h3players_bot8",
+                "archivist-2": "h3players_bot9"
+            }
+        },
+        "background": {
+            "enabled": true
+        },
+        "coordinator": {
+            "enabled": true
+        },
+        "h3players": {
+            "enabled": true
+        },
+        "journalist": {
+            "enabled": true,
+            "last_only_mode": true,
+            "users": {
+                "journalist-1": "h3players_bot3",
+                "journalist-2": "h3players_bot4",
+                "journalist-3": "h3players_bot5"
+            }
+        },
+        "processor": {
+            "enabled": true
+        },
+        "spectator": {
+            "enabled": true,
+            "user": "h3players_bot2"
+        }
+    },
     "users": [
         { 
             "name": "h3players",

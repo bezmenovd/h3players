@@ -4,10 +4,17 @@ import { sleep } from './src/helpers/sleep'
 import { GameModel, GameVModel, PlayerModel, TemplateModel } from './src/models/lobby'
 import { timestamp } from './src/helpers/timestamp'
 import { lobby } from './src/services/clickhouse'
+import config from './../../config.json'
 
 
 async function main() {-
     logger.info('starting..')
+
+    if (! config.workers.processor.enabled) {
+        logger.info('disabled by config.json')
+        process.exit(0)
+        return
+    }
 
     const redis = createClient({
         socket: {
