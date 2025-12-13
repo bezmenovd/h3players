@@ -1,11 +1,17 @@
 <template>
     <div id="user">
-        <div id="user-auth">
+        <template v-if="userStore.isAuthenticated">
+            <div id="user-info">
+                <div id="user-icon"></div>
+                <router-link :to="{ name: 'players.detail', params: { id: userStore.player.id } }">{{ userStore.player.name }}</router-link>
+            </div>
+        </template>
+        <template v-else>
             <div id="user-auth-btn" class="btn" @click="showAuthModal = true">
                 <div id="user-icon"></div>
                 Войти через лобби
             </div>
-        </div>
+        </template>
     </div>
 
     <Modal v-if="showAuthModal" @close="showAuthModal = false">
@@ -22,7 +28,7 @@
                         {{ code }}
                     </div>
                 </div>
-                <div id="user-auth-modal-status">{{ authDone ? 'Сообщение получено' : 'Сообщение пока не получено' }}</div>
+                <div id="user-auth-modal-status">{{ status }}</div>
             </template>
             <template v-else>
                 <div id="user-auth-modal-no-code">
@@ -46,7 +52,7 @@ const showAuthModal = ref(false)
 
 const code = ref('')
 const playerId = ref(0)
-const authDone = ref(false)
+const status = ref('')
 let authListener: Listener
 
 const userStore = useUserStore()
@@ -63,11 +69,13 @@ const searchSelect = (item: SearchItem) => {
         authListener.unsubscribe()
     }
 
+    status.value = 'Сообщение пока не получено'
+
     playerId.value = item.id
     code.value = String(Math.round(Math.random() * 899999 + 100000))
 
     authListener = on('auth', (msg) => {
-        authDone.value = true
+        status.value = 'Сообщение получено'
         userStore.setToken(msg.token)
         setTimeout(() => {
             showAuthModal.value = false
@@ -75,7 +83,7 @@ const searchSelect = (item: SearchItem) => {
     }, { playerId: playerId.value, code: code.value })
 
     authListener.onDisconnect(() => {
-
+        status.value = 'Потеряно соединение с сервером, код аннулирован'
     })
 }
 
@@ -97,11 +105,23 @@ onMounted(() => {
 <style scoped>
 #user {
     margin-top: auto;
-}
-#user-auth {
-    display: grid;
-    align-items: center;
     padding: 10px 20px 0;
+}
+#user-info {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    display: flex;
+    gap: 8px;
+}
+#user-info #user-icon {
+    position: relative;
+    top: 1.3px;
+    opacity: .4;
+}
+#user-auth-btn {
+    display: flex;
+    align-items: center;
 }
 #user-icon {
     width: 20px;
@@ -178,6 +198,7 @@ onMounted(() => {
     align-items: center;
     justify-content: center;
     margin-top: 20px;
+    text-align: center;
 }
 
 </style>

@@ -17,6 +17,8 @@ import { GamesService } from './services/games.service';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LogRequestsInterceptor } from './interceptors/log_requests';
 import { LimiterInterceptor } from './interceptors/limiter';
+import { UserController } from './controllers/user.controller';
+import { UserService } from './services/user.service';
 
 
 @Module({
@@ -30,6 +32,7 @@ import { LimiterInterceptor } from './interceptors/limiter';
         GamesVController,
         PerformanceController,
         FunctionsController,
+        UserController,
     ],
     providers: [
         { provide: APP_INTERCEPTOR, useClass: LimiterInterceptor },
@@ -41,6 +44,7 @@ import { LimiterInterceptor } from './interceptors/limiter';
         TemplatesService,
         GamesService,
         GamesVService,
+        UserService,
     ],
 })
 export class AppModule {}

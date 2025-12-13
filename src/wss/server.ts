@@ -213,7 +213,7 @@ async function main() {
             let token = crypto.createHash('sha256').update(String(crypto.randomInt(281474976710655))).digest('hex').substring(0, 32)
 
             await mysqlH3players.execute(
-                'INSERT INTO tokens (player_id, token) VALUES (?, ?, ?)',
+                'INSERT INTO tokens (player_id, token) VALUES (?, ?)',
                 [data.playerId, token]
             )
 

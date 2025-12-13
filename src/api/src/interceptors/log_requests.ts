@@ -32,7 +32,7 @@ export class LogRequestsInterceptor implements NestInterceptor {
             .digest('hex')
             .substring(0, 32)
 
-        const token = req.headers['X-Real-IP']
+        const token = req.headers['x-real-ip']
         
         const body = JSON.stringify(req.body)
     
@@ -49,6 +49,7 @@ export class LogRequestsInterceptor implements NestInterceptor {
                     datetime: Math.floor(start / 1000),
                     duration,
                     ip_hash,
+                    token,
                     method,
                     url,
                     body,
@@ -65,41 +66,12 @@ export class LogRequestsInterceptor implements NestInterceptor {
                     datetime: Math.floor(start / 1000),
                     duration,
                     ip_hash,
+                    token,
                     method,
                     url,
                     body,
                     status: 200,
                 })).catch(err => logger.error(err.message))
-            }),
-
-            finalize(async () => {
-                const now = Date.now()
-                const duration = now - start
-                const startOfMinute = Math.floor(now / 1000 / 60) * 60
-                const startOfHour = Math.floor(now / 1000 / 3600) * 3600
-                const startOfDay = Math.floor(now / 1000 / 86400) * 86400
-
-                const quotaUrl = url.split('?')[0].replace(/\d+/g, '#')
-
-                const multi = this.redis.multi()
-
-                multi.incrBy(`api:quota:${quotaUrl}:${startOfMinute}:ip_hash:${ip_hash}`, duration)
-                multi.incrBy(`api:quota:${quotaUrl}:${startOfHour}:ip_hash:${ip_hash}`, duration)
-                multi.incrBy(`api:quota:${quotaUrl}:${startOfDay}:ip_hash:${ip_hash}`, duration)
-                multi.expireAt(`api:quota:${quotaUrl}:${startOfMinute}:ip_hash:${ip_hash}`, startOfMinute+60)
-                multi.expireAt(`api:quota:${quotaUrl}:${startOfHour}:ip_hash:${ip_hash}`, startOfHour+3600)
-                multi.expireAt(`api:quota:${quotaUrl}:${startOfDay}:ip_hash:${ip_hash}`, startOfDay+86400)
-
-                if (token) {
-                    multi.incrBy(`api:quota:${quotaUrl}:${startOfMinute}:token:${token}`, duration)
-                    multi.incrBy(`api:quota:${quotaUrl}:${startOfHour}:token:${token}`, duration)
-                    multi.incrBy(`api:quota:${quotaUrl}:${startOfDay}:token:${token}`, duration)
-                    multi.expireAt(`api:quota:${quotaUrl}:${startOfMinute}:token:${token}`, startOfMinute+60)
-                    multi.expireAt(`api:quota:${quotaUrl}:${startOfHour}:token:${token}`, startOfHour+3600)
-                    multi.expireAt(`api:quota:${quotaUrl}:${startOfDay}:token:${token}`, startOfDay+86400)
-                }
-
-                multi.exec()
             })
         );
     }

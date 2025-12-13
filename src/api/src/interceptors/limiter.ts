@@ -27,7 +27,7 @@ export class LimiterInterceptor implements NestInterceptor {
         const ip_hash = crypto.createHash('sha256').update(req.headers['x-real-ip'] || req.ip || 'unknown')
             .digest('hex')
             .substring(0, 32)
-        const token = req.headers['X-Real-IP']
+        const token = req.headers['x-real-ip']
 
         const url = String(req.url).split('?')[0].replace(/\d+/g, '#')
 
@@ -111,6 +111,26 @@ export class LimiterInterceptor implements NestInterceptor {
             throw new HttpException(`Too Many Requests. Rate Limit exceeded`, 429)
         }
 
-        return next.handle();
+        return next.handle().pipe(tap(() => {
+            const multi = this.redis.multi()
+
+            multi.incr(`api:quota:${url}:${startOfMinute}:ip_hash:${ip_hash}`)
+            multi.incr(`api:quota:${url}:${startOfHour}:ip_hash:${ip_hash}`)
+            multi.incr(`api:quota:${url}:${startOfDay}:ip_hash:${ip_hash}`)
+            multi.expireAt(`api:quota:${url}:${startOfMinute}:ip_hash:${ip_hash}`, startOfMinute+60)
+            multi.expireAt(`api:quota:${url}:${startOfHour}:ip_hash:${ip_hash}`, startOfHour+3600)
+            multi.expireAt(`api:quota:${url}:${startOfDay}:ip_hash:${ip_hash}`, startOfDay+86400)
+
+            if (token) {
+                multi.incr(`api:quota:${url}:${startOfMinute}:token:${token}`)
+                multi.incr(`api:quota:${url}:${startOfHour}:token:${token}`)
+                multi.incr(`api:quota:${url}:${startOfDay}:token:${token}`)
+                multi.expireAt(`api:quota:${url}:${startOfMinute}:token:${token}`, startOfMinute+60)
+                multi.expireAt(`api:quota:${url}:${startOfHour}:token:${token}`, startOfHour+3600)
+                multi.expireAt(`api:quota:${url}:${startOfDay}:token:${token}`, startOfDay+86400)
+            }
+
+            multi.exec()
+        }));
     }
 }
