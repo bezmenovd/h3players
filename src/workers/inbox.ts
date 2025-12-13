@@ -27,7 +27,7 @@ async function main() {
 
     await redisPub.connect()
 
-    const client = new Client('spectator', 'h3players')
+    const client = new Client('inbox', 'h3players')
     const postman = new Postman(client)
     
     const supervisor = new Supervisor()
