@@ -229,6 +229,28 @@ async function main() {
     })
     
     await client.connect()
+
+    let lastDay = (new Date()).getDay()
+
+    setInterval(async () => {
+        let curDay = (new Date()).getDay()
+
+        if (curDay === lastDay) {
+            return
+        }
+
+        lastDay = curDay
+
+        let multi = redis.multi()
+
+        for (const [_, player] of state.players) {
+            multi.sAdd(`spectator:daily-visitors:${date.from(timestamp.now())}`, String(player.id))
+        }
+
+        await multi.exec()
+
+        publishVisitors(await redis.sCard(`spectator:daily-visitors:${date.from(timestamp.now())}`))
+    }, 1000)
 }
 
 main()
