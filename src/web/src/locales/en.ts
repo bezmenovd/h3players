@@ -4,9 +4,12 @@ export default {
         players: 'Players',
         templates: 'Templates',
         performance: 'Performance',
+        discussions: 'Discussions',
     },
-    vaa: {
+    links: {
         about: 'About',
+        privacy_policy: 'Privacy Policy',
+        user_agreement: 'User Agreement',
     },
     user: {
         login_btn: 'Log in via Lobby',
@@ -129,6 +132,19 @@ export default {
                 }
             }
         }
+    },
+    about: {
+        title: 'About',
+    },
+    topics: {
+        list: {},
+        detail: {},
+    },
+    privacy_policy: {
+        title: 'Privacy Policy',
+    },
+    user_agreement: {
+        title: 'User Agreement',
     },
     ui: {
         table: {

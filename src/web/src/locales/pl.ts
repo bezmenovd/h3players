@@ -4,9 +4,12 @@ export default {
         players: 'Gracze',
         templates: 'Szablony',
         performance: 'Obciążenie',
+        discussions: 'Dyskusje',
     },
-    vaa: {
+    links: {
         about: 'O projekcie',
+        privacy_policy: 'Polityka Prywatności',
+        user_agreement: 'Regulamin użytkownika',
     },
     user: {
         login_btn: 'Zaloguj się przez Lobby',
@@ -129,6 +132,19 @@ export default {
                 }
             }
         }
+    },
+    about: {
+        title: 'O projekcie',
+    },
+    topics: {
+        list: {},
+        detail: {},
+    },
+    privacy_policy: {
+        title: 'Polityka Prywatności',
+    },
+    user_agreement: {
+        title: 'Regulamin użytkownika',
     },
     ui: {
         table: {

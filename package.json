@@ -70,6 +70,7 @@
     "vue": "3",
     "vue-i18n": "^11.1.12",
     "vue-router": "^4.6.3",
+    "vue3-markdown-it": "^1.0.10",
     "winston": "^3.18.3",
     "winston-daily-rotate-file": "^5.0.0",
     "ws": "^8.18.3"

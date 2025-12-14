@@ -4,7 +4,7 @@
         <div id="left">
             <Navigation />
             <User />
-            <VersionAndAbout />
+            <Links />
         </div>
         <div id="content">
             <Return />
@@ -21,7 +21,7 @@ import Navigation from './components/Navigation.vue';
 import User from './components/User.vue';
 import Return from './components/Return.vue';
 import { preload } from './modules/preload';
-import VersionAndAbout from './components/VersionAndAbout.vue';
+import Links from './components/Links.vue';
 
 
 const loading = ref({
@@ -178,5 +178,48 @@ a:hover {
 .btn:active {
     cursor: pointer;
     background: #ffffff2f;
+}
+.markdown {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    opacity: .8;
+}
+.markdown strong {
+    font-weight: 600;
+}
+.markdown ul {
+    padding-left: 20px;
+}
+.markdown ol {
+    padding-left: 20px;
+}
+.markdown li {
+    padding-bottom: 4px;
+}
+.markdown table {
+    border: 1px solid #ffffff6b;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.markdown thead {
+    border-bottom: 1px solid #ffffff6b;
+}
+.markdown tbody tr:hover {
+    background: #ffffff1c;
+}
+.markdown th {
+    padding: 8px 10px;
+    text-align: left;
+}
+.markdown td {
+    padding: 8px 10px;
+    text-align: left;
+}
+.markdown p {
+    line-height: 22px;
+}
+.markdown h1, .markdown h2, .markdown h3, .markdown h4 {
+    margin-top: 10px;
 }
 </style>

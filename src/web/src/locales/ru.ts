@@ -4,9 +4,12 @@ export default {
         players: 'Игроки',
         templates: 'Шаблоны',
         performance: 'Нагрузка',
+        discussions: 'Обсуждения',
     },
-    vaa: {
+    links: {
         about: 'О проекте',
+        privacy_policy: 'Политика конфиденциальности',
+        user_agreement: 'Пользовательское соглашение',
     },
     user: {
         login_btn: 'Войти через лобби',
@@ -129,6 +132,19 @@ export default {
                 }
             }
         }
+    },
+    about: {
+        title: 'О проекте',
+    },
+    topics: {
+        list: {},
+        detail: {},
+    },
+    privacy_policy: {
+        title: 'Политика конфиденциальности',
+    },
+    user_agreement: {
+        title: 'Пользовательское соглашение',
     },
     ui: {
         table: {

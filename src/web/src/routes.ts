@@ -8,6 +8,10 @@ import Games from './components/Pages/Lobby/Games.vue';
 import NotFound from './components/Pages/NotFound.vue';
 import Changelog from './components/Pages/Changelog.vue'
 import About from './components/Pages/About.vue'
+import DiscussionsList from './components/Pages/Discussions/List.vue'
+import DiscussionsDetail from './components/Pages/Discussions/Detail.vue'
+import PrivacyPolicy from './components/Pages/PrivacyPolicy.vue'
+import UserAgreement from './components/Pages/UserAgreement.vue'
 
 export default [
     {
@@ -54,6 +58,26 @@ export default [
         path: '/about',
         name: 'about',
         component: About,
+    },
+    {
+        path: '/discussions',
+        name: 'discussions',
+        component: DiscussionsList,
+    },
+    {
+        path: '/discussions/@:slug',
+        name: 'discussions.detail',
+        component: DiscussionsDetail,
+    },
+    {
+        path: '/privacy-policy',
+        name: 'privacy-policy',
+        component: PrivacyPolicy,
+    },
+    {
+        path: '/user-agreement',
+        name: 'user-agreement',
+        component: UserAgreement,
     },
     { 
         path: '/:pathMatch(.*)*',
