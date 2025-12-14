@@ -60,7 +60,6 @@ onMounted(async () => {
 
 <style scoped>
 #navigation {
-    padding: 20px 0;
     display: grid;
 }
 .link {

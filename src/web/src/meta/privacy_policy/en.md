@@ -7,10 +7,7 @@ The controller of personal data is the administrator of the website h3players.co
 (the “Operator”).  
 Contact email: contact@h3players.com.
 
-The Operator does not collect data that directly identifies a user,
-such as name, government ID, residential address, phone number,
-or email address.
-
+The Operator does not collect data that directly identifies a user.
 
 
 ### 2. Categories of Data Processed

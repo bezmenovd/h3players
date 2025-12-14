@@ -7,10 +7,7 @@ Administratorem danych osobowych jest administrator strony internetowej
 h3players.com („Operator”).  
 Adres kontaktowy: contact@h3players.com.
 
-Operator nie zbiera danych umożliwiających bezpośrednią identyfikację użytkownika,
-takich jak imię i nazwisko, dokument tożsamości, adres zamieszkania,
-numer telefonu lub adres e-mail.
-
+Operator nie zbiera danych umożliwiających bezpośrednią identyfikację użytkownika.
 
 
 ### 2. Zakres przetwarzanych danych

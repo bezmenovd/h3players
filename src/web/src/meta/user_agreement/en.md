@@ -10,7 +10,7 @@ By using the Website or API, the user agrees to the terms of this Agreement.
 
 ## 2. Access to the Website and API
 
-- Users access the Website via authorization through their game account in the corresponding game lobby.  
+- Users access the Website via authorization through their corresponding game account in the game lobby.  
 - The Operator stores users' game identifiers (nickname and ID) required for authorization within the Website and for displaying game statistics.  
 - The API is provided for the use of game-related data (nicknames, game identifiers, information about played games) solely for displaying and analyzing statistics.  
 - The Website and API may be temporarily unavailable due to technical maintenance or malfunctions.

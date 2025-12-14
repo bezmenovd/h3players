@@ -3,9 +3,7 @@ export async function loadImg(url: string) {
     return new Promise<void>(async (resolve) => {
         let img = new Image()
         img.src = url
-        img.onload = () => resolve()
-        
-        resolve()
+        img.onload = (e) => resolve()
     })
 }
 

@@ -2,6 +2,7 @@
     <MainLoader v-if="loading.show" />
     <div id="app" key="app" v-if="! loading.is">
         <div id="left">
+            <div id="logo" @click="router.replace({ name: 'lobby' })"/>
             <Navigation />
             <User />
             <Links />
@@ -22,6 +23,7 @@ import User from './components/User.vue';
 import Return from './components/Return.vue';
 import { preload } from './modules/preload';
 import Links from './components/Links.vue';
+import router from './router';
 
 
 const loading = ref({
@@ -107,6 +109,17 @@ a:hover {
     #content {
         padding: 30px 30px 40px 50px;
     }
+}
+#logo {
+    width: 100%;
+    height: 80px;
+    margin: 15px 0 5px;
+    background: url('/img/logo_full.png');
+    background-position: 23% 51%;
+    background-repeat: no-repeat;
+    background-size: 80%;
+    opacity: .5;
+    cursor: pointer;
 }
 #nprogress .bar {
     background: #4c25ab;
