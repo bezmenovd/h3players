@@ -65,6 +65,76 @@ export default {
                 title: 'Игры',
                 hint: 'Только рейтинговые игры на случайных картах'
             }
+        },
+        games: {
+            title: 'Игры',
+        }
+    },
+    templates: {
+        list: {
+            title: 'Шаблоны',
+            query: {
+                text: 'Введите название'
+            }
+        }
+    },
+    performance:{
+        title: 'Суммарная нагрузка',
+    },
+    players: {
+        search: {
+            title: 'Найти игрока',
+            input: {
+                text: 'Введите ник',
+            },
+            history: {
+                title: 'История',
+            },
+            popular: {
+                title: 'Популярные',
+            }
+        },
+        list: {
+            title: 'Все игроки',
+        },
+        detail: {
+            player_rank: {
+                text: 'в лобби',
+            },
+            no_data: 'Не найдено ни одной игры',
+            overview: {
+                games_count: 'Игр',
+                games_count_wins: 'Побед',
+                games_count_loses: 'Поражений',
+                games_count_draws: 'Ничьих',
+                games_count_winrate: 'Процент побед',
+                rating: {
+                    text: 'Рейтинг',
+                    hint: 'Изменение за сегодня'
+                },
+                rank: 'Позиция',
+                max_rating: 'Макс. рейтинг',
+                games_duration: {
+                    text: 'Время в играх',
+                    hint: 'За сегодня',
+                }
+            },
+            tabs: {
+                overview: 'Основное',
+                games: 'Игры',
+            },
+            rating_chart: {
+                formatters: {
+                    rating: 'птс',
+                }
+            }
+        }
+    },
+    ui: {
+        table: {
+            footer: {
+                of: 'из'
+            }
         }
     }
 }

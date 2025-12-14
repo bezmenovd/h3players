@@ -1,18 +1,18 @@
 <template>
     <div id="players">
-        <Title text="Найти игрока">
+        <Title :text="t('players.search.title')">
             <ListButton @click="router.push({ name: 'players.list' })"/>
         </Title>
 
         <Panel id="players-search">
             <div id="players-search-top">
                 <div id="players-search-input-wrapper">
-                    <Search :maxlength="16" @select="searchSelect" :func="searchFunc" id="players" placeholder="Введите ник"/>
+                    <Search :maxlength="16" @select="searchSelect" :func="searchFunc" id="players" :placeholder="t('players.search.input.text')"/>
                 </div>
             </div>
             <div id="players-search-bottom">
                 <div class="players-search-history" v-if="searchHistory.items.value.length > 0">
-                    <div class="players-search-history-title">История</div>
+                    <div class="players-search-history-title">{{ t('players.search.history.title') }}</div>
                     <div class="players-search-history-items">
                         <div class="players-search-history-item" v-for="item in searchHistory.items.value">
                             <router-link :to="{ name: 'players.detail', params: { id: item.id }}">{{ item.name }}</router-link>
@@ -21,7 +21,7 @@
                     </div>
                 </div>
                 <div class="players-search-history" v-if="popular.items.length > 0">
-                    <div class="players-search-history-title">Популярные</div>
+                    <div class="players-search-history-title">{{ t('players.search.popular.title') }}</div>
                     <div class="players-search-history-items">
                         <div class="players-search-history-item" v-for="item in popular.items">
                             <router-link :to="{ name: 'players.detail', params: { id: item.id }}">{{ item.name }}</router-link>
@@ -43,6 +43,9 @@ import router from '../../../router'
 import { SearchItem } from '../../UI/Inputs/search'
 import { useSearchHistory } from '../players'
 import ListButton from '../../UI/Buttons/ListButton.vue'
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const searchFunc = async (value: string): Promise<SearchItem[]> => {
     return search(value).then((players: Player[]) => players.map((p: Player): SearchItem => ({

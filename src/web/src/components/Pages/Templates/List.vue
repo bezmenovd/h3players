@@ -1,13 +1,13 @@
 <template>
     <div id="templates-list">
-        <Title text="Шаблоны"></Title>
+        <Title :text="t('templates.list.title')"></Title>
         <Panel id="templates-list-panel">
             <Header>
                 <Query 
                     v-model="query"
                     width="300px"
                     :maxlength="30" 
-                    placeholder="Введите название" 
+                    :placeholder="t('templates.list.query.text')" 
                     @change="queryOnChange"/>
             </Header>
             <Loader v-if="loading" :solid="true" />
@@ -33,6 +33,9 @@ import TemplatesList from '../../UI/Templates/List/TemplatesList.vue';
 import router from '../../../router';
 import { debounce, throttle } from '../../../helpers/functions';
 import Loader from '../../UI/Loader.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const route = useRoute()
 

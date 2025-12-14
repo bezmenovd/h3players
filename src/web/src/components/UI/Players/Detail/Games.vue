@@ -37,6 +37,9 @@ import { datetime, timestamp } from '../../../../helpers/timestamp';
 import RatingDiff from '../../RatingDiff.vue';
 import Rating from '../../Rating.vue';
 import h3 from '../../../../meta/h3.json'
+import { useSettingsStore } from '../../../../stores/settings';
+
+const settingsStore = useSettingsStore()
 
 
 const props = defineProps<{
@@ -78,10 +81,23 @@ const size = (game: GameVWithInfo): string => {
 
 const template = (game: GameVWithInfo): string => {
     if (game.template_id === 1) {
-        return `сценарий`
+        if (settingsStore.language === 1) {
+            return `сценарий`;
+        } else if (settingsStore.language === 2) {
+            return `scenario`;
+        } else if (settingsStore.language === 3) {
+            return `scenariusz`;
+        }
     }
+    
     if (game.template_name === '<Default>') {
-        return 'по умолчанию'
+        if (settingsStore.language === 1) {
+            return 'по умолчанию';
+        } else if (settingsStore.language === 2) {
+            return 'default';
+        } else if (settingsStore.language === 3) {
+            return 'domyślny';
+        }
     }
     return game.template_name || '?'
 }

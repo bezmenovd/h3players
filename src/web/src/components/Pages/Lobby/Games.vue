@@ -1,6 +1,6 @@
 <template>
     <div id="games">
-        <Title text="Игры">
+        <Title :text="t('lobby.games.title')">
         </Title>
         <Panel id="games-panel">
             <Header></Header>
@@ -28,6 +28,9 @@ import { watch } from 'vue'
 import { getList as getPlayersList } from '../../../api/players';
 import { getList as getTemplatesList } from '../../../api/templates';
 import { throttle } from '../../../helpers/functions';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 
 const gamesList = reactive<PaginatedTable<GameWithInfo>>({

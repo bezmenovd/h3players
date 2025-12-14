@@ -3,31 +3,31 @@
         "version": "0.4.0",
         "date": "2025-12-13",
         "changes": [
-            { "type": "feature", "description": "Wdrożono autoryzację przez Lobby" }
+            "Wdrożono autoryzację przez Lobby"
         ]
     },
     {
         "version": "0.3.0",
         "date": "2025-12-11",
         "changes": [
-            { "type": "feature", "description": "Gracz: dodano podstawowe informacje" },
-            { "type": "feature", "description": "Gracz: do listy gier dodano dzień zakończenia, miasta, bohaterów i rozmiar mapy" },
-            { "type": "feature", "description": "Lista gier: dodano dzień zakończenia, miasta, bohaterów i rozmiar mapy" }
+            "Gracz: dodano podstawowe informacje",
+            "Gracz: do listy gier dodano dzień zakończenia, miasta, bohaterów i rozmiar mapy",
+            "Lista gier: dodano dzień zakończenia, miasta, bohaterów i rozmiar mapy"
         ]
     },
     {
         "version": "0.2.0",
         "date": "2025-12-05",
         "changes": [
-            { "type": "feature", "description": "Gracz: dodano wykres rankingu" },
-            { "type": "feature", "description": "Gracz: dodano listę gier" }
+            "Gracz: dodano wykres rankingu",
+            "Gracz: dodano listę gier"
         ]
     },
     {
         "version": "0.1.0",
         "date": "2025-11-26",
         "changes": [
-            { "type": "feature", "description": "Pierwsza wersja" }
+            "Pierwsza wersja"
         ]
     }
 ]

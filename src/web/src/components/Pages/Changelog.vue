@@ -5,8 +5,7 @@
             <div class="version-date">{{ version.date }}</div>
             <div class="version-changes">
                 <div class="version-change" v-for="change in version.changes">
-                    <!-- <div class="version-change-type">{{ {'feature': '+', 'fix': '*'}[change.type] }}</div> -->
-                    <div class="version-change-description">{{ change.description }}</div>
+                    <div class="version-change-description">{{ change }}</div>
                 </div>
             </div>
         </div>
@@ -24,10 +23,7 @@ const settingsStore = useSettingsStore()
 type ChangelogItem = {
     version: string
     date: string
-    changes: {
-        type: string
-        description: string
-    }[]
+    changes: string[]
 }
 
 const changelog = (): ChangelogItem[] => {
@@ -49,34 +45,31 @@ const changelog = (): ChangelogItem[] => {
 <style scoped>
 #changelog {
     display: grid;
-    gap: 20px;
+    gap: 50px;
 }
 .version {
     font-variant-numeric: tabular-nums;
-    display: grid;
-    grid-template-columns: 60px 100px 1fr;
+    display: flex;
     gap: 20px;
+    font-size: 15px;
 }
 .version-changes {
-    gap: 3px;
+    gap: 5px;
     display: grid;
+    padding-top: 1px;
 }
 .version-change {
     display: flex;
     gap: 5px;
 }
 .version-name {
-    font-size: 15px;
     display: flex;
     align-items: baseline;
     font-weight: bold;
-    padding-top: 1px;
 }
 .version-date {
-    font-size: 14px;
     display: flex;
     align-items: baseline;
-    padding-top: 1px;
     opacity: .8;
 }
 </style>

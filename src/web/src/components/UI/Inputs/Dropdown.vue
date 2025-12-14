@@ -64,7 +64,7 @@ onBeforeUnmount(() => {
     width: 100%;
 }
 .list-value {
-    background: #393e4c;
+    background: #ffffff10;
     padding: 8px 10px;
     border: none;
     font-size: 14px;
@@ -91,6 +91,9 @@ onBeforeUnmount(() => {
 }
 .list-item:hover {
     background: #363a4c;
+}
+.list-item:not(.selected):hover {
+    cursor: pointer;
 }
 .list-item.selected {
     background: #363a4c;

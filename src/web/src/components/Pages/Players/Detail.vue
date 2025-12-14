@@ -5,7 +5,7 @@
             <Title :text="player.name || ' '">
                 <template #in-text>
                     <template v-if="player.rank !== -1">
-                        <div :class="{'top-rank': true, 'top-1': player.rank === 1 }" v-if="player.rank <= 100">#{{ player.rank }} в лобби</div>
+                        <div :class="{'top-rank': true, 'top-1': player.rank === 1 }" v-if="player.rank <= 100">#{{ player.rank }} {{ t('players.detail.player_rank.text') }}</div>
                     </template>
                 </template>
                 <template v-if="gamesList.items.length > 0">
@@ -17,7 +17,7 @@
                 <template v-if="gamesList.items.length === 0">
                     <Panel>
                         <div id="player-no-data">
-                            Не найдено ни одной игры
+                            {{ t('players.detail.no_data') }}
                         </div>
                     </Panel>
                 </template>
@@ -26,44 +26,44 @@
                         <div id="player-info">
                             <div class="player-info-column">
                                 <div class="player-info-item">
-                                    <div class="player-info-item-label">Игр</div>
+                                    <div class="player-info-item-label">{{ t('players.detail.overview.games_count') }}</div>
                                     <div class="player-info-item-value">
                                         {{ info.games_count }}
                                     </div>
                                 </div>
                                 <div class="player-info-item">
-                                    <div class="player-info-item-label">Побед</div>
+                                    <div class="player-info-item-label">{{ t('players.detail.overview.games_count_wins') }}</div>
                                     <div class="player-info-item-value">{{ info.games_count_wins }}</div>
                                 </div>
                                 <div class="player-info-item">
-                                    <div class="player-info-item-label">Поражений</div>
+                                    <div class="player-info-item-label">{{ t('players.detail.overview.games_count_loses') }}</div>
                                     <div class="player-info-item-value">{{ info.games_count_loses }}</div>
                                 </div>
                                 <div class="player-info-item">
-                                    <div class="player-info-item-label">Ничьих</div>
+                                    <div class="player-info-item-label">{{ t('players.detail.overview.games_count_draws') }}</div>
                                     <div class="player-info-item-value">{{ info.games_count_draws }}</div>
                                 </div>
                                 <div class="player-info-item">
-                                    <div class="player-info-item-label">Процент побед</div>
+                                    <div class="player-info-item-label">{{ t('players.detail.overview.games_count_winrate') }}</div>
                                     <div class="player-info-item-value">{{ Math.floor(info.games_count_winrate * 1000) / 10 }}%</div>
                                 </div>
                             </div>
                             <div class="player-info-column">
                                 <div class="player-info-item">
-                                    <div class="player-info-item-label">Рейтинг</div>
+                                    <div class="player-info-item-label">{{ t('players.detail.overview.rating.text') }}</div>
                                     <div class="player-info-item-value">
                                         {{ info.rating }}
-                                        <div class="today-rating-diff" v-if="info.today_games_duration > 0" hint="Изменение за сегодня">
+                                        <div class="today-rating-diff" v-if="info.today_games_duration > 0" :hint="t('players.detail.overview.rating.hint')">
                                             <RatingDiff :value="info.today_rating_diff" />
                                         </div>
                                     </div>
                                 </div>
                                 <div class="player-info-item">
-                                    <div class="player-info-item-label">Позиция</div>
+                                    <div class="player-info-item-label">{{ t('players.detail.overview.rank') }}</div>
                                     <div class="player-info-item-value">{{ player.rank !== -1 ? player.rank : '?' }}</div>
                                 </div>
                                 <div class="player-info-item">
-                                    <div class="player-info-item-label">Макс. рейтинг</div>
+                                    <div class="player-info-item-label">{{ t('players.detail.overview.max_rating') }}</div>
                                     <div class="player-info-item-value">
                                         {{ info.max_rating }} 
                                         <div class="max-rating-datetime">
@@ -72,18 +72,44 @@
                                     </div>
                                 </div>
                                 <div class="player-info-item">
-                                    <div class="player-info-item-label">Время в играх</div>
+                                    <div class="player-info-item-label">{{ t('players.detail.overview.games_duration.text') }}</div>
                                     <div class="player-info-item-value">
-                                        {{ info.games_duration }} {{ pluralize(info.games_duration, 'час', 'часа', 'часов') }}
-                                        <div class="today-games-duration" v-if="info.today_games_duration > 0" hint="За сегодня">
-                                            +
-                                            <template v-if="info.today_games_duration >= 3600">
-                                                {{ Math.floor(info.today_games_duration / 3600) }} ч.
-                                            </template>
-                                            <template v-if="true">
-                                                {{ Math.floor((info.today_games_duration % 3600) / 60) }} мин.
-                                            </template>
-                                        </div>
+                                        <template v-if="settingsStore.language === 1">
+                                            {{ info.games_duration }} {{ pluralize(info.games_duration, 'час', 'часа', 'часов') }}
+                                            <div class="today-games-duration" v-if="info.today_games_duration > 0" :hint=" t('players.detail.overview.games_duration.hint')">
+                                                +
+                                                <template v-if="info.today_games_duration >= 3600">
+                                                    {{ Math.floor(info.today_games_duration / 3600) }} ч.
+                                                </template>
+                                                <template v-if="true">
+                                                    {{ Math.floor((info.today_games_duration % 3600) / 60) }} мин.
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <template v-if="settingsStore.language === 2">
+                                            {{ info.games_duration }} {{ pluralizeEn(info.games_duration, 'hour') }}
+                                            <div class="today-games-duration" v-if="info.today_games_duration > 0" :hint=" t('players.detail.overview.games_duration.hint')">
+                                                +
+                                                <template v-if="info.today_games_duration >= 3600">
+                                                    {{ Math.floor(info.today_games_duration / 3600) }} h.
+                                                </template>
+                                                <template v-if="true">
+                                                    {{ Math.floor((info.today_games_duration % 3600) / 60) }} min.
+                                                </template>
+                                            </div>
+                                        </template>
+                                        <template v-if="settingsStore.language === 3">
+                                            {{ info.games_duration }} {{ pluralizePl(info.games_duration, 'godzina', 'godziny', 'godzin') }}
+                                            <div class="today-games-duration" v-if="info.today_games_duration > 0" :hint=" t('players.detail.overview.games_duration.hint')">
+                                                +
+                                                <template v-if="info.today_games_duration >= 3600">
+                                                    {{ Math.floor(info.today_games_duration / 3600) }} godz.
+                                                </template>
+                                                <template v-if="true">
+                                                    {{ Math.floor((info.today_games_duration % 3600) / 60) }} min.
+                                                </template>
+                                            </div>
+                                        </template>
                                     </div>
                                 </div>
                             </div>
@@ -131,8 +157,13 @@ import Footer from '../../UI/Table/Footer.vue'
 import Games from '../../UI/Players/Detail/Games.vue'
 import { PaginatedTable } from '../../../api/general'
 import { getContentSize } from '../../../helpers/content'
-import { pluralize } from '../../../helpers/string'
+import { pluralize, pluralizeEn, pluralizePl } from '../../../helpers/string'
 import RatingDiff from '../../UI/RatingDiff.vue'
+import { useI18n } from 'vue-i18n';
+import { useSettingsStore } from '../../../stores/settings'
+
+const { t } = useI18n();
+const settingsStore = useSettingsStore()
 
 
 const loading = ref(true)
@@ -220,10 +251,10 @@ const tab = ref<string>('');
 const tabs = [
     {
         code: '', 
-        name: 'Основное' 
+        name: t('players.detail.tabs.overview')
     }, { 
         code: 'games', 
-        name: 'Игры' 
+        name: t('players.detail.tabs.games')
     }
 ]
 
@@ -269,7 +300,7 @@ const ratingChart = reactive<{
     labels: [],
     show: false,
     formatters: [
-        (value: number) => `${Intl.NumberFormat('ru-RU').format(value)} птс`,
+        (value: number) => `${Intl.NumberFormat('ru-RU').format(value)} ${ t('players.detail.rating_chart.formatters.rating') }`,
     ],
     max: [0],
     size: 183,

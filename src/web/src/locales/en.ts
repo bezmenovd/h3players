@@ -65,6 +65,76 @@ export default {
                 title: 'Games',
                 hint: 'Only ranked games on random maps'
             }
+        },
+        games: {
+            title: 'Games',
         }
     },
+    templates: {
+        list: {
+            title: 'Templates',
+            query: {
+                text: 'Enter name'
+            }
+        }
+    },
+    performance:{
+        title: 'Total Load',
+    },
+    players: {
+        search: {
+            title: 'Find Player',
+            input: {
+                text: 'Enter Nickname',
+            },
+            history: {
+                title: 'History',
+            },
+            popular: {
+                title: 'Popular',
+            }
+        },
+        list: {
+            title: 'All Players',
+        },
+        detail: {
+            player_rank: {
+                text: 'in lobby',
+            },
+            no_data: 'No games found',
+            overview: {
+                games_count: 'Games',
+                games_count_wins: 'Wins',
+                games_count_loses: 'Losses',
+                games_count_draws: 'Draws',
+                games_count_winrate: 'Winrate',
+                rating: {
+                    text: 'Rating',
+                    hint: 'Change today'
+                },
+                rank: 'Position',
+                max_rating: 'Max. Rating',
+                games_duration: {
+                    text: 'Time in Games',
+                    hint: 'Today',
+                }
+            },
+            tabs: {
+                overview: 'Overview',
+                games: 'Games',
+            },
+            rating_chart: {
+                formatters: {
+                    rating: 'pts',
+                }
+            }
+        }
+    },
+    ui: {
+        table: {
+            footer: {
+                of: 'of'
+            }
+        }
+    }
 }

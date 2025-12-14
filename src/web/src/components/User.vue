@@ -53,13 +53,13 @@
                         {{ t('user.settings_modal.settings.language') }}
                         <div id="user-settings-icon-language" class="user-settings-item-icon" />
                     </div>
-                    <div class="user-settings-item-value" style="width: 100px">
+                    <div class="user-settings-item-value">
                         <Dropdown :value="settingsStore.language" :items="languages" @select="item => item.id !== settingsStore.language && reopen() && settingsStore.setLanguage(item.id)"/>
                     </div>
                 </div>
                 <div class="user-settings-item" v-if="userStore.isAuthenticated">
                     <div class="user-settings-item-label">{{ t('user.settings_modal.settings.account.text') }}</div>
-                    <div class="user-settings-item-value" style="width: 100px">
+                    <div class="user-settings-item-value">
                         <div id="user-settings-logout-btn" class="btn" @click="userStore.logout()">
                             <div id="user-settings-logout-btn-icon" />
                             {{ t('user.settings_modal.settings.account.btn') }}
@@ -324,7 +324,6 @@ onMounted(() => {
     filter: invert(1);
     opacity: .4;
     position: relative;
-    top: 1px;
     left: -2px;
 }
 #user-settings-icon-language {

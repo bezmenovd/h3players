@@ -3,31 +3,31 @@
         "version": "0.4.0",
         "date": "2025-12-13",
         "changes": [
-            { "type": "feature", "description": "Lobby authorization implemented" }
+            "Lobby authorization implemented"
         ]
     },
     {
         "version": "0.3.0",
         "date": "2025-12-11",
         "changes": [
-            { "type": "feature", "description": "Player: added main information" },
-            { "type": "feature", "description": "Player: added finish day, towns, heroes, and map size to the games list" },
-            { "type": "feature", "description": "Games list: added finish day, towns, heroes, and map size" }
+            "Player: added main information",
+            "Player: added finish day, towns, heroes, and map size to the games list",
+            "Games list: added finish day, towns, heroes, and map size"
         ]
     },
     {
         "version": "0.2.0",
         "date": "2025-12-05",
         "changes": [
-            { "type": "feature", "description": "Player: added rating chart" },
-            { "type": "feature", "description": "Player: added games list" }
+            "Player: added rating chart",
+            "Player: added games list"
         ]
     },
     {
         "version": "0.1.0",
         "date": "2025-11-26",
         "changes": [
-            { "type": "feature", "description": "First version" }
+            "First version"
         ]
     }
 ]

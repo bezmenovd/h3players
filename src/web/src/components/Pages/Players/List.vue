@@ -1,6 +1,6 @@
 <template>
     <div id="players-list">
-        <Title text="Все игроки"></Title>
+        <Title :text="t('players.list.title')"></Title>
         <Panel id="players-list-panel">
             <Header></Header>
             <Loader v-if="loading" :solid="true" />
@@ -23,6 +23,9 @@ import { PaginatedTable } from '../../../api/general';
 import { useRoute } from 'vue-router';
 import { on } from '../../../modules/websocket';
 import PlayersList from '../../UI/Players/List/PlayersList.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const players = reactive<{
     list: PaginatedTable<Player>,

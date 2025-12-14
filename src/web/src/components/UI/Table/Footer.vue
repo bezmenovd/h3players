@@ -14,6 +14,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps<{
   total: number
@@ -36,7 +39,7 @@ const info = computed(() => {
     const start = offset.value + 1
     const end = Math.min(offset.value + props.limit, props.total)
 
-    return `${Intl.NumberFormat('ru-RU').format(start)}-${Intl.NumberFormat('ru-RU').format(end)} из ${Intl.NumberFormat('ru-RU').format(props.total)}`
+    return `${Intl.NumberFormat('ru-RU').format(start)}-${Intl.NumberFormat('ru-RU').format(end)} ${t('ui.table.footer.of')} ${Intl.NumberFormat('ru-RU').format(props.total)}`
 })
 
 function setOffset(v: number) {

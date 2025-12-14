@@ -1,6 +1,6 @@
 <template>
     <div id="lobby">
-        <Title text="Суммарная нагрузка"></Title>
+        <Title :text="t('performance.title')"></Title>
         <Loader v-if="loading" :solid="false"/>
         <template v-else>
             <Panel id="performance">
@@ -48,6 +48,9 @@ import LineChart from '../UI/Charts/LineChart.vue'
 import { timestamp, datetime } from '../../helpers/timestamp'
 import { formatBytes } from '../../helpers/bytes'
 import { pluralize } from '../../helpers/string'
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const totalChart = reactive<{
     size: number,

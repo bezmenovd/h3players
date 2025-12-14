@@ -12,9 +12,11 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
 import { TemplateWithInfo } from '../../../../api/templates';
-import { pluralize } from '../../../../helpers/string';
+import { pluralize, pluralizeEn, pluralizePl } from '../../../../helpers/string';
+import { useSettingsStore } from '../../../../stores/settings';
+
+const settingsStore = useSettingsStore()
 
 const props = defineProps<{
     items: TemplateWithInfo[],
@@ -22,10 +24,23 @@ const props = defineProps<{
 
 const name = (template: TemplateWithInfo): string => {
     if (template.id === 1) {
-        return `сценарий`
+        if (settingsStore.language === 1) {
+            return `сценарий`;
+        } else if (settingsStore.language === 2) {
+            return `scenario`;
+        } else if (settingsStore.language === 3) {
+            return `scenariusz`;
+        }
     }
+    
     if (template.name === '<Default>') {
-        return 'по умолчанию'
+        if (settingsStore.language === 1) {
+            return 'по умолчанию';
+        } else if (settingsStore.language === 2) {
+            return 'default';
+        } else if (settingsStore.language === 3) {
+            return 'domyślny';
+        }
     }
     return template.name || '?'
 }
@@ -44,7 +59,13 @@ const nameClass = (template: TemplateWithInfo): string => {
 }
 
 const gamesCount = (template: TemplateWithInfo): string => {
-    return `${ Intl.NumberFormat('ru-RU').format(template.games_count) } ${ pluralize(template.games_count, 'игра', 'игры', 'игр') }`
+    if (settingsStore.language === 1) {
+        return `${ Intl.NumberFormat('ru-RU').format(template.games_count) } ${pluralize(template.games_count, 'игра', 'игры', 'игр')}`;
+    } else if (settingsStore.language === 2) {
+        return `${ Intl.NumberFormat('ru-RU').format(template.games_count) } ${pluralizeEn(template.games_count, 'game')}`;
+    } else if (settingsStore.language === 3) {
+        return `${ Intl.NumberFormat('ru-RU').format(template.games_count) } ${pluralizePl(template.games_count, 'gra', 'gry', 'gier')}`;
+    }
 }
 
 </script>
