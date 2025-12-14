@@ -29,12 +29,20 @@ export async function loadFont(font: Font) {
     })
 }
 
-export async function preload(objects: (string | Font)[]) {
+export async function preload(objects: (string | Font)[], onChange?: () => {}) {
     await Promise.all(objects.map(object => {
         if (typeof object === 'string') {
-            return loadImg(object)
+            return new Promise<void>(async (resolve) => {
+                await loadImg(object)
+                onChange?.()
+                resolve()
+            })
         } else {
-            return loadFont(object)
+            return new Promise<void>(async (resolve) => {
+                await loadFont(object)
+                onChange?.()
+                resolve()
+            })
         }
     }))
 }

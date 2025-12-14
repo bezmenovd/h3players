@@ -1,5 +1,5 @@
 <template>
-    <MainLoader v-if="loading.show" />
+    <MainLoader v-if="loading.show" :loaded="loading.counter" :total="resources.app.length"/>
     <div id="app" key="app" v-if="! loading.is">
         <div id="left">
             <div id="logo" @click="router.replace({ name: 'lobby' })"/>
@@ -27,11 +27,12 @@ import router from './router';
 
 
 const loading = ref({
+    counter: 0,
     is: true,
     show: true,
 })
 
-preload(resources.app).then(() => {
+preload(resources.app, () => loading.value.counter++).then(() => {
     loading.value.show = false
     loading.value.is = false
 })
@@ -84,11 +85,11 @@ a:hover {
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 250px 1fr;
 }
 @media (max-width: 1600px) {
     #app {
-        grid-template-columns: 160px 1fr;
+        grid-template-columns: 200px 1fr;
     }
 }
 #left {
@@ -115,7 +116,7 @@ a:hover {
     height: 80px;
     margin: 15px 0 5px;
     background: url('/img/logo_full.png');
-    background-position: 23% 51%;
+    background-position: 30% 51%;
     background-repeat: no-repeat;
     background-size: 80%;
     opacity: .5;

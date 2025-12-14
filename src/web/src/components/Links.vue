@@ -1,14 +1,14 @@
 <template>
     <div id="links">
         <div class="links-group">
-            <router-link :to="{ name: 'changelog' }" id="version-value">v{{ version }}</router-link>
             <router-link :to="{ name: 'about' }">{{ t('links.about') }}</router-link>
-        </div>
-        <div class="links-group">
-            <router-link :to="{ name: 'privacy-policy' }">{{ t('links.privacy_policy') }}</router-link>
+            <router-link :to="{ name: 'changelog' }" id="version-value">v{{ version }}</router-link>
         </div>
         <div class="links-group">
             <router-link :to="{ name: 'user-agreement' }">{{ t('links.user_agreement') }}</router-link>
+        </div>
+        <div class="links-group">
+            <router-link :to="{ name: 'privacy-policy' }">{{ t('links.privacy_policy') }}</router-link>
         </div>
     </div>
 </template>
@@ -31,7 +31,7 @@ const version = computed<string>(() => {
     padding: 20px 20px 30px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 13px;
     font-variant-numeric: tabular-nums;
     opacity: .5;
     font-size: 14px;

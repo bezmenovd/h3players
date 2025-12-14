@@ -60,7 +60,7 @@ const close = () => {
     width: 100%;
     height: 20px;
     background: #2e3245;
-    opacity: .5;
+    opacity: .65;
     display: grid;
     grid-template-columns: 1fr 40px;
     gap: 10px;

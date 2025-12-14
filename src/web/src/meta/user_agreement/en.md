@@ -27,31 +27,20 @@ By using the Website or API, the user agrees to the terms of this Agreement.
 Use of the Website and API in all other cases is permitted, provided that the terms of this Agreement are observed.
 
 
-## 4. Intellectual Property
-
-- All materials on the Website, including design, code, and content, are the property of the Operator.  
-- Game-related data is provided for use within the Website and API and may not be used outside these purposes without the Operator's permission.
-
-
-## 5. Limitation of Liability
+## 4. Limitation of Liability
 
 - The Website and API are provided "as is," without guarantees of correctness, completeness, or continuous availability.  
 - The Operator is not responsible for errors, inaccuracies, or unavailability of data.  
 - Use of the Website data is at the user's own risk.
 
 
-## 6. Termination of Use
+## 5. Termination of Use
 
 The Operator may restrict or block a user's access to the Website or API for violating this Agreement.
 
 
-## 7. Changes to the Terms
+## 6. Changes to the Terms
 
 The Operator reserves the right to amend this Agreement.  
 The current version is published on the Website. Continued use of the Website after publication of changes constitutes acceptance of the updated terms.
 
-
-## 8. Governing Law
-
-This Agreement is governed by the laws of the Russian Federation.  
-To the extent applicable, users from other jurisdictions, including the European Union, may also be subject to their local laws, such as data protection regulations (e.g., GDPR).

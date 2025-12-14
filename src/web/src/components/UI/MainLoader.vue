@@ -1,11 +1,17 @@
 <template>
     <div class="loader-wrapper" v-if="visible">
         <div class="loader"></div>
+        <div class="counter">{{ props.loaded }} / {{ props.total }}</div> 
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+
+const props = defineProps<{
+  loaded: number,
+  total: number
+}>()
 
 const visible = ref(false)
 
@@ -18,6 +24,7 @@ setTimeout(() => visible.value = true, 400)
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   position: absolute;
@@ -56,5 +63,11 @@ setTimeout(() => visible.value = true, 400)
   75%  {background-position: 0    0,100% 0   ,100% 100%,0 50%}
  75.01%{background-position: 100% 0,100% 0   ,100% 100%,0 50%}
   100% {background-position: 50%  0,100% 0   ,100% 100%,0 100%}
+}
+.counter {
+  margin-top: 20px;
+  font-variant-numeric: tabular-nums;
+  opacity: .5;
+  font-size: 14px;
 }
 </style>

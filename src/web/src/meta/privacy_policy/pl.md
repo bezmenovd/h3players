@@ -1,87 +1,64 @@
-### 1. Postanowienia ogólne
+## 1. Postanowienia ogólne
 
-Niniejsza Polityka prywatności określa zasady przetwarzania informacji
-związanych z korzystaniem ze strony internetowej h3players.com („Strona”).
+Niniejsza Polityka prywatności określa zasady przetwarzania informacji związanych z korzystaniem ze strony h3players.com („Strona”).
 
-Administratorem danych osobowych jest administrator strony internetowej
-h3players.com („Operator”).  
+Administratorem Strony jest administrator h3players.com.  
 Adres kontaktowy: contact@h3players.com.
 
-Operator nie zbiera danych umożliwiających bezpośrednią identyfikację użytkownika.
+Operator nie gromadzi danych umożliwiających identyfikację użytkownika.
 
 
-### 2. Zakres przetwarzanych danych
+## 2. Kategorie przetwarzanych danych
 
-Podczas korzystania ze Strony przetwarzane są następujące dane:
+W trakcie działania Strony przetwarzane są następujące kategorie danych:
 
 | Kategoria danych | Opis |
-|------------------|------|
-| Dane związane z grą | Nicki graczy oraz identyfikatory w grze wykorzystywane do prezentacji statystyk oraz autoryzacji w ramach Strony |
-| Dane techniczne | Haszowane adresy IP (SHA-256) |
-| Dane zapytań HTTP | Żądane adresy URL, data, godzina oraz czas przetwarzania zapytań przez serwer |
+|-----------------|------|
+| Dane gry | Nicki i identyfikatory graczy; informacje o rozegranych meczach |
+| Dane techniczne | Zhashowane adresy IP (SHA-256) |
+| Dane żądań HTTP | Żądane adresy URL, data, godzina i czas przetwarzania żądań przez serwer |
 
-Operator nie posiada informacji umożliwiających powiązanie powyższych danych
-z rzeczywistą tożsamością użytkownika poza kontekstem gry.
+Operator nie dysponuje informacjami umożliwiającymi powiązanie powyższych danych z konkretną osobą fizyczną poza kontekstem gry.
 
 
-### 3. Cele przetwarzania danych
+## 3. Cele przetwarzania danych
 
-Dane przetwarzane są wyłącznie w następujących celach:
+Dane są przetwarzane wyłącznie w następujących celach:
 
-- prezentacja i analiza statystyk gry;
-- zapewnienie autoryzacji użytkowników w ramach Strony;
-- zapewnienie bezpieczeństwa i prawidłowego działania Strony;
-- zapobieganie nadużyciom i atakom automatycznym;
+- wyświetlanie statystyk gry;  
+- umożliwienie autoryzacji użytkowników w ramach Strony;  
+- zapewnienie bezpieczeństwa i stabilnego działania Strony;  
+- zapobieganie nadużyciom i atakom;  
 - administracja techniczna i diagnostyka.
 
-Dane nie są wykorzystywane do identyfikacji użytkowników ani do celów
-reklamowych lub marketingowych.
+Dane nie są wykorzystywane do identyfikacji użytkownika ani do celów reklamowych lub marketingowych.
 
 
-### 4. Podstawa prawna przetwarzania
+## 4. Podstawa prawna przetwarzania
 
-W odniesieniu do użytkowników znajdujących się na terytorium Unii Europejskiej,
-dane przetwarzane są na podstawie prawnie uzasadnionego interesu Operatora,
-zgodnie z art. 6 ust. 1 lit. f RODO.
-
-W pozostałych przypadkach dane przetwarzane są zgodnie z obowiązującymi
-przepisami o ochronie danych.
+Przetwarzanie danych odbywa się zgodnie z Federalną ustawą Federacji Rosyjskiej nr 152-FZ z dnia 27.07.2006 „O danych osobowych”.
 
 
-### 5. Przechowywanie i udostępnianie danych
+## 5. Przechowywanie i udostępnianie danych
 
-Dane są przechowywane wyłącznie przez okres niezbędny
-do realizacji celów przetwarzania.
+Dane są przechowywane nie dłużej, niż jest to konieczne do osiągnięcia celów przetwarzania.
 
-Operator może udostępniać dane związane z grą (nicki graczy,
-identyfikatory w grze oraz informacje o rozegranych grach lub meczach)
-za pośrednictwem interfejsu programistycznego (API)
-w celu prezentacji i analizy statystyk gry.
+Operator może udostępniać dane gry poprzez interfejs programistyczny (API) w celu wyświetlania statystyk gry.
 
-Dane te nie zawierają informacji umożliwiających bezpośrednią
-identyfikację osoby fizycznej i nie są przekazywane wraz z danymi
-technicznymi użytkowników (takimi jak adresy IP, dane zapytań HTTP
-lub inne podobne informacje).
-
-Pozostałe kategorie danych nie są udostępniane osobom trzecim,
-z wyjątkiem przypadków wymaganych przez obowiązujące przepisy prawa.
-
-Operator nie dokonuje przekazywania danych poza granice państwowe.
+Wymienione dane nie zawierają informacji pozwalających na identyfikację osoby fizycznej i nie są powiązane z danymi technicznymi użytkowników.
 
 
+## 6. Prawa użytkowników
 
-### 6. Prawa użytkowników
+Użytkownik ma prawo złożyć wniosek o:
 
-Użytkownik ma prawo do złożenia wniosku o:
+- zaprzestanie przetwarzania danych;  
+- usunięcie danych, jeśli dalsze przechowywanie nie jest wymagane dla celów wskazanych w niniejszej Polityce prywatności.
 
-- ograniczenie lub zaprzestanie przetwarzania danych;
-- usunięcie danych, jeżeli dalsze ich przechowywanie nie jest konieczne
-  do realizacji wskazanych celów.
-
-Wnioski należy kierować na adres: contact@h3players.com.
+Wnioski należy przesyłać na adres: contact@h3players.com.
 
 
-### 7. Postanowienia końcowe
+## 7. Postanowienia końcowe
 
-Operator zastrzega sobie prawo do zmiany niniejszej Polityki prywatności.
-Aktualna wersja dokumentu jest publikowana na Stronie.
+Operator zastrzega sobie prawo do wprowadzania zmian w niniejszej Polityce prywatności.  
+Aktualna wersja publikowana jest na tej stronie Strony.

@@ -12,9 +12,9 @@ export const useUserStore = defineStore('user', () => {
         name: localStorage.getItem('user:player:name'),
     })
 
-    token.value = 'asdads'
-    player.value.id = 1
-    player.value.name = "Temnotta"
+    // token.value = 'asdads'
+    // player.value.id = 1
+    // player.value.name = "Temnotta"
 
     if (token.value && (! player.value.id || ! player.value.name)) {
         getMe(token.value).then(p => {
