@@ -147,7 +147,7 @@ export default {
         },
         api: {
             authorization: {
-                text: 'Autoryzacja zapytań odbywa się za pomocą nagłówka żądania "Token". Token jest wydawany podczas autoryzacji w lobby i zazwyczaj można go znaleźć w localStorage.'
+                text: 'Autoryzacja zapytań odbywa się za pomocą nagłówka "Token". Token jest wydawany podczas autoryzacji w lobby i zazwyczaj można go znaleźć w localStorage.'
             }
         }
     },

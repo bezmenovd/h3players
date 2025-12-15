@@ -147,7 +147,7 @@ export default {
         },
         api: {
             authorization: {
-                text: 'Authorization for requests is performed via the "Token" request header. The token is issued upon authorization via lobby and can be found in localStorage.'
+                text: 'Authorization for requests is performed via the "Token" header. The token is issued upon authorization via lobby and can be found in localStorage.'
             }
         }
     },
