@@ -301,12 +301,8 @@ watch(() => route.params.tab, async (newTabCode) => {
 .worker-chart {
     height: 260px;
     display: grid;
-    grid-template-rows: 50px 210px;
+    grid-template-rows: 30px 210px;
 }
-.worker-chart-inner {
-    padding: 10px;
-}
-
 @media (max-width: 1600px) {
     #workers {
         margin-top: 20px;
