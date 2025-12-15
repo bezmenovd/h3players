@@ -289,7 +289,6 @@ watch(() => route.params.tab, async (newTabCode) => {
     height: 210px;
 }
 #performance-chart {
-    padding: 10px;
     height: 100%;
 }
 #workers {
@@ -315,6 +314,8 @@ watch(() => route.params.tab, async (newTabCode) => {
 
 #load {
     padding: 20px;
+    gap: 20px;
+    display: grid;
 }
 #api {
     padding: 20px;
