@@ -36,7 +36,7 @@ import { GameWithInfo } from '../../../../api/games';
 import { datetime, timestamp } from '../../../../helpers/timestamp';
 import RatingDiff from '../../RatingDiff.vue';
 import Rating from '../../Rating.vue';
-import h3 from '../../../../meta/h3.json'
+import h3 from '../../../../content/h3.json'
 import { useSettingsStore } from '../../../../stores/settings';
 
 const settingsStore = useSettingsStore()

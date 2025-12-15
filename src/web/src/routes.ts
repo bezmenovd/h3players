@@ -3,7 +3,6 @@ import PlayersSearch from './components/Pages/Players/Search.vue'
 import PlayersList from './components/Pages/Players/List.vue'
 import PlayersDetail from './components/Pages/Players/Detail.vue'
 import TemplatesList from './components/Pages/Templates/List.vue'
-import Performance from './components/Pages/Performance.vue';
 import Games from './components/Pages/Lobby/Games.vue';
 import NotFound from './components/Pages/NotFound.vue';
 import Changelog from './components/Pages/Changelog.vue'
@@ -55,7 +54,7 @@ export default [
         component: Changelog,
     },
     { 
-        path: '/about',
+        path: '/about/:tab?',
         name: 'about',
         component: About,
     },

@@ -7,9 +7,9 @@
 
 <script setup lang="ts">
 import { useSettingsStore } from '../../stores/settings';
-import ru from '../../meta/privacy_policy/ru.md?raw';
-import en from '../../meta/privacy_policy/en.md?raw';
-import pl from '../../meta/privacy_policy/pl.md?raw';
+import ru from '../../content/privacy_policy/ru.md?raw';
+import en from '../../content/privacy_policy/en.md?raw';
+import pl from '../../content/privacy_policy/pl.md?raw';
 // @ts-ignore
 import Markdown from 'vue3-markdown-it';
 import Title from '../UI/Title.vue';

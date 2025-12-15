@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import resources from './meta/resources';
+import resources from './content/resources';
 import MainLoader from './components/UI/MainLoader.vue';
 import Navigation from './components/Navigation.vue';
 import User from './components/User.vue';
@@ -236,5 +236,12 @@ a:hover {
 .markdown h1, .markdown h2, .markdown h3, .markdown h4 {
     margin-top: 10px;
     font-weight: 500;
+}
+.markdown p a {
+    display: inline;
+    box-shadow: 0 -2px 0 0 rgba(255, 255, 255, 0.3) inset;
+}
+.markdown p a:hover {
+    box-shadow: 0 -2px 0 0 rgba(255, 255, 255, 0.726) inset;
 }
 </style>

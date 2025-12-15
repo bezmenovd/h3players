@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import changelog from '../meta/changelog/ru.json';
+import changelog from '../content/changelog/ru.json';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();

@@ -3,7 +3,7 @@ import ru from './locales/ru'
 import en from './locales/en'
 import pl from './locales/pl'
 import { useSettingsStore } from './stores/settings'
-import languages from './meta/languages.json'
+import languages from './content/languages.json'
 
 
 export const i18n = createI18n({

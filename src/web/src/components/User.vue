@@ -81,7 +81,7 @@ import { Listener, on } from '../modules/websocket';
 import { useUserStore } from '../stores/user';
 import { useSettingsStore } from '../stores/settings';
 import Dropdown from './UI/Inputs/Dropdown.vue';
-import languages from '../meta/languages.json'
+import languages from '../content/languages.json'
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();

@@ -62,6 +62,37 @@
                 "day": 200
             }
         },
-        "token": {}
+        "token": {
+            "/api/games": {
+                "minute": 60,
+                "hour": 1800,
+                "day": 14400
+            },
+            "/api/games_v": {
+                "minute": 60,
+                "hour": 1800,
+                "day": 7200
+            },
+            "/api/players": {
+                "minute": 60,
+                "hour": 1800,
+                "day": 14400
+            },
+            "/api/players/#": {
+                "minute": 60,
+                "hour": 1800,
+                "day": 7200
+            },
+            "/api/players/search": {
+                "minute": 600,
+                "hour": 3600,
+                "day": 7200
+            },
+            "/api/templates": {
+                "minute": 60,
+                "hour": 3600,
+                "day": 14400
+            }
+        }
     }
 }

@@ -1,0 +1,89 @@
+{
+    "/games_v": {
+        "method": "GET",
+        "query": {
+            "playerId": {
+                "type": "int",
+                "required": true
+            },
+            "limit": {
+                "type": "int",
+                "required": false
+            },
+            "offset": {
+                "type": "int",
+                "required": false
+            }
+        }
+    },
+    "/games": {
+        "method": "GET",
+        "query": {
+            "limit": {
+                "type": "int",
+                "required": false
+            },
+            "offset": {
+                "type": "int",
+                "required": false
+            }
+        }
+    },
+    "/players": {
+        "method": "GET",
+        "query": {
+            "limit": {
+                "type": "int",
+                "required": false
+            },
+            "offset": {
+                "type": "int",
+                "required": false
+            },
+            "ids": {
+                "type": "string",
+                "required": false,
+                "hint": "array of ids, joined by , (for example: '101,102,103')"
+            }
+        }
+    },
+    "/players/search": {
+        "method": "GET",
+        "query": {
+            "query": {
+                "type": "string",
+                "required": true
+            },
+            "limit": {
+                "type": "int",
+                "required": false
+            }
+        }
+    },
+    "/players/#": {
+        "method": "GET",
+        "query": {}
+    },
+    "/templates": {
+        "method": "GET",
+        "query": {
+            "limit": {
+                "type": "int",
+                "required": false
+            },
+            "offset": {
+                "type": "int",
+                "required": false
+            },
+            "query": {
+                "type": "string",
+                "required": false
+            },
+            "ids": {
+                "type": "string",
+                "required": false,
+                "hint": "array of ids, joined by , (for example: '101,102,103')"
+            }
+        }
+    }
+}

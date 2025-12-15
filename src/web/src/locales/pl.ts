@@ -135,6 +135,21 @@ export default {
     },
     about: {
         title: 'O projekcie',
+        tabs: {
+            overview: 'Podsumowanie',
+            load: 'Obciążenie',
+            api: 'API'
+        },
+        load: {
+            total: {
+                title: 'Całkowite Obciążenie'
+            }
+        },
+        api: {
+            authorization: {
+                text: 'Autoryzacja zapytań odbywa się za pomocą nagłówka żądania "Token". Token jest wydawany podczas autoryzacji w lobby i zazwyczaj można go znaleźć w localStorage.'
+            }
+        }
     },
     topics: {
         list: {},

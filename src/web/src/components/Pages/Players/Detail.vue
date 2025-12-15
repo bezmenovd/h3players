@@ -392,9 +392,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.tabs {
-    width: 240px;
-}
 #player-overview {
     display: grid;
     grid-template-rows: 1fr 560px;

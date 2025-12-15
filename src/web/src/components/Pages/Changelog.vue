@@ -13,9 +13,9 @@
 </template>
 
 <script setup lang="ts">
-import ru from '../../meta/changelog/ru.json';
-import en from '../../meta/changelog/en.json';
-import pl from '../../meta/changelog/pl.json';
+import ru from '../../content/changelog/ru.json';
+import en from '../../content/changelog/en.json';
+import pl from '../../content/changelog/pl.json';
 import { useSettingsStore } from '../../stores/settings';
 
 const settingsStore = useSettingsStore()

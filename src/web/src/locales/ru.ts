@@ -135,6 +135,21 @@ export default {
     },
     about: {
         title: 'О проекте',
+        tabs: {
+            overview: 'Общее',
+            load: 'Нагрузка',
+            api: 'API'
+        },
+        load: {
+            total: {
+                title: 'Общая нагрузка'
+            }
+        },
+        api: {
+            authorization: {
+                text: 'Авторизация запросов происходит через заголовок запроса "Token". Токен выдается при авторизации через лобби, может быть найден в localStorage'
+            }
+        }
     },
     topics: {
         list: {},

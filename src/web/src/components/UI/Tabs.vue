@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import router from '../../router';
 import { useRoute } from 'vue-router';
 
@@ -42,8 +42,7 @@ watch(() => route.params.tab, (newTabCode) => {
 
 const select = (code: string) => {
     if (activeTabCode.value !== code) {
-        router.push({ 
-            name: 'players.detail', 
+        router.push({
             params: {
                 ...route.params,
                 tab: code
@@ -71,6 +70,7 @@ const select = (code: string) => {
     font-size: 17px;
     font-weight: 500;
     color: #82848f;
+    padding: 0 30px;
 }
 .tab:not(.active):hover {
     cursor: pointer;

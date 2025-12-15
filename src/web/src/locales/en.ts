@@ -135,6 +135,21 @@ export default {
     },
     about: {
         title: 'About',
+        tabs: {
+            overview: 'Overview',
+            load: 'Load',
+            api: 'API'
+        },
+        load: {
+            total: {
+                title: 'Total Load'
+            }
+        },
+        api: {
+            authorization: {
+                text: 'Authorization for requests is performed via the "Token" request header. The token is issued upon authorization via lobby and can be found in localStorage.'
+            }
+        }
     },
     topics: {
         list: {},

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import languages from '../meta/languages.json'
+import languages from '../content/languages.json'
 
 
 export const useSettingsStore = defineStore('settings', () => {
