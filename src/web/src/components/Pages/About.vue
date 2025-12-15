@@ -195,6 +195,8 @@ const max = computed(() => {
 const loading = ref(false)
 
 const showLoad = () => {
+    workers.charts = {}
+
     totalChart.size = Math.round(document.getElementById('performance-chart')!.getBoundingClientRect().width / 3)
     
     loading.value = true
