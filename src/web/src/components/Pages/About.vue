@@ -344,7 +344,7 @@ watch(() => route.params.tab, async (newTabCode) => {
 .query-param {
     display: grid;
     gap: 5px;
-    grid-template-columns: 100px 50px 80px 1fr;
+    grid-template-columns: 100px 100px 100px 1fr;
     margin-left: 20px;
 }
 .query-param-name {
