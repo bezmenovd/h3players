@@ -88,7 +88,7 @@ async function main() {
             isNew = true
         }
 
-        let rating = Number(await redis.get(`spectator:rating:${msg.userId}`))
+        let rating = Number(await redis.get(`spectator:last-rating:${msg.userId}`))
         if (! Number.isFinite(rating)) {
             rating = -1
         }
@@ -109,8 +109,6 @@ async function main() {
         } else {
             state.hiddenPlayers.add(msg.userId)
         }
-
-        await redis.set(`spectator:rating:${msg.userId}`, msg.rating, { EX: 86400*30 })
 
         if (isNew) {
             publishOnline()

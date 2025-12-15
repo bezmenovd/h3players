@@ -465,7 +465,7 @@ onMounted(async () => {
 .top-rank {
     font-size: 16px;
     margin-left: 30px;
-    background: #fdd807e0;
+    background: #fdd807a1;
     padding: 4px 8px 5px;
     margin-top: 2px;
     color: #272c3a;
@@ -473,7 +473,7 @@ onMounted(async () => {
     font-variant-numeric: tabular-nums;
 }
 .top-rank.top-1 {
-    background: #9007fde0;
+    background: #9007fda1;
 }
 .today-games-duration {
     margin-left: 10px;
