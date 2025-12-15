@@ -17,5 +17,3 @@ Accounts belonging to h3players.com:
 - h3players_bot8
 - h3players_bot9
 - h3players_test
-
-Please use the h3players API if you need to retrieve game data, as running similar bots may create excessive load on the online lobby server.

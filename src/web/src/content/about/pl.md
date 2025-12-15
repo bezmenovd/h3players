@@ -17,5 +17,3 @@ Konta należące do h3players.com:
 - h3players_bot8
 - h3players_bot9
 - h3players_test
-
-Prosimy o korzystanie z API h3players w celu uzyskania danych o grach. Uruchamianie podobnych botów może spowodować nadmierne obciążenie serwera lobby online.
