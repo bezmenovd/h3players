@@ -16,12 +16,12 @@ export default {
         auth_modal: {
             title: 'Authorization',
             info: {
-                part1: 'To authorize, you need to send a message with the code to the account',
-                part2: 'in the Lobby',
+                part1: 'To authorize, you need to send a message with the code to account',
+                part2: 'in Lobby',
             },
             input: 'Enter your Lobby nickname',
             no_code: 'The code will appear after entering your nickname',
-            message_not_received_yet: 'Message not yet received',
+            message_not_received_yet: 'Message not received yet',
             lost_connection: 'Lost connection to the server',
             code_invalidated: 'CODE INVALIDATED',
         },

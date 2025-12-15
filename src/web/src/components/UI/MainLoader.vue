@@ -1,7 +1,7 @@
 <template>
     <div class="loader-wrapper" v-if="visible">
         <div class="loader"></div>
-        <div class="counter">{{ props.loaded }} / {{ props.total }}</div> 
+        <div class="counter">{{ Math.round((props.loaded / props.total) * 100) }}%</div> 
     </div>
 </template>
 

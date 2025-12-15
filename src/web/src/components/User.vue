@@ -248,6 +248,7 @@ onMounted(() => {
     opacity: .5;
     text-transform: uppercase;
     font-variant-numeric: tabular-nums;
+    text-align: center;
 }
 #user-auth-modal-code-value {
     cursor: pointer;

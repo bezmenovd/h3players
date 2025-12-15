@@ -116,9 +116,9 @@ a:hover {
     height: 80px;
     margin: 15px 0 5px;
     background: url('/img/logo_full.png');
-    background-position: 30% 51%;
+    background-position: 40% 50%;
     background-repeat: no-repeat;
-    background-size: 80%;
+    background-size: 55%;
     opacity: .5;
     cursor: pointer;
 }
@@ -235,5 +235,6 @@ a:hover {
 }
 .markdown h1, .markdown h2, .markdown h3, .markdown h4 {
     margin-top: 10px;
+    font-weight: 500;
 }
 </style>
