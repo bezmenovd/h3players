@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, Req } from '@nestjs/common';
+import { BadRequestException, Controller, Get, NotFoundException, Req, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { Request } from 'express';
 
@@ -11,10 +11,14 @@ export class UserController {
         let t = String(req.headers['token'])
 
         if (! t) {
-            throw new BadRequestException()
+            throw new UnauthorizedException()
         }
 
         let player = this.userService.getUserPlayer(t)
+
+        if (! player) {
+            throw new NotFoundException()
+        }
 
         return player
     }

@@ -19,6 +19,8 @@ import { LogRequestsInterceptor } from './interceptors/log_requests';
 import { LimiterInterceptor } from './interceptors/limiter';
 import { UserController } from './controllers/user.controller';
 import { UserService } from './services/user.service';
+import { DiscussionsController } from './controllers/discussions.controller';
+import { DiscussionsService } from './services/discussions.service';
 
 
 @Module({
@@ -33,6 +35,7 @@ import { UserService } from './services/user.service';
         PerformanceController,
         FunctionsController,
         UserController,
+        DiscussionsController,
     ],
     providers: [
         { provide: APP_INTERCEPTOR, useClass: LimiterInterceptor },
@@ -45,6 +48,7 @@ import { UserService } from './services/user.service';
         GamesService,
         GamesVService,
         UserService,
+        DiscussionsService,
     ],
 })
 export class AppModule {}

@@ -1,11 +1,7 @@
-import axios from "axios";
 import { Player } from "./players";
+import api from "../api";
 
 
-export async function getMe(token: string): Promise<Player|null> {
-    return axios.get(`/api/user/me`, {
-        headers: {
-            Token: token,
-        }
-    }).then(r => r.data);
+export async function getMe(): Promise<Player|null> {
+    return api.get(`/user/me`).then(r => r.data);
 }

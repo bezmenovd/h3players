@@ -5,7 +5,7 @@
             <div 
                 v-for="item in items" 
                 :class="`list-item ${item.id === selected?.id ? 'selected' : ''}`" 
-                @click="selectItem(item)"
+                @mousedown="selectItem(item)"
             >
                 {{ item.text }}
             </div>
@@ -32,7 +32,7 @@ const focus = reactive({
         this.is = true
     },
     blur() {
-        setTimeout(() => { this.is = false }, 50)
+        this.is = false
     }
 })
 

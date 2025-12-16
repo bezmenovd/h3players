@@ -1,5 +1,5 @@
-import axios from "axios";
-import { Paginated } from "./general";
+import { Paginated } from "./_general";
+import api from "../api";
 
 export type Player = {
     id: number
@@ -7,7 +7,7 @@ export type Player = {
 }
 
 export async function getList(limit: number, offset: number, ids: number[] = []): Promise<Paginated<Player>> {
-    return axios.get(`/api/players`, {
+    return api.get(`/players`, {
         params: {
             limit,
             offset,
@@ -17,7 +17,7 @@ export async function getList(limit: number, offset: number, ids: number[] = [])
 }
 
 export async function search(query: string): Promise<Player[]> {
-    return axios.get(`/api/players/search?query=${query}`).then(r => r.data);
+    return api.get(`/players/search?query=${query}`).then(r => r.data);
 }
 
 export type PlayerDetailInfo = {
@@ -27,5 +27,5 @@ export type PlayerDetailInfo = {
 }
 
 export async function getPlayer(id: number): Promise<PlayerDetailInfo> {
-    return axios.get(`/api/players/${id}`).then(r => r.data);
+    return api.get(`/players/${id}`).then(r => r.data);
 }

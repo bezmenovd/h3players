@@ -1,5 +1,5 @@
-import axios from "axios";
-import { Paginated } from "./general";
+import { Paginated } from "./_general";
+import api from "../api";
 
 
 export type Game = {
@@ -35,7 +35,7 @@ export type GameWithInfo = Game & {
 
 
 export async function getList(limit: number, offset: number = 0): Promise<Paginated<GameWithInfo>> {
-    return axios.get(`/api/games`, { 
+    return api.get(`/games`, { 
         params: { 
             limit,
             offset, 

@@ -19,7 +19,7 @@ import Header from '../../UI/Table/Header.vue';
 import { getList } from '../../../api/players'
 import { Player } from '../../../api/players'
 import { getContentSize } from '../../../helpers/content'
-import { PaginatedTable } from '../../../api/general';
+import { PaginatedTable } from '../../../api/_general';
 import { useRoute } from 'vue-router';
 import { on } from '../../../modules/websocket';
 import PlayersList from '../../UI/Players/List/PlayersList.vue';

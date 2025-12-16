@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../api";
 
 
 export type Online = {
@@ -7,7 +7,7 @@ export type Online = {
 }
 
 export async function getChart(after?: number): Promise<Online[]> {
-    return axios.get(`/api/lobby/chart`, { 
+    return api.get(`/lobby/chart`, { 
         params: { 
             after 
         } 
@@ -34,7 +34,7 @@ export type DailyTop = {
 }
 
 export async function getDailyTop(limit: number, offset: number = 0): Promise<DailyTop> {
-    return axios.get(`/api/lobby/dailyTop`, { 
+    return api.get(`/lobby/dailyTop`, { 
         params: { 
             limit,
             offset, 

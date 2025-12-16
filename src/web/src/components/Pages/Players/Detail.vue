@@ -155,7 +155,7 @@ import router from '../../../router'
 import Header from '../../UI/Table/Header.vue'
 import Footer from '../../UI/Table/Footer.vue'
 import Games from '../../UI/Players/Detail/Games.vue'
-import { PaginatedTable } from '../../../api/general'
+import { PaginatedTable } from '../../../api/_general'
 import { getContentSize } from '../../../helpers/content'
 import { pluralize, pluralizeEn, pluralizePl } from '../../../helpers/string'
 import RatingDiff from '../../UI/RatingDiff.vue'
@@ -465,7 +465,7 @@ onMounted(async () => {
 .top-rank {
     font-size: 16px;
     margin-left: 30px;
-    background: #fdd807a1;
+    background: #fdd807ba;
     padding: 4px 8px 5px;
     margin-top: 2px;
     color: #272c3a;
@@ -473,7 +473,7 @@ onMounted(async () => {
     font-variant-numeric: tabular-nums;
 }
 .top-rank.top-1 {
-    background: #9007fda1;
+    background: #9007fdba;
 }
 .today-games-duration {
     margin-left: 10px;

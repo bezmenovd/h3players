@@ -16,9 +16,7 @@ During the operation of the Website, the following categories of data are proces
 |---------------|------------|
 | Game Data | Nicknames and player identifiers; information about played matches |
 | Technical Data | Hashed IP addresses (SHA-256) |
-| HTTP Request Data | Requested URLs, date, time, and duration of server processing |
-
-The Operator does not have information that would allow associating the above data with a specific individual outside the gaming context.
+| HTTP Request Data | Requested URLs, date and time |
 
 
 ## 3. Purposes of Data Processing

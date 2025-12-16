@@ -46,10 +46,13 @@ export class PlayersController {
 
         let rank = await this.playersService.playerRank(i)
 
+        let rating = await this.playersService.playerRating(i)
+
         return {
             id: player.id,
             name: player.name,
             rank: rank,
+            rating: rating,
         }
     }
 }

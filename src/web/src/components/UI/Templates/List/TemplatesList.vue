@@ -26,21 +26,21 @@ const name = (template: TemplateWithInfo): string => {
     if (template.id === 1) {
         if (settingsStore.language === 1) {
             return `сценарий`;
-        } else if (settingsStore.language === 2) {
-            return `scenario`;
-        } else if (settingsStore.language === 3) {
+        }
+        if (settingsStore.language === 3) {
             return `scenariusz`;
         }
+        return `scenario`;
     }
     
     if (template.name === '<Default>') {
         if (settingsStore.language === 1) {
             return 'по умолчанию';
-        } else if (settingsStore.language === 2) {
-            return 'default';
-        } else if (settingsStore.language === 3) {
+        }
+        if (settingsStore.language === 3) {
             return 'domyślny';
         }
+        return 'default';
     }
     return template.name || '?'
 }
@@ -61,11 +61,11 @@ const nameClass = (template: TemplateWithInfo): string => {
 const gamesCount = (template: TemplateWithInfo): string => {
     if (settingsStore.language === 1) {
         return `${ Intl.NumberFormat('ru-RU').format(template.games_count) } ${pluralize(template.games_count, 'игра', 'игры', 'игр')}`;
-    } else if (settingsStore.language === 2) {
-        return `${ Intl.NumberFormat('ru-RU').format(template.games_count) } ${pluralizeEn(template.games_count, 'game')}`;
-    } else if (settingsStore.language === 3) {
+    }
+    if (settingsStore.language === 3) {
         return `${ Intl.NumberFormat('ru-RU').format(template.games_count) } ${pluralizePl(template.games_count, 'gra', 'gry', 'gier')}`;
     }
+    return `${ Intl.NumberFormat('ru-RU').format(template.games_count) } ${pluralizeEn(template.games_count, 'game')}`;
 }
 
 </script>

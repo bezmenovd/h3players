@@ -4,7 +4,7 @@
         "date": "15.12.2025",
         "changes": [
             "Added user agreement and privacy policy",
-            "Added user settings",
+            "Added settings",
             "Localization implemented",
             "Added 'About' page",
             "Added display of daily changes on the player page"

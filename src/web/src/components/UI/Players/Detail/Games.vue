@@ -83,21 +83,21 @@ const template = (game: GameVWithInfo): string => {
     if (game.template_id === 1) {
         if (settingsStore.language === 1) {
             return `сценарий`;
-        } else if (settingsStore.language === 2) {
-            return `scenario`;
-        } else if (settingsStore.language === 3) {
+        }
+        if (settingsStore.language === 3) {
             return `scenariusz`;
         }
+        return `scenario`;
     }
     
     if (game.template_name === '<Default>') {
         if (settingsStore.language === 1) {
             return 'по умолчанию';
-        } else if (settingsStore.language === 2) {
-            return 'default';
-        } else if (settingsStore.language === 3) {
+        }
+        if (settingsStore.language === 3) {
             return 'domyślny';
         }
+        return 'default';
     }
     return game.template_name || '?'
 }

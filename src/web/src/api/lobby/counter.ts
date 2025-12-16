@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../../api";
 
 
 export type Visitors = {
@@ -11,9 +11,9 @@ export type Games = {
 
 
 export async function getVisitors(): Promise<Visitors> {
-    return axios.get(`/api/lobby/counter/visitors`).then(r => r.data);
+    return api.get(`/lobby/counter/visitors`).then(r => r.data);
 }
 
 export async function getGames(): Promise<Games> {
-    return axios.get(`/api/lobby/counter/games`).then(r => r.data);
+    return api.get(`/lobby/counter/games`).then(r => r.data);
 }

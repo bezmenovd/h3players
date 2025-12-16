@@ -108,7 +108,7 @@ import Loader from '../UI/Loader.vue'
 import LineChart from '../UI/Charts/LineChart.vue'
 import { timestamp, datetime } from '../../helpers/timestamp'
 import { formatBytes } from '../../helpers/bytes'
-import { pluralize } from '../../helpers/string'
+import { pluralize, pluralizeEn, pluralizePl } from '../../helpers/string'
 import ru from '../../content/about/ru.md?raw';
 import en from '../../content/about/en.md?raw';
 import pl from '../../content/about/pl.md?raw';
@@ -141,13 +141,10 @@ const about = (() => {
     if (settingsStore.language === 1) {
         return ru
     }
-    if (settingsStore.language === 2) {
-        return en
-    }
     if (settingsStore.language === 3) {
         return pl
     }
-    throw new Error('unknown language')
+    return en
 })()
 
 const totalChart = reactive<{
@@ -162,10 +159,42 @@ const totalChart = reactive<{
     labels: [],
     show: false,
     formatters: [
-        (value: number) => `отправлено ${formatBytes(value)}`,
-        (value: number) => `получено ${formatBytes(value)}`,
-        (value: number) => `отправлено ${value} ${pluralize(value, 'сообщение', 'сообщения', 'сообщений')}`,
-        (value: number) => `получено ${value} ${pluralize(value, 'сообщение', 'сообщения', 'сообщений')}`,
+        (value: number) => (() => {
+            if (settingsStore.language === 1) {
+                return `отправлено ${formatBytes(value)}`
+            }
+            if (settingsStore.language === 3) {
+                return `wysłano ${formatBytes(value)}`
+            }
+            return `sent ${formatBytes(value)}`
+        })(),
+        (value: number) => (() => {
+            if (settingsStore.language === 1) {
+                return `получено ${formatBytes(value)}`
+            }
+            if (settingsStore.language === 3) {
+                return `odebrano ${formatBytes(value)}`
+            }
+            return `received ${formatBytes(value)}`
+        })(),
+        (value: number) => (() => {
+            if (settingsStore.language === 1) {
+                return `отправлено ${value} ${pluralize(value, 'сообщение', 'сообщения', 'сообщений')}`
+            }
+            if (settingsStore.language === 3) {
+                return `wysłano ${value} ${pluralizePl(value, 'wiadomość', 'wiadomości', 'wiadomości')}`
+            }
+            return `sent ${value} ${pluralizeEn(value, 'message')}`
+        })(),
+        (value: number) => (() => {
+            if (settingsStore.language === 1) {
+                return `получено ${value} ${pluralize(value, 'сообщение', 'сообщения', 'сообщений')}`
+            }
+            if (settingsStore.language === 3) {
+                return `odebrano ${value} ${pluralizePl(value, 'wiadomość', 'wiadomości', 'wiadomości')}`
+            }
+            return `received ${value} ${pluralizeEn(value, 'message')}`
+        })(),
     ],
 })
 

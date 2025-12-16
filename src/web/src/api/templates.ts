@@ -1,5 +1,5 @@
-import axios from "axios";
-import { Paginated } from "./general";
+import { Paginated } from "./_general";
+import api from "../api";
 
 export type Template = {
     id: number
@@ -11,7 +11,7 @@ export type TemplateWithInfo = Template & {
 }
 
 export async function getList(limit: number, offset: number, ids: number[] = [], query?: string): Promise<Paginated<TemplateWithInfo>> {
-    return axios.get(`/api/templates`, {
+    return api.get(`/templates`, {
         params: {
             limit,
             offset,

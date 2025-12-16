@@ -9,7 +9,7 @@ import languages from './content/languages.json'
 export const i18n = createI18n({
     legacy: false,
     locale: 'en',
-    fallbackLocale: 'ru',
+    fallbackLocale: 'en',
     messages: {
         en,
         ru,

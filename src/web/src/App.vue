@@ -11,6 +11,8 @@
             <Return />
             <router-view :key="String($route.name) + String($route.params.id)"/>
         </div>
+
+        <Alerts />
     </div>
 </template>
 
@@ -24,6 +26,8 @@ import Return from './components/Return.vue';
 import { preload } from './modules/preload';
 import Links from './components/Links.vue';
 import router from './router';
+import Alerts from './components/UI/Alerts.vue';
+import { connect } from './modules/websocket';
 
 
 const loading = ref({
@@ -33,6 +37,7 @@ const loading = ref({
 })
 
 preload(resources.app, () => loading.value.counter++).then(() => {
+    connect()
     loading.value.show = false
     loading.value.is = false
 })
@@ -48,10 +53,10 @@ preload(resources.app, () => loading.value.counter++).then(() => {
 
 input {
     background: #272c3a;
-    padding: 12px 10px;
+    padding: 8px 10px;
     outline: none;
     border: none;
-    font-size: 17px;
+    font-size: 16px;
     line-height: 21px;
     border: 1px solid #1f2334;
 }
@@ -103,6 +108,8 @@ a:hover {
     background: #272c3a;
     padding: 40px 80px 55px 100px;
     overflow-y: scroll;
+    scroll-behavior: smooth;
+    scrollbar-gutter: stable;
     max-height: 100%;
     position: relative;
 }
@@ -178,20 +185,36 @@ a:hover {
     z-index: 999;
 }
 .btn {
-    padding: 8px 4px;
+    padding: 8px 12px 8px 8px;
     display: flex;
     align-items: center;
     gap: 8px;
     font-size: 13px;
     background: #ffffff10;
 }
-.btn:hover {
+.btn:not(.disabled):not(.waiting):hover {
     cursor: pointer;
     background: #ffffff1f;
 }
-.btn:active {
+.btn:not(.disabled):not(.waiting):active {
     cursor: pointer;
     background: #ffffff2f;
+}
+.btn.disabled:hover {
+    cursor: not-allowed !important;
+}
+.btn.waiting:hover {
+    cursor: wait !important;
+}
+.btn-icon {
+    width: 20px;
+    height: 20px;
+    background-size: 14px 14px;
+    background-position: 50% 50%;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: invert(1);
+    opacity: .5;
 }
 .markdown {
     display: flex;

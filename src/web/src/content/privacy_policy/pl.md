@@ -16,9 +16,7 @@ W trakcie działania Strony przetwarzane są następujące kategorie danych:
 |-----------------|------|
 | Dane gry | Nicki i identyfikatory graczy; informacje o rozegranych meczach |
 | Dane techniczne | Zhashowane adresy IP (SHA-256) |
-| Dane żądań HTTP | Żądane adresy URL, data, godzina i czas przetwarzania żądań przez serwer |
-
-Operator nie dysponuje informacjami umożliwiającymi powiązanie powyższych danych z konkretną osobą fizyczną poza kontekstem gry.
+| Dane żądań HTTP | Żądane adresy URL, data i godzina |
 
 
 ## 3. Cele przetwarzania danych

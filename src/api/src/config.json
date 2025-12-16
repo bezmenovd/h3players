@@ -60,6 +60,11 @@
                 "minute": 10,
                 "hour": 50,
                 "day": 200
+            },
+            "/api/discussions/add": {
+                "minute": 10,
+                "hour": 30,
+                "day": 60
             }
         },
         "token": {

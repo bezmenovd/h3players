@@ -26,7 +26,7 @@ import Header from '../../UI/Table/Header.vue';
 import Query from '../../UI/Inputs/Query.vue';
 import { getList, TemplateWithInfo } from '../../../api/templates'
 import { getContentSize } from '../../../helpers/content'
-import { PaginatedTable } from '../../../api/general';
+import { PaginatedTable } from '../../../api/_general';
 import { useRoute } from 'vue-router';
 import { on } from '../../../modules/websocket';
 import TemplatesList from '../../UI/Templates/List/TemplatesList.vue';

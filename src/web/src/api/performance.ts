@@ -1,4 +1,4 @@
-import axios from "axios"
+import api from "../api"
 
 export type Statistics = {
     name: string
@@ -10,7 +10,7 @@ export type Statistics = {
 }
 
 export async function getChart(after?: number): Promise<Statistics[]> {
-    return axios.get(`/api/performance/chart`, { 
+    return api.get(`/performance/chart`, { 
         params: { 
             after 
         } 

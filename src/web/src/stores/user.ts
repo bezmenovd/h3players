@@ -12,12 +12,12 @@ export const useUserStore = defineStore('user', () => {
         name: localStorage.getItem('user:player:name'),
     })
 
-    // token.value = 'asdads'
-    // player.value.id = 1
-    // player.value.name = "Temnotta"
+    token.value = '4c285ce1c84e87053dd281a479d5bd7f'
+    player.value.id = 1
+    player.value.name = "Temnotta"
 
     if (token.value && (! player.value.id || ! player.value.name)) {
-        getMe(token.value).then(p => {
+        getMe().then(p => {
             if (! p) {
                 token.value = null
                 return
@@ -34,7 +34,7 @@ export const useUserStore = defineStore('user', () => {
         token.value = value
         localStorage.setItem('user:token', token.value)
 
-        await getMe(token.value).then(p => {
+        await getMe().then(p => {
             if (! p) {
                 token.value = null
                 return

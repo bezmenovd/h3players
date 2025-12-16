@@ -170,12 +170,6 @@ onMounted(() => {
     gap: 10px;
     grid-template-columns: 1fr 30px;
 }
-#user-info #user-icon {
-    position: relative;
-    top: 1.3px;
-    opacity: .25;
-    left: -4px;
-}
 #user-auth-btn {
     padding: 8px 8px;
     display: flex;

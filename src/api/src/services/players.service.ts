@@ -100,6 +100,22 @@ export class PlayersService {
         return result.length === 1 ? result[0] : null
     }
 
+    async players(ids: number[]): Promise<Player|null> {
+        let result = await (await this.clickhouse.query({
+            query: `
+                SELECT * FROM
+                players
+                WHERE id in {ids:Array(UInt32)}
+            `,
+            query_params: {
+                ids, 
+            },
+            format: 'JSONEachRow',
+        })).json<Player>()
+
+        return result.length === 1 ? result[0] : null
+    }
+
     async playerRank(id: number): Promise<number> {
         let rank = await this.redis.zRevRank('rank', String(id))
         
@@ -111,5 +127,14 @@ export class PlayersService {
         }
 
         return rank
+    }
+
+    async playerRating(id: number): Promise<number> {
+        let ratingStr = await this.redis.get(`spectator:last-rating:${id}`)
+
+        let rating = Number(ratingStr)
+        rating = Number.isFinite(rating) ? rating+1 : -1
+
+        return rating
     }
 }

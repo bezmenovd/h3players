@@ -161,11 +161,38 @@ export default {
     user_agreement: {
         title: 'Пользовательское соглашение',
     },
+    discussions: {
+        list: {
+            title: 'Обсуждения',
+            add: {
+                text: 'Создать тему',
+                authentication_required: 'Требуется авторизация',
+            },
+            add_modal: {
+                title: 'Новая тема',
+                name: 'Название',
+                save: 'Создать',
+                min_length: 'Минимум 5 символов',
+                success: 'Обсуждение добавлено',
+                errors: {
+                    day_limit: 'Достигнут дневной лимит на количество созданных тем',
+                    duplicate: 'Тема с таким названием уже существует',
+                    fail: 'При создании темы произошла ошибка',
+                }
+            },
+            empty: 'Здесь пока ничего нет',
+        }
+    },
     ui: {
         table: {
             footer: {
                 of: 'из'
             }
+        }
+    },
+    error: {
+        websocket: {
+            onerror: 'Ошибка подключения к ws-серверу',
         }
     }
 }

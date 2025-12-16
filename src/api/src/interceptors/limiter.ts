@@ -21,6 +21,8 @@ export class LimiterInterceptor implements NestInterceptor {
     }
 
     async intercept(context: ExecutionContext, next: CallHandler) {
+        return next.handle().pipe();
+        
         const req = context.switchToHttp().getRequest()
         const start = Date.now()
 

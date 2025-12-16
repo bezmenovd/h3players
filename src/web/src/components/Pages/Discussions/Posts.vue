@@ -1,5 +1,5 @@
 <template>
-    <div id="discussions-detail">
+    <div id="posts">
         
     </div>
 </template>

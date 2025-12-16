@@ -8,7 +8,7 @@ import NotFound from './components/Pages/NotFound.vue';
 import Changelog from './components/Pages/Changelog.vue'
 import About from './components/Pages/About.vue'
 import DiscussionsList from './components/Pages/Discussions/List.vue'
-import DiscussionsDetail from './components/Pages/Discussions/Detail.vue'
+import DiscussionPosts from './components/Pages/Discussions/Posts.vue'
 import PrivacyPolicy from './components/Pages/PrivacyPolicy.vue'
 import UserAgreement from './components/Pages/UserAgreement.vue'
 
@@ -65,8 +65,8 @@ export default [
     },
     {
         path: '/discussions/@:slug',
-        name: 'discussions.detail',
-        component: DiscussionsDetail,
+        name: 'discussions.posts',
+        component: DiscussionPosts,
     },
     {
         path: '/privacy-policy',

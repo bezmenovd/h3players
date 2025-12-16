@@ -7,7 +7,7 @@ import { timestamp, date } from './src/helpers/timestamp'
 import { lobby } from './src/services/clickhouse'
 import { Postman } from './src/postman'
 import { createClient } from 'redis'
-import { debounce } from './src/helpers/functions'
+import { throttle } from './src/helpers/functions'
 import { initWorker } from './src/worker'
 import config from './../../config.json'
 
@@ -22,8 +22,6 @@ async function main() {
     }
 
     initWorker()
-
-    const USER = String(process.env.USER)
     
     const redis = createClient({
         socket: {
@@ -73,11 +71,12 @@ async function main() {
         return state.players.size - state.hiddenPlayers.size
     }
 
-    const publishOnline = debounce(async () => {
+    const publishOnline = throttle(async () => {
         await redisPub.publish('live:spectator:online', JSON.stringify({ value: getOnline() }))
     }, 100)
 
-    const publishVisitors = debounce(async (value: number) => {
+    const publishVisitors = throttle(async () => {
+        let value = await redis.sCard(`spectator:daily-visitors:${date.from(timestamp.now())}`)
         await redisPub.publish('live:spectator:visitors', JSON.stringify({ value }))
     }, 100)
 
@@ -115,7 +114,7 @@ async function main() {
 
             let visitorsChanged = await redis.sAdd(`spectator:daily-visitors:${date.from(timestamp.now())}`, String(msg.userId))
             if (visitorsChanged > 0) {
-                publishVisitors(await redis.sCard(`spectator:daily-visitors:${date.from(timestamp.now())}`))
+                publishVisitors()
             }
         }
     })
@@ -156,7 +155,7 @@ async function main() {
 
             let visitorsChanged = await redis.sAdd(`spectator:daily-visitors:${date.from(timestamp.now())}`, String(msg.userId))
             if (visitorsChanged > 0) {
-                publishVisitors(await redis.sCard(`spectator:daily-visitors:${date.from(timestamp.now())}`))
+                publishVisitors()
             }
         }
     })
@@ -169,7 +168,7 @@ async function main() {
 
             let visitorsChanged = await redis.sAdd(`spectator:daily-visitors:${date.from(timestamp.now())}`, String(msg.userId))
             if (visitorsChanged > 0) {
-                publishVisitors(await redis.sCard(`spectator:daily-visitors:${date.from(timestamp.now())}`))
+                publishVisitors()
             }
         }
     })
@@ -182,7 +181,7 @@ async function main() {
 
             let visitorsChanged = await redis.sAdd(`spectator:daily-visitors:${date.from(timestamp.now())}`, String(msg.userId))
             if (visitorsChanged > 0) {
-                publishVisitors(await redis.sCard(`spectator:daily-visitors:${date.from(timestamp.now())}`))
+                publishVisitors()
             }
         }
     })
@@ -195,7 +194,7 @@ async function main() {
 
             let visitorsChanged = await redis.sAdd(`spectator:daily-visitors:${date.from(timestamp.now())}`, String(msg.userId))
             if (visitorsChanged > 0) {
-                publishVisitors(await redis.sCard(`spectator:daily-visitors:${date.from(timestamp.now())}`))
+                publishVisitors()
             }
         }
     })
@@ -247,7 +246,7 @@ async function main() {
 
         await multi.exec()
 
-        publishVisitors(await redis.sCard(`spectator:daily-visitors:${date.from(timestamp.now())}`))
+        publishVisitors()
     }, 1000)
 }
 

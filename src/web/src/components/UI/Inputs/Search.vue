@@ -1,7 +1,7 @@
 <template>
     <div class="search-input-box"
         :class="{ 'match' : searchResult.match, 'notFound': searchResult.notFound, 'empty': searchValue.length === 0, 'disabled': searchDisabled }"
-        :data-placeholder="props.placeholder"
+        :data-placeholder="placeholder"
     >
         <input 
             :id="`${props.id}-search-input`"
@@ -13,7 +13,7 @@
             <div 
                 :class="`search-found-item ${key === searchResult.selected ? 'selected' : ''}`" 
                 v-for="(item, key) in searchResult.items" 
-                @click="selectItem(item)"
+                @mousedown="selectItem(item)"
             >
                 {{ item.text }}
             </div>
@@ -22,8 +22,9 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { computed, nextTick, reactive, ref } from 'vue'
 import { SearchItem } from './search'
+import { useSettingsStore } from '../../../stores/settings';
 
 const props = defineProps<{
     id: string
@@ -31,6 +32,24 @@ const props = defineProps<{
     func: (value: string) => Promise<SearchItem[]>
     placeholder: string
 }>()
+
+const settingsStore = useSettingsStore()
+
+const placeholder = computed<string>(() => {
+    if (searchResult.match) {
+        return 'Enter'
+    }
+    if (searchResult.notFound) {
+        if (settingsStore.language === 1) {
+            return 'Не найден'
+        }
+        if (settingsStore.language === 3) {
+            return 'Nie znaleziono'
+        }
+        return 'Not found'
+    }
+    return props.placeholder
+})
 
 const emit = defineEmits({
     select(item: SearchItem) {}
@@ -44,7 +63,7 @@ const searchFocus = reactive({
         this.is = true
     },
     blur() {
-        setTimeout(() => { this.is = false }, 50)
+        this.is = false
     }
 })
 
@@ -140,11 +159,11 @@ const searchKeyUp = async function(event: KeyboardEvent) {
 }
 
 const selectItem = function(item: SearchItem) {
+    emit('select', item)
     searchDisabled.value = true
     searchResult.match = false
     searchFocus.blur()
     searchValue.value = item.text
-    emit('select', item)
 }
 </script>
 
@@ -152,6 +171,8 @@ const selectItem = function(item: SearchItem) {
 .search-input {
     height: fit-content;
     width: 100%;
+    padding: 12px 10px;
+    font-size: 17px;
 }
 .search-input-box {
     position: relative;
@@ -168,7 +189,7 @@ const selectItem = function(item: SearchItem) {
     transform: translateY(-50%);
 }
 .search-input-box.match::after {
-    content: "Enter";
+    content: attr(data-placeholder);
     position: absolute;
     pointer-events: none;
     right: 12px;
@@ -178,7 +199,7 @@ const selectItem = function(item: SearchItem) {
     transform: translateY(-50%);
 }
 .search-input-box.notFound::after {
-    content: "Не найден";
+    content: attr(data-placeholder);
     pointer-events: none;
     position: absolute;
     right: 12px;

@@ -30,13 +30,10 @@ const changelog = (): ChangelogItem[] => {
     if (settingsStore.language === 1) {
         return ru
     }
-    if (settingsStore.language === 2) {
-        return en
-    }
     if (settingsStore.language === 3) {
         return pl
     }
-    throw new Error('unknown language')
+    return en
 }
 
 

@@ -1,4 +1,6 @@
+import { alerts } from "../components/UI/alerts";
 import { MsgAvailable } from "./websocket.messages";
+import i18n from "../i18n";
 
 
 let websocket: WebSocket|null = null
@@ -7,7 +9,9 @@ let listeners: Map<string, ((msg: any) => void)[]> = new Map()
 let onDisconnect: (() => void)[] = []
 let queue: (string | ArrayBuffer)[] = []
 
-let connect = () => {
+export const connect = () => {
+    const t = i18n.global.t;
+
     if (location.host === 'localhost') {
         websocket = new WebSocket(`ws://${location.host}:8000`);
     } else {
@@ -33,6 +37,7 @@ let connect = () => {
     
     websocket.onerror = () => {
         websocket!.close()
+        alerts.send('error', t('error.websocket.onerror'))
     }
     
     websocket.onclose = () => {
@@ -45,8 +50,6 @@ let connect = () => {
         }, 30000)
     }
 }
-
-connect()
 
 export type Listener = {
     unsubscribe: () => void

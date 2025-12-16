@@ -37,62 +37,62 @@ const ago = (game: GameWithInfo): string => {
     if (now.value - game.end_timestamp < 60) {
         if (settingsStore.language === 1) {
             return `только что`
-        } else if (settingsStore.language === 2) {
-            return `just now`
-        } else if (settingsStore.language === 3) {
+        }
+        if (settingsStore.language === 3) {
             return `właśnie`
         }
+        return `just now`
     }
     if (now.value - game.end_timestamp < 3600) {
         let count = Math.floor((now.value - game.end_timestamp) / 60)
         if (settingsStore.language === 1) {
             return `${count} ${pluralize(count, 'минуту', 'минуты', 'минут')} назад`
-        } else if (settingsStore.language === 2) {
-            return `${count} ${pluralizeEn(count, 'minute')} ago`
-        } else if (settingsStore.language === 3) {
+        }
+        if (settingsStore.language === 3) {
             return `${count} ${pluralizePl(count, 'minuta', 'minuty', 'minut')} temu`
         }
+        return `${count} ${pluralizeEn(count, 'minute')} ago`
     }
     if (now.value - game.end_timestamp < 86400) {
         let count = Math.floor((now.value - game.end_timestamp) / 3600)
         if (settingsStore.language === 1) {
             return `${count} ${pluralize(count, 'час', 'часа', 'часов')} назад`;
-        } else if (settingsStore.language === 2) {
-            return `${count} ${pluralizeEn(count, 'hour')} ago`; 
-        } else if (settingsStore.language === 3) {
+        }
+        if (settingsStore.language === 3) {
             return `${count} ${pluralizePl(count, 'godzina', 'godziny', 'godzin')} temu`;
         }
+        return `${count} ${pluralizeEn(count, 'hour')} ago`;
     }
 
     let count = Math.floor((now.value - game.end_timestamp) / 86400)
     if (settingsStore.language === 1) {
         return `${count} ${pluralize(count, 'день', 'дня', 'дней')} назад`;
-    } else if (settingsStore.language === 2) {
-        return `${count} ${pluralizeEn(count, 'day')} ago`;
-    } else if (settingsStore.language === 3) {
+    }
+    if (settingsStore.language === 3) {
         return `${count} ${pluralizePl(count, 'dzień', 'dni', 'dni')} temu`;
     }
+    return `${count} ${pluralizeEn(count, 'day')} ago`;
 }
 
 const template = (game: GameWithInfo): string => {
     if (game.game_type === 0) {
         if (settingsStore.language === 1) {
             return `сценарий`;
-        } else if (settingsStore.language === 2) {
-            return `scenario`;
-        } else if (settingsStore.language === 3) {
+        }
+        if (settingsStore.language === 3) {
             return `scenariusz`;
         }
+        return `scenario`;
     }
     
     if (game.template_name === '<Default>') {
         if (settingsStore.language === 1) {
             return 'по умолчанию';
-        } else if (settingsStore.language === 2) {
-            return 'default';
-        } else if (settingsStore.language === 3) {
+        }
+        if (settingsStore.language === 3) {
             return 'domyślny';
         }
+        return 'default';
     }
     return game.template_name || '?'
 }

@@ -22,7 +22,7 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { GameWithInfo, getList } from '../../../api/games';
 import { getContentSize } from '../../../helpers/content';
 import { on } from '../../../modules/websocket';
-import { PaginatedTable } from '../../../api/general';
+import { PaginatedTable } from '../../../api/_general';
 import { useRoute } from 'vue-router'
 import { watch } from 'vue'
 import { getList as getPlayersList } from '../../../api/players';
