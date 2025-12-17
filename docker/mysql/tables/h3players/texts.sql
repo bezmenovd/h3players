@@ -1,12 +1,14 @@
 USE h3players;
 
-DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS texts;
 
-CREATE TABLE messages (
+CREATE TABLE texts (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `player_id` INT UNSIGNED NOT NULL,
-    `post_id` INT UNSIGNED NOT NULL,
-    `parent_id` INT UNSIGNED,
+    `entity_type` TINYINT UNSIGNED NOT NULL,
+    `entity_id` INT UNSIGNED NOT NULL,
+    `language` TINYINT UNSIGNED NOT NULL,
+    `value` TEXT,
 
     `created_at` INT UNSIGNED NOT NULL,
     `updated_at` INT UNSIGNED NOT NULL,
@@ -14,6 +16,7 @@ CREATE TABLE messages (
 
     PRIMARY KEY (`id`),
     INDEX (`player_id`),
-    INDEX (`post_id`),
-    INDEX (`parent_id`)
+    INDEX (`entity_type`),
+    INDEX (`entity_id`),
+    INDEX (`language`)
 );

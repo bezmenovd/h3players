@@ -21,6 +21,9 @@ import { UserController } from './controllers/user.controller';
 import { UserService } from './services/user.service';
 import { DiscussionsController } from './controllers/discussions.controller';
 import { DiscussionsService } from './services/discussions.service';
+import { PostsController } from './controllers/posts.controller';
+import { PostsService } from './services/posts.service';
+import { OpenaiService } from './services/openai.service';
 
 
 @Module({
@@ -36,6 +39,7 @@ import { DiscussionsService } from './services/discussions.service';
         FunctionsController,
         UserController,
         DiscussionsController,
+        PostsController,
     ],
     providers: [
         { provide: APP_INTERCEPTOR, useClass: LimiterInterceptor },
@@ -49,6 +53,8 @@ import { DiscussionsService } from './services/discussions.service';
         GamesVService,
         UserService,
         DiscussionsService,
+        PostsService,
+        OpenaiService,
     ],
 })
 export class AppModule {}

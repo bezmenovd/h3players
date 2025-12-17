@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Post, Query, Req, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Headers, Post, Query, Req, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
 import { DiscussionsService } from '../services/discussions.service';
 import { UserService } from '../services/user.service';
@@ -19,7 +19,7 @@ export class DiscussionsController {
     }
 
     @Post('/add')
-    async add(@Req() req: Request, @Body('name') name: string) {
+    async add(@Req() req: Request, @Body('name') name: string, @Headers('Language') language?: string) {
         let t = String(req.headers['token'])
 
         if (! t) {
@@ -32,10 +32,15 @@ export class DiscussionsController {
             throw new UnauthorizedException()
         }
 
+        let userLanguage = Number(language)
+        if (! Number.isFinite(userLanguage)) {
+            userLanguage = 2
+        }
+
         let discussion: Discussion
 
         try {
-            discussion = await this.discussionsService.add(player, name)
+            discussion = await this.discussionsService.add(player, name, userLanguage)
         } catch (e: any) {
             throw new BadRequestException(e.message)
         }

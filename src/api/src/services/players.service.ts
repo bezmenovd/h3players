@@ -100,7 +100,7 @@ export class PlayersService {
         return result.length === 1 ? result[0] : null
     }
 
-    async players(ids: number[]): Promise<Player|null> {
+    async players(ids: number[]): Promise<Player[]> {
         let result = await (await this.clickhouse.query({
             query: `
                 SELECT * FROM
@@ -113,7 +113,7 @@ export class PlayersService {
             format: 'JSONEachRow',
         })).json<Player>()
 
-        return result.length === 1 ? result[0] : null
+        return result
     }
 
     async playerRank(id: number): Promise<number> {

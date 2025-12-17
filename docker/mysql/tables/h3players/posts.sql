@@ -6,8 +6,6 @@ CREATE TABLE posts (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `player_id` INT UNSIGNED NOT NULL,
     `discussion_id` INT UNSIGNED NOT NULL,
-    `title` VARCHAR(255) NOT NULL,
-    `text` TEXT,
 
     `created_at` INT UNSIGNED NOT NULL,
     `updated_at` INT UNSIGNED NOT NULL,

@@ -12,5 +12,29 @@ export type Discussion = {
 export type DiscussionWithInfo = Discussion & {
     player_name: string
     posts_count: number
-    messages_count: number
+}
+
+export type Message = {
+    id: number
+    player_id: number
+    post_id: number
+    parent_id: number
+    text: string
+}
+
+export type MessageWithInfo = Message & {
+    player_name: string
+}
+
+export type Post = {
+    id: number
+    player_id: number
+    discussion_id: number
+    title: string
+    text: string
+}
+
+export type PostWithInfo = Post & {
+    player_name: string
+    comments: MessageWithInfo[]
 }

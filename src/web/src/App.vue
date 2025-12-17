@@ -28,6 +28,7 @@ import Links from './components/Links.vue';
 import router from './router';
 import Alerts from './components/UI/Alerts.vue';
 import { connect } from './modules/websocket';
+import { useUserStore } from './stores/user';
 
 
 const loading = ref({
@@ -36,7 +37,10 @@ const loading = ref({
     show: true,
 })
 
+const userStore = useUserStore()
+
 preload(resources.app, () => loading.value.counter++).then(() => {
+    userStore.load()
     connect()
     loading.value.show = false
     loading.value.is = false
@@ -185,12 +189,13 @@ a:hover {
     z-index: 999;
 }
 .btn {
-    padding: 8px 12px 8px 8px;
+    padding: 6px 12px 6px 6px;
     display: flex;
     align-items: center;
     gap: 8px;
     font-size: 13px;
     background: #ffffff10;
+    position: relative;
 }
 .btn:not(.disabled):not(.waiting):hover {
     cursor: pointer;
@@ -199,6 +204,16 @@ a:hover {
 .btn:not(.disabled):not(.waiting):active {
     cursor: pointer;
     background: #ffffff2f;
+}
+.btn.disabled::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.001);
+    z-index: 99999;
 }
 .btn.disabled:hover {
     cursor: not-allowed !important;
@@ -209,7 +224,7 @@ a:hover {
 .btn-icon {
     width: 20px;
     height: 20px;
-    background-size: 14px 14px;
+    background-size: 12px 12px;
     background-position: 50% 50%;
     background-position: center;
     background-repeat: no-repeat;
