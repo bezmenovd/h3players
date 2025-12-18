@@ -25,6 +25,7 @@ import { PostsController } from './controllers/posts.controller';
 import { PostsService } from './services/posts.service';
 import { OpenaiService } from './services/openai.service';
 import { AlsMiddleware } from './middlewares/als';
+import { PermissionsService } from './services/permissions.service';
 
 
 @Module({
@@ -53,6 +54,7 @@ import { AlsMiddleware } from './middlewares/als';
         GamesService,
         GamesVService,
         UserService,
+        PermissionsService,
         DiscussionsService,
         PostsService,
         OpenaiService,

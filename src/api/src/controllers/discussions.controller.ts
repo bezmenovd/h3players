@@ -1,15 +1,16 @@
-import { BadRequestException, Body, Controller, Get, Headers, Post, Query, Req, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Body, Controller, ForbiddenException, Get, Post, Req, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
 import { DiscussionsService } from '../services/discussions.service';
 import { UserService } from '../services/user.service';
-import { Discussion } from '../types/mysql/h3players';
 import { als } from '../als';
+import { PermissionsService } from '../services/permissions.service';
 
 @Controller('discussions')
 export class DiscussionsController {
     constructor(
         private readonly userService: UserService,
         private readonly discussionsService: DiscussionsService,
+        private readonly permissonsService: PermissionsService,
     ) {}
 
     @Get('/')
@@ -31,6 +32,13 @@ export class DiscussionsController {
 
         if (! player) {
             throw new UnauthorizedException()
+        }
+
+        if (await this.permissonsService.getRestriction(player) !== null) {
+            throw new ForbiddenException('restricted')
+        }
+        if (! await this.permissonsService.authorize(player, 'discussions.add')) {
+            throw new ForbiddenException('no_permission')
         }
 
         try {

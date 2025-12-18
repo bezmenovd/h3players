@@ -3,6 +3,7 @@ import { createClient as createClientRedis } from 'redis'
 import crypto from 'crypto'
 import { logger } from "../helpers/logger"
 import config from '../config.json'
+import { timestamp } from "../helpers/timestamp"
 
 @Injectable()
 export class LimiterInterceptor implements NestInterceptor {
@@ -24,7 +25,7 @@ export class LimiterInterceptor implements NestInterceptor {
         return next.handle().pipe();
         
         const req = context.switchToHttp().getRequest()
-        const start = Date.now()
+        const start = timestamp.now()
 
         const ip_hash = crypto.createHash('sha256').update(req.headers['x-real-ip'] || req.ip || 'unknown')
             .digest('hex')
@@ -33,10 +34,9 @@ export class LimiterInterceptor implements NestInterceptor {
 
         const url = String(req.url).split('?')[0].replace(/\d+/g, '#')
 
-        const now = Date.now() / 1000
-        const startOfMinute = Math.floor(now / 60) * 60
-        const startOfHour = Math.floor(now / 3600) * 3600
-        const startOfDay = Math.floor(now / 86400) * 86400
+        const startOfMinute = Math.floor(start / 60) * 60
+        const startOfHour = Math.floor(start / 3600) * 3600
+        const startOfDay = Math.floor(start / 86400) * 86400
 
         let multi = this.redis.multi()
 

@@ -50,16 +50,22 @@ export class OpenaiService {
             response_format: { type: 'json_object' },
         });
 
-        logger.info(`openai: prompt='${prompt} text='${text}' response='${completion.choices[0].message.content!}'`)
+        logger.info(`openai result: ${JSON.stringify({ 
+            prompt: prompt.trim(), 
+            text, 
+            response: JSON.parse(completion.choices[0].message.content!) 
+        })}`);
+
+        const result = JSON.parse(completion.choices[0].message.content!) as ModerateResult
     
-        return JSON.parse(completion.choices[0].message.content!);
+        return result
     }
 
     async moderateAndTranslate(text: string, userLanguage: number): Promise<ModerateAndTranslateResult> {
         const prompt = `
             Ты модератор и переводчик пользовательского контента на сайте
             1. МОДЕРАЦИЯ:
-            - isValid: false только за мат, оскорбления, политику, религию, дискриминацию, личные данные или нелегальный контент (РФ/ЕС). 
+            - isValid: false только за мат, оскорбления, политику, религию, дискриминацию, личные данные (за исключением относящихся к игре и игровому сообществу) или нелегальный контент (РФ/ЕС). 
             - В остальных случаях isValid: true.
             - При isValid: false верни translations: [].
             2. ПЕРЕВОД (только если isValid: true):
@@ -84,8 +90,14 @@ export class OpenaiService {
             response_format: { type: 'json_object' },
         });
 
-        logger.info(`openai: prompt='${prompt} text='${text}' response='${completion.choices[0].message.content!}'`)
+        logger.info(`openai result: ${JSON.stringify({ 
+            prompt: prompt.trim(), 
+            text, 
+            response: JSON.parse(completion.choices[0].message.content!) 
+        })}`);
+
+        const result = JSON.parse(completion.choices[0].message.content!) as ModerateAndTranslateResult
     
-        return JSON.parse(completion.choices[0].message.content!);
+        return result;
     }
 }

@@ -7,6 +7,11 @@
             </div>
             <div id="discussions-panel">
                 <Panel id="discussions-items">
+                    <div :class="{'discussion': true, 'active': discussions.active === null }" @click="selectDiscussion(null)">
+                        <div class="discussion-name">
+                            {{ t('discussions.list.all') }}
+                        </div>
+                    </div>
                     <div :class="{'discussion': true, 'active': discussions.active?.id === discussion.id }" v-for="discussion in discussions.list" @click="selectDiscussion(discussion)">
                         <div class="discussion-name">
                             {{ discussion.name }}
@@ -14,19 +19,11 @@
                         <div class="discussion-posts-count" :hint="t('discussions.discussion.posts_count')">{{ discussion.posts_count }}</div>
                     </div>
                 </Panel>
-                <div id="discussions-add">
-                    <template v-if="userStore.isAuthenticated">
-                        <div class="btn" @click="addModal.show = true">
-                            <div class="btn-icon" style="background-image: url('/img/add.png')"/>
-                            {{ t('discussions.list.add.text') }}
-                        </div>
-                    </template>
-                    <template v-else>
-                        <div class="btn disabled" :hint="t('discussions.list.add.authentication_required')">
-                            <div class="btn-icon" style="background-image: url('/img/add.png')"/>
-                            {{ t('discussions.list.add.text') }}
-                        </div>
-                    </template>
+                <div id="discussions-add" v-if="userStore.hasPermission('discussions.add') && userStore.hasNoRestriction()">
+                    <div class="btn" @click="addModal.show = true">
+                        <div class="btn-icon" style="background-image: url('/img/add.png')"/>
+                        {{ t('discussions.list.add.text') }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -112,10 +109,10 @@ const addDiscussion = () => {
     })
 }
 
-const selectDiscussion = (discussion: DiscussionWithInfo) => {
+const selectDiscussion = (discussion: DiscussionWithInfo|null) => {
     discussions.active = discussion
 
-    getPosts(discussion.id).then(r => {
+    getPosts(discussion?.id).then(r => {
         posts.list = r
         posts.show = true
     })

@@ -7,12 +7,15 @@ import { timestamp } from '../helpers/timestamp';
 import { PlayersService } from './players.service';
 import { OpenaiService } from './openai.service';
 import { logger } from '../helpers/logger';
+import { als } from '../als';
+import { PermissionsService } from './permissions.service';
 
 @Injectable()
 export class DiscussionsService {
     constructor(
         private readonly playersService: PlayersService,
         private readonly openaiService: OpenaiService,
+        private readonly permissonsService: PermissionsService,
     ) {}
 
     private mysql = mysql.createPool({
@@ -27,15 +30,17 @@ export class DiscussionsService {
             SELECT 
                 d.id,
                 d.player_id,
-                d.slug, 
+                d.slug,
+                MAX(t.value) as name,
                 COUNT(p.id) AS posts_count
             FROM discussions d
             LEFT JOIN posts p ON d.id = p.discussion_id
+            LEFT JOIN texts t ON d.id = t.entity_id AND t.entity_type = 1 AND t.language = ?
             WHERE
                 d.is_public
             GROUP BY d.id
             ORDER BY d.created_at ASC
-        `, [])
+        `, [als.getStore()!.language])
 
         let players = await this.playersService.players(rows.map(d => d.player_id))
 
@@ -60,7 +65,7 @@ export class DiscussionsService {
         let result = await this.openaiService.moderateAndTranslate(name, userLanguage)
 
         if (! result.isValid) {
-            logger.error(`failed moderation: player_id=${player.id} reason=${result.reason} text='${name}'`)
+            this.permissonsService.handleViolation(player)
             throw new Error(`failed_moderation:${result.reason}`)
         }
 
@@ -95,6 +100,14 @@ export class DiscussionsService {
             throw new Error('fail')
         }
 
+        await this.mysql.execute(
+            `INSERT INTO texts 
+            (player_id, entity_type, entity_id, language, value, created_at, updated_at) 
+            VALUES
+            (?, 1, ?, ?, ?, ?, ?)`,
+            [player.id, rows3[0].id, userLanguage, name, now, now]
+        )
+
         result.translations.forEach(async (t) => {
             await this.mysql.execute(
                 `INSERT INTO texts 
@@ -102,7 +115,7 @@ export class DiscussionsService {
                 VALUES
                 (?, 1, ?, ?, ?, ?, ?)`,
                 [player.id, rows3[0].id, t.lang, t.value, now, now]
-            )   
+            )
         })
 
         return rows3[0]

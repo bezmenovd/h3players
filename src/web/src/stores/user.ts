@@ -1,20 +1,25 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import { getMe } from '../api/user';
+import { ref, computed, reactive } from 'vue'
+import { getMe, Restriction } from '../api/user';
+import { timestamp } from '../helpers/timestamp';
 
 export const useUserStore = defineStore('user', () => {
     const token = ref<string|null>(localStorage.getItem('user:token'))
-    const player = ref<{
+    const player = reactive<{
         id: number|null,
         name: string|null,
+        permissions: string[],
+        restriction: Restriction|null,
     }>({
-        id: Number(localStorage.getItem('user:player:id')),
-        name: localStorage.getItem('user:player:name'),
+        id: null,
+        name: null,
+        permissions: [],
+        restriction: null,
     })
 
     token.value = '4c285ce1c84e87053dd281a479d5bd7f'
-    player.value.id = 1
-    player.value.name = "Temnotta"
+    player.id = 1
+    player.name = "Temnotta"
 
     async function setToken(value: string) {
         token.value = value
@@ -26,17 +31,13 @@ export const useUserStore = defineStore('user', () => {
                 return
             }
 
-            player.value.id = p.id
-            player.value.name = p.name
-            localStorage.setItem('user:player:id', String(p.id))
-            localStorage.setItem('user:player:name', p.name)
+            player.id = p.id
+            player.name = p.name
         }).catch(() => {})
     }
 
     async function logout() {
         localStorage.removeItem('user:token')
-        localStorage.removeItem('user:player:id')
-        localStorage.removeItem('user:player:name')
 
         location.reload()
     }
@@ -48,11 +49,18 @@ export const useUserStore = defineStore('user', () => {
                 return
             }
 
-            player.value.id = p.id
-            player.value.name = p.name
-            localStorage.setItem('user:player:id', String(p.id))
-            localStorage.setItem('user:player:name', p.name)
+            player.id = p.id
+            player.name = p.name
+            player.permissions = p.permissions
         }).catch(() => {})
+    }
+
+    function hasPermission(permission: string): boolean {
+        return player.permissions.includes(permission)
+    }
+
+    function hasNoRestriction(): boolean {
+        return player.restriction === null || player.restriction.finish_at < timestamp.now()
     }
 
     const isAuthenticated = computed(() => token.value !== null)
@@ -61,6 +69,8 @@ export const useUserStore = defineStore('user', () => {
         token,
         player,
         isAuthenticated,
+        hasPermission,
+        hasNoRestriction,
         setToken,
         logout,
         load,

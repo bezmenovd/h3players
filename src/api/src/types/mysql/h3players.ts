@@ -38,3 +38,10 @@ export type PostWithInfo = Post & {
     player_name: string
     comments: MessageWithInfo[]
 }
+
+export type Restriction = {
+    player_id: number
+    start_at: number
+    finish_at: number
+    reason: string
+}

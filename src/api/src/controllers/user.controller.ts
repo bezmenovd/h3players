@@ -1,11 +1,14 @@
-import { BadRequestException, Controller, Get, NotFoundException, Req, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { Request } from 'express';
 import { als } from '../als';
+import { PermissionsService } from '../services/permissions.service';
 
 @Controller('user')
 export class UserController {
-    constructor(private readonly userService: UserService) {}
+    constructor(
+        private readonly userService: UserService,
+        private readonly permissionsService: PermissionsService,
+    ) {}
 
     @Get('/me')
     async me() {
@@ -15,12 +18,20 @@ export class UserController {
             throw new UnauthorizedException()
         }
 
-        let player = this.userService.getUserPlayer(t)
+        let player = await this.userService.getUserPlayer(t)
 
         if (! player) {
             throw new NotFoundException()
         }
 
-        return player
+        let permissions = await this.permissionsService.getPlayerPermissions(player)
+        let restriction = await this.permissionsService.getRestriction(player)
+
+        return {
+            id: player.id,
+            name: player.name,
+            permissions: permissions,
+            restriction: restriction,
+        }
     }
 }
