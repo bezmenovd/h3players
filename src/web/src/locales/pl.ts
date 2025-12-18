@@ -4,7 +4,7 @@ export default {
         players: 'Gracze',
         templates: 'Szablony',
         performance: 'Obciążenie',
-        discussions: 'Dyskusje',
+        posts: 'Dyskusje',
     },
     links: {
         about: 'O projekcie',

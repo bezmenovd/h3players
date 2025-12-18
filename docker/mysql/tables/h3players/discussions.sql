@@ -8,7 +8,6 @@ CREATE TABLE discussions (
     `created_at` INT UNSIGNED NOT NULL,
     `is_public` BOOLEAN DEFAULT TRUE,
     `is_closed` BOOLEAN DEFAULT FALSE,
-    `slug` VARCHAR(32) NOT NULL UNIQUE,
 
     PRIMARY KEY (`id`),
     INDEX (`player_id`)

@@ -6,7 +6,6 @@ export type Discussion = {
     is_public: boolean
     is_visible: boolean
     name: string
-    slug: string
 }
 
 export type DiscussionWithInfo = Discussion & {

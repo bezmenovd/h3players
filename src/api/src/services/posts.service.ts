@@ -16,7 +16,13 @@ export class PostsService {
     
     async getList(): Promise<PostWithInfo[]> {
         const [posts] = await this.mysql.execute<(Post & RowDataPacket)[]>(
-            'SELECT * FROM posts WHERE deleted_at IS NULL ORDER BY created_at DESC',
+            `SELECT 
+                p.*,
+                t.value as text
+            FROM posts p
+            LEFT JOIN texts t on t.entity_id = p.id AND t.entity_type = 2
+            WHERE p.deleted_at IS NULL
+            ORDER BY p.created_at DESC`,
             []
         );
 
@@ -25,10 +31,16 @@ export class PostsService {
     
     async getDiscussionPostsList(discussionId: number): Promise<PostWithInfo[]> {
         const [posts] = await this.mysql.execute<(Post & RowDataPacket)[]>(
-            'SELECT * FROM posts WHERE deleted_at IS NULL AND discussion_id = ? ORDER BY created_at DESC',
+            `SELECT 
+                p.*,
+                t.value as text
+            FROM posts p
+            LEFT JOIN texts t on t.entity_id = p.id AND t.entity_type = 2
+            WHERE p.deleted_at IS NULL AND p.discussion_id = ? 
+            ORDER BY p.created_at DESC`,
             [discussionId]
         );
-        
+
         return this.enrichPosts(posts);
     }
     
@@ -38,7 +50,13 @@ export class PostsService {
         const postIds = posts.map(p => p.id);
     
         const [messages] = await this.mysql.execute<(Message & RowDataPacket)[]>(
-            'SELECT * FROM messages WHERE deleted_at IS NULL AND post_id IN (?) ORDER BY created_at ASC',
+            `SELECT 
+                *,
+                t.value as text
+            FROM messages m
+            LEFT JOIN texts t on t.entity_id = m.id AND t.entity_type = 3
+            WHERE m.deleted_at IS NULL AND m.post_id IN (?) 
+            ORDER BY m.created_at ASC`,
             [postIds]
         );
     

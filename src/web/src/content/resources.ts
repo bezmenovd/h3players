@@ -19,7 +19,7 @@ export default {
         '/img/players.png',
         '/img/templates.png',
         '/img/performance.png',
-        '/img/discussions.png',
+        '/img/posts.png',
         '/img/arrow-left.png',
         '/img/list.png',
         '/img/save.png',

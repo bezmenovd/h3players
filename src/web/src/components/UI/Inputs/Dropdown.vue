@@ -60,22 +60,22 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .list-value {
-    height: fit-content;
     width: 100%;
-}
-.list-value {
     background: #ffffff10;
     padding: 8px 10px;
     border: none;
     font-size: 14px;
-    outline: 1px solid #1f2334;
+    /* outline: 1px solid #1f2334; */
     cursor: pointer;
-    height: 32px;
+    height: 100%;
+    display: flex;
+    align-items: center;
     line-height: 16px;
 }
 .list {
     position: relative;
     width: 100%;
+    height: 100%;
 }
 .list-items {
     position: absolute;

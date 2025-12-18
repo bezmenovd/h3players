@@ -4,7 +4,7 @@ export default {
         players: 'Игроки',
         templates: 'Шаблоны',
         performance: 'Нагрузка',
-        discussions: 'Обсуждения',
+        posts: 'Обсуждения',
     },
     links: {
         about: 'О проекте',
@@ -187,6 +187,35 @@ export default {
         discussion: {
             posts_count: 'Число постов по теме',
         },
+    },
+    posts: {
+        filter: {
+            query: 'Найти по названию',
+            sort: {
+                items: {
+                    new: 'Новые',
+                    popular: 'Популярные',
+                }
+            }
+        },
+        list: {
+            empty: 'Нет постов',
+        },
+        add: 'Новый пост',
+        edit: {
+            new_post: 'Новый пост',
+            tabs: {
+                edit: 'Редактирование',
+                preview: 'Предпросмотр',
+            },
+            title: {
+                placeholder: 'Название поста',
+            },
+            text: {
+                placeholder: 'Текст (markdown)',
+            },
+            save: 'Сохранить',
+        }
     },
     ui: {
         table: {

@@ -5,7 +5,10 @@
     >
         <input 
             :id="`${props.id}-search-input`"
-            type="text" class="search-input" spellcheck="false" :maxlength="props.maxlength" autocomplete="one-time-code"
+            type="text" class="search-input" 
+            :maxlength="props.maxlength" 
+            spellcheck="false" 
+            autocomplete="one-time-code"
             @keydown="searchKeyDown" @keyup="searchKeyUp" v-model="searchValue"
             @focus="searchFocus.focus()" @blur="searchFocus.blur()"
         />

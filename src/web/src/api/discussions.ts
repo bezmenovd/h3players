@@ -5,7 +5,6 @@ export type Discussion = {
     player_id: number
     created_at: number
     name: string
-    slug: string
 }
 
 export type DiscussionWithInfo = Discussion & {

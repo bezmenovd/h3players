@@ -1,8 +1,7 @@
 <template>
-    <div :class="{'input-wrapper': true, 'empty': modelValue.length === 0 }" :data-placeholder="props.placeholder">
-        <input type="text" 
-            v-model="modelValue" 
-            :maxlength="props.maxLength"
+    <div :class="{'textarea-wrapper': true, 'empty': modelValue.length === 0 }" :data-placeholder="props.placeholder">
+        <textarea type="text" 
+            v-model="modelValue"
             spellcheck="false" 
             autocomplete="one-time-code"
         />
@@ -15,17 +14,16 @@ const modelValue = defineModel<string>({ default: '' })
 
 const props = defineProps<{
     placeholder: string
-    maxLength?: number
 }>()
 
 </script>
 
 <style scoped>
-.input-wrapper {
+.textarea-wrapper {
     width: 100%;
     position: relative;
 }
-.input-wrapper.empty::before {
+.textarea-wrapper.empty::before {
     content: attr(data-placeholder);
     pointer-events: none;
     position: absolute;
@@ -33,11 +31,11 @@ const props = defineProps<{
     color: #ffffff4a;
     font-size: 16px;
     line-height: 16px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 8px;
 }
-.input-wrapper input {
+.textarea-wrapper textarea {
     width: 100%;
-    height: 38px;
+    height: 100%;
+    resize: none;
 }
 </style>

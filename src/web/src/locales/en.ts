@@ -4,7 +4,7 @@ export default {
         players: 'Players',
         templates: 'Templates',
         performance: 'Performance',
-        discussions: 'Discussions',
+        posts: 'Discussions',
     },
     links: {
         about: 'About',

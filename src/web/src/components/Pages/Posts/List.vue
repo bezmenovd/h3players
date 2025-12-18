@@ -1,9 +1,25 @@
 <template>
     <div id="discussions-list">
-        <Title :text="t('discussions.list.title')"></Title>
         <div id="discussions">
             <div id="posts">
-                posts
+                <Header id="posts-top-panel">
+                    <TextInput v-model="postsFilter.query" :placeholder="t('posts.filter.query')" :max-length="20"/>
+                    <Selector :value="postsFilter.sort.value" :items="postsFilter.sort.items"/>
+                    <div id="posts-add">
+                        <div class="btn" @click="router.push({ name: 'posts.edit' })" v-if="userStore.hasNoRestriction()">
+                            <div class="btn-icon" style="background-image: url('/img/add.png')"/>
+                            {{ t('posts.add') }}
+                        </div>
+                    </div>
+                </Header>
+                <div id="posts-list-wrapper">
+                    <template v-if="posts.list.length === 0">
+                        <div id="posts-list-empty">{{ t('posts.list.empty') }}</div>
+                    </template>
+                    <template v-else>
+
+                    </template>
+                </div>
             </div>
             <div id="discussions-panel">
                 <Panel id="discussions-items">
@@ -48,15 +64,17 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue';
-import Title from '../../UI/Title.vue';
 import Modal from '../../UI/Modal.vue';
+import Header from '../../UI/Table/Header.vue';
 import { useI18n } from 'vue-i18n';
 import { useUserStore } from '../../../stores/user';
 import TextInput from '../../UI/Inputs/TextInput.vue';
+import Selector from '../../UI/Inputs/Selector.vue';
 import { add, DiscussionWithInfo, getList as getDiscussions } from '../../../api/discussions';
 import { alerts } from '../../UI/alerts';
 import Panel from '../../UI/Panel.vue';
 import { getList as getPosts, PostWithInfo } from '../../../api/posts';
+import router from '../../../router';
 
 const { t } = useI18n()
 
@@ -82,6 +100,17 @@ const posts = reactive<{
 }>({
     list: [],
     show: false,
+})
+
+const postsFilter = reactive({
+    query: '',
+    sort: {
+        value: 1,
+        items: [
+            { id: 1, text: t('posts.filter.sort.items.new') },
+            { id: 2, text: t('posts.filter.sort.items.popular') },
+        ]
+    }
 })
 
 const addDiscussion = () => {
@@ -200,6 +229,34 @@ onMounted(() => {
 .discussion-posts-count {
     font-variant-numeric: tabular-nums;
     color: gray;
+}
+#posts {
+    display: grid;
+    grid-template-rows: 50px 1fr;
+    gap: 20px;
+}
+#posts-top-panel {
+    display: grid;
+    grid-template-columns: 250px 130px 1fr;
+    gap: 15px;
+    align-items: center;
+    max-width: 1000px;
+}
+#posts-add {
+    width: fit-content;
+    margin-left: auto;
+}
+#posts-list-wrapper {
+    max-width: 1000px;
+}
+#posts-list-empty {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    opacity: .5;
 }
 
 </style>

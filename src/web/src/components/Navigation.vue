@@ -40,9 +40,9 @@ const links: (Link & { style?: { [key: string]: string }})[] = [
         text: t('navigation.templates'),
     },
     {
-        route: { name: 'discussions' },
-        img: '/img/discussions.png',
-        text: t('navigation.discussions'),
+        route: { name: 'posts' },
+        img: '/img/posts.png',
+        text: t('navigation.posts'),
     },
 ]
 
@@ -109,7 +109,7 @@ onMounted(async () => {
     height: 18px;
     margin-left: 2px;
 }
-.link.discussions .link-icon {
+.link.posts .link-icon {
     width: 19px;
     height: 18px;
     margin-left: 3px;
@@ -128,7 +128,7 @@ onMounted(async () => {
         width: 13px;
         height: 13px;
     }
-    .link.discussions .link-icon {
+    .link.posts .link-icon {
         width: 14px;
         height: 13px;
     }

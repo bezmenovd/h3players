@@ -62,12 +62,28 @@ input {
     border: none;
     font-size: 16px;
     line-height: 21px;
-    border: 1px solid #1f2334;
+    /* border: 1px solid #1f2334; */
 }
 input:focus::placeholder {
     color: transparent;
 }
 input:disabled {
+    background: #363c4b;
+}
+
+textarea {
+    background: #272c3a;
+    padding: 8px 10px;
+    outline: none;
+    border: none;
+    font-size: 16px;
+    line-height: 21px;
+    /* border: 1px solid #1f2334; */
+}
+textarea:focus::placeholder {
+    color: transparent;
+}
+textarea:disabled {
     background: #363c4b;
 }
 
@@ -204,6 +220,9 @@ a:hover {
 .btn:not(.disabled):not(.waiting):active {
     cursor: pointer;
     background: #ffffff2f;
+}
+.btn.waiting {
+    opacity: .7;
 }
 .btn.disabled::before {
     content: '';

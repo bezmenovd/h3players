@@ -7,8 +7,9 @@ import Games from './components/Pages/Lobby/Games.vue';
 import NotFound from './components/Pages/NotFound.vue';
 import Changelog from './components/Pages/Changelog.vue'
 import About from './components/Pages/About.vue'
-import DiscussionsList from './components/Pages/Discussions/List.vue'
-import DiscussionPosts from './components/Pages/Discussions/Posts.vue'
+import PostList from './components/Pages/Posts/List.vue'
+import PostView from './components/Pages/Posts/View.vue'
+import PostEdit from './components/Pages/Posts/Edit.vue'
 import PrivacyPolicy from './components/Pages/PrivacyPolicy.vue'
 import UserAgreement from './components/Pages/UserAgreement.vue'
 
@@ -59,14 +60,19 @@ export default [
         component: About,
     },
     {
-        path: '/discussions',
-        name: 'discussions',
-        component: DiscussionsList,
+        path: '/posts',
+        name: 'posts',
+        component: PostList,
     },
     {
-        path: '/discussions/@:slug',
-        name: 'discussions.posts',
-        component: DiscussionPosts,
+        path: '/posts/edit',
+        name: 'posts.edit',
+        component: PostEdit,
+    },
+    {
+        path: '/posts/@:slug',
+        name: 'posts.view',
+        component: PostView,
     },
     {
         path: '/privacy-policy',

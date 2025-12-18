@@ -2,11 +2,9 @@ import { Headers, Injectable } from '@nestjs/common';
 import mysql, { RowDataPacket } from 'mysql2/promise';
 import { Player } from '../types/clickhouse/lobby';
 import { Discussion, DiscussionWithInfo } from '../types/mysql/h3players';
-import { makeSlug } from '../helpers/string';
 import { timestamp } from '../helpers/timestamp';
 import { PlayersService } from './players.service';
 import { OpenaiService } from './openai.service';
-import { logger } from '../helpers/logger';
 import { als } from '../als';
 import { PermissionsService } from './permissions.service';
 
@@ -30,8 +28,7 @@ export class DiscussionsService {
             SELECT 
                 d.id,
                 d.player_id,
-                d.slug,
-                MAX(t.value) as name,
+                ANY_VALUE(t.value) as name,
                 COUNT(p.id) AS posts_count
             FROM discussions d
             LEFT JOIN posts p ON d.id = p.discussion_id
@@ -56,11 +53,20 @@ export class DiscussionsService {
             [player.id, timestamp.startOfDay()]
         )
 
-        // if (rows[0].count >= 3) {
-        //     throw new Error('day_limit')
-        // }
+        if (rows[0].count >= 3 && ! await this.permissonsService.authorize(player, 'discussions.add.unlimit')) {
+            throw new Error('day_limit')
+        }
 
         name = name.trim()
+
+        let [rows2] = await this.mysql.execute<({ count: number } & RowDataPacket)[]>(
+            'SELECT count(*) as count FROM `texts` WHERE value = ? AND entity_type = 1',
+            [name]
+        )
+
+        if (rows2[0].count > 0) {
+            throw new Error('duplicate')
+        }
 
         let result = await this.openaiService.moderateAndTranslate(name, userLanguage)
 
@@ -69,31 +75,20 @@ export class DiscussionsService {
             throw new Error(`failed_moderation:${result.reason}`)
         }
 
-        let slug = makeSlug(name)
-
-        if (name.length > 32 || slug.length > 32) {
+        if (name.length > 32) {
             throw new Error('invalid_name')
-        }
-
-        let [rows2] = await this.mysql.execute<({ count: number } & RowDataPacket)[]>(
-            'SELECT count(*) as count FROM `discussions` WHERE slug = ?',
-            [slug]
-        )
-
-        if (rows2[0].count > 0) {
-            throw new Error('duplicate')
         }
 
         let now = timestamp.now()
 
         await this.mysql.execute(
-            'INSERT INTO `discussions` (player_id, slug, created_at) VALUES (?, ?, ?)',
-            [player.id, slug, now]
+            'INSERT INTO `discussions` (player_id, created_at) VALUES (?, ?)',
+            [player.id, now]
         )
 
         let [rows3] = await this.mysql.execute<(Discussion & RowDataPacket)[]>(
-            'SELECT * FROM `discussions` WHERE slug = ?',
-            [slug]
+            'SELECT * FROM `discussions` WHERE player_id = ? AND created_at = ?',
+            [player.id, now]
         )
 
         if (rows3.length === 0) {

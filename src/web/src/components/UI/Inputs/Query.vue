@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, defineProps, defineModel, watch } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const props = defineProps<{
