@@ -1,4 +1,4 @@
-h3players.com is an unofficial, non-commercial project dedicated to the game [Heroes of Might and Magic 3 - Horn of the Abyss](https://h3hota.com).
+h3players.com is an unofficial, non-commercial project dedicated to the game [Heroes of Might and Magic 3 - Horn of the Abyss](https://h3hota.com) that provides statistics from the [online lobby](https://sites.google.com/site/heroes3hd/).
 
 Data from the online lobby is collected using bots that interact with the lobby server via the standard HD Mod client-server protocol.
 

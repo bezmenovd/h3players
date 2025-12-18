@@ -121,6 +121,9 @@ onMounted(() => {
     text-align: center;
     opacity: 0;
     cursor: pointer;
+    transform: scaleX(0.9);
+    position: relative;
+    top: -3px;
 }
 .players-search-history-item-removebtn:hover {
     opacity: 1;

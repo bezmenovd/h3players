@@ -2,27 +2,32 @@
     <div id="discussions-list">
         <Title :text="t('discussions.list.title')"></Title>
         <div id="discussions">
-            <Panel id="discussions-items">
-                <div :class="{'discussion': true, 'active': discussions.active?.id === discussion.id }" v-for="discussion in discussions.list" @click="selectDiscussion(discussion)">
-                    <div class="discussion-name">
-                        {{ discussion.name }}
+            <div id="posts">
+                posts
+            </div>
+            <div id="discussions-panel">
+                <Panel id="discussions-items">
+                    <div :class="{'discussion': true, 'active': discussions.active?.id === discussion.id }" v-for="discussion in discussions.list" @click="selectDiscussion(discussion)">
+                        <div class="discussion-name">
+                            {{ discussion.name }}
+                        </div>
+                        <div class="discussion-posts-count" :hint="t('discussions.discussion.posts_count')">{{ discussion.posts_count }}</div>
                     </div>
-                    <div class="discussion-posts-count" :hint="t('discussions.discussion.posts_count')">{{ discussion.posts_count }}</div>
+                </Panel>
+                <div id="discussions-add">
+                    <template v-if="userStore.isAuthenticated">
+                        <div class="btn" @click="addModal.show = true">
+                            <div class="btn-icon" style="background-image: url('/img/add.png')"/>
+                            {{ t('discussions.list.add.text') }}
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="btn disabled" :hint="t('discussions.list.add.authentication_required')">
+                            <div class="btn-icon" style="background-image: url('/img/add.png')"/>
+                            {{ t('discussions.list.add.text') }}
+                        </div>
+                    </template>
                 </div>
-            </Panel>
-            <div id="discussions-add">
-                <template v-if="userStore.isAuthenticated">
-                    <div class="btn" @click="addModal.show = true">
-                        <div class="btn-icon" style="background-image: url('/img/add.png')"/>
-                        {{ t('discussions.list.add.text') }}
-                    </div>
-                </template>
-                <template v-else>
-                    <div class="btn disabled" :hint="t('discussions.list.add.authentication_required')">
-                        <div class="btn-icon" style="background-image: url('/img/add.png')"/>
-                        {{ t('discussions.list.add.text') }}
-                    </div>
-                </template>
             </div>
         </div>
     </div>
@@ -155,6 +160,11 @@ onMounted(() => {
     font-size: 20px;
     opacity: .5;
     font-weight: 500;
+}
+#discussions {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 30px;
 }
 #discussions-items {
     width: 300px;

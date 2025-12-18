@@ -3,6 +3,7 @@ import { Request } from 'express';
 import { DiscussionsService } from '../services/discussions.service';
 import { UserService } from '../services/user.service';
 import { Discussion } from '../types/mysql/h3players';
+import { als } from '../als';
 
 @Controller('discussions')
 export class DiscussionsController {
@@ -19,7 +20,7 @@ export class DiscussionsController {
     }
 
     @Post('/add')
-    async add(@Req() req: Request, @Body('name') name: string, @Headers('Language') language?: string) {
+    async add(@Req() req: Request, @Body('name') name: string) {
         let t = String(req.headers['token'])
 
         if (! t) {
@@ -32,19 +33,12 @@ export class DiscussionsController {
             throw new UnauthorizedException()
         }
 
-        let userLanguage = Number(language)
-        if (! Number.isFinite(userLanguage)) {
-            userLanguage = 2
-        }
-
-        let discussion: Discussion
-
         try {
-            discussion = await this.discussionsService.add(player, name, userLanguage)
+            await this.discussionsService.add(player, name, als.getStore()!.language)
         } catch (e: any) {
             throw new BadRequestException(e.message)
         }
         
-        return discussion
+        return
     }
 }

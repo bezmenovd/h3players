@@ -74,9 +74,9 @@
                 "day": 14400
             },
             "/api/games_v": {
-                "minute": 60,
-                "hour": 1800,
-                "day": 7200
+                "minute": 30,
+                "hour": 300,
+                "day": 600
             },
             "/api/players": {
                 "minute": 60,

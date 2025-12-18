@@ -51,9 +51,9 @@ export class DiscussionsService {
             [player.id, timestamp.startOfDay()]
         )
 
-        if (rows[0].count >= 3) {
-            throw new Error('day_limit')
-        }
+        // if (rows[0].count >= 3) {
+        //     throw new Error('day_limit')
+        // }
 
         name = name.trim()
 
@@ -87,7 +87,7 @@ export class DiscussionsService {
         )
 
         let [rows3] = await this.mysql.execute<(Discussion & RowDataPacket)[]>(
-            'SELECT * FROM `discussions` WHERE slug = slug',
+            'SELECT * FROM `discussions` WHERE slug = ?',
             [slug]
         )
 

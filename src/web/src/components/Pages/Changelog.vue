@@ -53,7 +53,6 @@ const changelog = (): ChangelogItem[] => {
 .version-changes {
     gap: 5px;
     display: grid;
-    padding-top: 1px;
 }
 .version-change {
     display: flex;

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { LobbyController } from './controllers/lobby.controller';
 import { PerformanceController } from './controllers/performance.controller';
 import { LobbyService } from './services/lobby.service';
@@ -24,6 +24,7 @@ import { DiscussionsService } from './services/discussions.service';
 import { PostsController } from './controllers/posts.controller';
 import { PostsService } from './services/posts.service';
 import { OpenaiService } from './services/openai.service';
+import { AlsMiddleware } from './middlewares/als';
 
 
 @Module({
@@ -57,4 +58,8 @@ import { OpenaiService } from './services/openai.service';
         OpenaiService,
     ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(AlsMiddleware).forRoutes('*')
+    }
+}

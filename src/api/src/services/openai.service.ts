@@ -2,6 +2,11 @@ import { Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
 import { logger } from '../helpers/logger';
 
+export type ModerateResult = {
+    isValid: boolean
+    reason: string
+}
+
 export type ModerateAndTranslateResult = {
     isValid: boolean
     reason: string
@@ -21,23 +26,52 @@ export class OpenaiService {
         });
     }
 
-    async moderateAndTranslate(text: string, userLanguage: number): Promise<ModerateAndTranslateResult> {
+    async moderate(text: string): Promise<ModerateResult> {
         const prompt = `
-            Роль: Модератор/переводчик сайта h3players (HoMM III).
+            Ты модератор пользовательского контента на сайте
             1. МОДЕРАЦИЯ:
             - isValid: false только за мат, оскорбления, политику, религию, дискриминацию, личные данные или нелегальный контент (РФ/ЕС). 
-            - В остальном (сленг, короткий текст, тесты) — всегда isValid: true.
+            - В остальных случаях isValid: true.
             - При isValid: false верни translations: [].
-            2. ПЕРЕВОД (если isValid: true):
+
+            ВЕРНИ ТОЛЬКО JSON:
+            {
+                "isValid": boolean,
+                "reason": string|null,
+            }
+        `;
+    
+        const completion = await this.openai!.chat.completions.create({
+            model: 'gpt-4o-mini',
+            messages: [
+                { role: 'system', content: prompt },
+                { role: 'user', content: text },
+            ],
+            response_format: { type: 'json_object' },
+        });
+
+        logger.info(`openai: prompt='${prompt} text='${text}' response='${completion.choices[0].message.content!}'`)
+    
+        return JSON.parse(completion.choices[0].message.content!);
+    }
+
+    async moderateAndTranslate(text: string, userLanguage: number): Promise<ModerateAndTranslateResult> {
+        const prompt = `
+            Ты модератор и переводчик пользовательского контента на сайте
+            1. МОДЕРАЦИЯ:
+            - isValid: false только за мат, оскорбления, политику, религию, дискриминацию, личные данные или нелегальный контент (РФ/ЕС). 
+            - В остальных случаях isValid: true.
+            - При isValid: false верни translations: [].
+            2. ПЕРЕВОД (только если isValid: true):
             - Переведи на языки из списка, ИСКЛЮЧАЯ ID ${userLanguage}:
             1:Русский, 2:Английский, 3:Польский.
             - Требования: похожая структура, сохранение оригинального форматирования и стиля.
 
             ВЕРНИ ТОЛЬКО JSON:
             {
-            "isValid": boolean,
-            "reason": string|null,
-            "translations": [{"lang": number, "value": "string"}]
+                "isValid": boolean,
+                "reason": string|null,
+                "translations": [{"lang": number, "value": "string"}]
             }
         `;
     

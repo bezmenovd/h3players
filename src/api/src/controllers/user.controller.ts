@@ -1,14 +1,15 @@
 import { BadRequestException, Controller, Get, NotFoundException, Req, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { Request } from 'express';
+import { als } from '../als';
 
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
     @Get('/me')
-    async me(@Req() req: Request) {
-        let t = String(req.headers['token'])
+    async me() {
+        let t = als.getStore()!.token
 
         if (! t) {
             throw new UnauthorizedException()
