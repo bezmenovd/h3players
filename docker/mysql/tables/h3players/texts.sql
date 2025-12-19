@@ -8,6 +8,7 @@ CREATE TABLE texts (
     `entity_type` TINYINT UNSIGNED NOT NULL,
     `entity_id` INT UNSIGNED NOT NULL,
     `language` TINYINT UNSIGNED NOT NULL,
+    `tag` VARCHAR(16) DEFAULT NULL,
     `value` TEXT,
 
     `created_at` INT UNSIGNED NOT NULL,

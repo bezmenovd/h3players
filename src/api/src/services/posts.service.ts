@@ -2,10 +2,20 @@ import { Injectable } from '@nestjs/common';
 import mysql, { RowDataPacket } from 'mysql2/promise';
 import { Message, Post, PostWithInfo } from '../types/mysql/h3players';
 import { PlayersService } from './players.service';
+import { Player } from '../types/clickhouse/lobby';
+import { timestamp } from '../helpers/timestamp';
+import { PermissionsService } from './permissions.service';
+import { makeSlug } from '../helpers/string';
+import { OpenaiService } from './openai.service';
+import { als } from '../als';
 
 @Injectable()
 export class PostsService {
-    constructor(private readonly playersService: PlayersService) {}
+    constructor(
+        private readonly playersService: PlayersService,
+        private readonly permissonsService: PermissionsService,
+        private readonly openaiService: OpenaiService,
+    ) {}
 
     private mysql = mysql.createPool({
         host: 'h3players-mysql',
@@ -42,6 +52,82 @@ export class PostsService {
         );
 
         return this.enrichPosts(posts);
+    }
+
+    async addPost(player: Player, title: string, text: string, discussion_id: number): Promise<Post> {
+        let [rows] = await this.mysql.execute<({ count: number } & RowDataPacket)[]>(
+            'SELECT count(*) as count FROM `posts` WHERE player_id = ? AND created_at > ?',
+            [player.id, timestamp.startOfDay()]
+        )
+
+        if (rows[0].count >= 3 && ! await this.permissonsService.authorize(player, 'posts.add.unlimit')) {
+            throw new Error('day_limit')
+        }
+
+        title = title.trim()
+
+        if (title.length > 32) {
+            throw new Error('invalid_title')
+        }
+
+        const result = await this.openaiService.moderateAndTranslate(`${title}: ${text}`, als.getStore()!.language)
+
+        if (! result.isValid) {
+            this.permissonsService.handleViolation(player)
+            throw new Error(`failed_moderation:${result.reason}`)
+        }
+
+        const slug = makeSlug(title)
+        const now = timestamp.now()
+
+        await this.mysql.execute(
+            'INSERT INTO `posts` (player_id, discussion_id, slug, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',
+            [player.id, discussion_id, slug, now, now]
+        )
+        
+        const [postsAdded] = await this.mysql.execute<(Post & RowDataPacket)[]>(
+            'SELECT * FROM `posts` WHERE player_id = ? AND created_at = ?',
+            [player.id, now]
+        )
+
+        if (postsAdded.length === 0) {
+            throw new Error('fail')
+        }
+
+        await this.mysql.execute(
+            `INSERT INTO texts 
+            (player_id, entity_type, entity_id, tag, language, value, created_at, updated_at) 
+            VALUES
+            (?, 2, ?, ?, ?, ?, ?, ?)`,
+            [player.id, postsAdded[0].id, 'title', als.getStore()!.language, title, now, now]
+        )
+
+        await this.mysql.execute(
+            `INSERT INTO texts 
+            (player_id, entity_type, entity_id, tag, language, value, created_at, updated_at) 
+            VALUES
+            (?, 2, ?, ?, ?, ?, ?, ?)`,
+            [player.id, postsAdded[0].id, 'text', als.getStore()!.language, text, now, now]
+        )
+
+        Promise.all(result.translations.map(async (t) => {
+            await this.mysql.execute(
+                `INSERT INTO texts 
+                (player_id, entity_type, entity_id, tag, language, value, created_at, updated_at) 
+                VALUES
+                (?, 2, ?, ?, ?, ?, ?, ?)`,
+                [player.id, postsAdded[0].id, 'title', t.lang, t.value, now, now]
+            )
+            await this.mysql.execute(
+                `INSERT INTO texts 
+                (player_id, entity_type, entity_id, tag, language, value, created_at, updated_at) 
+                VALUES
+                (?, 2, ?, ?, ?, ?, ?, ?)`,
+                [player.id, postsAdded[0].id, 'text', t.lang, t.value, now, now]
+            )
+        }))
+
+        return postsAdded[0]
     }
     
     private async enrichPosts(posts: Post[]): Promise<PostWithInfo[]> {

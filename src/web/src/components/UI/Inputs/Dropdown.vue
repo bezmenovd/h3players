@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { ListItem } from './dropdown'
 
 const props = defineProps<{
@@ -48,6 +48,10 @@ let clickHandler = () => {
     focus.blur()
 }
 
+watch(() => props.value, (newValue) => {
+    selected.value = props.items.find(i => i.id === newValue)
+}, { deep: true })
+
 onMounted(() => {
     window.addEventListener('click', clickHandler)
 })
@@ -71,6 +75,7 @@ onBeforeUnmount(() => {
     display: flex;
     align-items: center;
     line-height: 16px;
+    white-space: nowrap;
 }
 .list {
     position: relative;
@@ -88,6 +93,7 @@ onBeforeUnmount(() => {
     padding: 8px 10px;
     font-size: 14px;
     border-bottom: 1px solid #272c3a;
+    white-space: nowrap;
 }
 .list-item:hover {
     background: #363a4c;

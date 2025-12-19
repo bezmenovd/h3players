@@ -189,11 +189,12 @@ onMounted(() => {
 }
 #discussions {
     display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 30px;
+    grid-template-columns: 1000px 1fr;
+    gap: 100px;
 }
 #discussions-items {
     width: 300px;
+    margin-right: auto;
     display: grid;
     gap: 1px;
     background: #272c3a;

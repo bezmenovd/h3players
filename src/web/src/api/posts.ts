@@ -24,4 +24,14 @@ export async function getList(discussionId?: number): Promise<PostWithInfo[]> {
     }).then(r => r.data)
 }
 
+export async function add(title: string, text: string, discussion_id: number): Promise<Post> {
+    return api.post('/posts', {
+        params: {
+            title,
+            text,
+            discussion_id,
+        }
+    }).then(r => r.data)
+}
+
 

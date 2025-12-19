@@ -2,8 +2,8 @@ import { BadRequestException, Body, Controller, ForbiddenException, Get, Post, R
 import { Request } from 'express';
 import { DiscussionsService } from '../services/discussions.service';
 import { UserService } from '../services/user.service';
-import { als } from '../als';
 import { PermissionsService } from '../services/permissions.service';
+import { als } from '../als';
 
 @Controller('discussions')
 export class DiscussionsController {
@@ -21,14 +21,16 @@ export class DiscussionsController {
     }
 
     @Post('/add')
-    async add(@Req() req: Request, @Body('name') name: string) {
-        let t = String(req.headers['token'])
+    async add(@Body('name') name: string) {
+        if (! name) {
+            throw new BadRequestException()
+        }
 
-        if (! t) {
+        if (! als.getStore()!.token) {
             throw new UnauthorizedException()
         }
 
-        let player = await this.userService.getUserPlayer(t)
+        let player = await this.userService.getUserPlayer(als.getStore()!.token)
 
         if (! player) {
             throw new UnauthorizedException()
@@ -42,11 +44,9 @@ export class DiscussionsController {
         }
 
         try {
-            await this.discussionsService.add(player, name, als.getStore()!.language)
+            return await this.discussionsService.add(player, name)
         } catch (e: any) {
             throw new BadRequestException(e.message)
         }
-        
-        return
     }
 }
