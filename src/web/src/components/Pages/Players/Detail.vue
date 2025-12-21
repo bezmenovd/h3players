@@ -59,8 +59,8 @@
                                     </div>
                                 </div>
                                 <div class="player-info-item">
-                                    <div class="player-info-item-label">{{ t('players.detail.overview.rank') }}</div>
-                                    <div class="player-info-item-value">{{ player.rank !== -1 ? player.rank : '?' }}</div>
+                                    <div class="player-info-item-label">{{ t('players.detail.overview.rank.text') }}</div>
+                                    <div class="player-info-item-value" :hint="t('players.detail.overview.rank.hint')">{{ player.rank !== -1 ? player.rank : '?' }}</div>
                                 </div>
                                 <div class="player-info-item">
                                     <div class="player-info-item-label">{{ t('players.detail.overview.max_rating') }}</div>

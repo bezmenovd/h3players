@@ -301,4 +301,21 @@ a:hover {
 .markdown p a:hover {
     box-shadow: 0 -2px 0 0 rgba(255, 255, 255, 0.726) inset;
 }
+.markdown pre {
+    background: #1a1e27;
+    padding: 5px;
+}
+.markdown pre * {
+    font-family: monospace !important;
+}
+.markdown pre code {
+    word-wrap: normal;
+    max-width: 100%;
+    width: 100%;
+    display: block;
+    white-space: normal;
+}
+.markdown hr {
+    opacity: .2;
+}
 </style>

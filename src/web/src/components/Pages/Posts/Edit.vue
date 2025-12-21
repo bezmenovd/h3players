@@ -7,15 +7,24 @@
             <Panel id="edit-panel">
                 <div id="edit-wrapper">
                     <div id="edit-title-group">
-                        <TextInput v-model="post.title" :placeholder="t('posts.edit.title.placeholder')" :max-length="100"/>
+                        <TextInput 
+                            v-model="post.title" 
+                            :placeholder="t('posts.edit.title.placeholder')" 
+                            :requirements="t('posts.edit.title.requirements')" 
+                            :max-length="100"
+                        />
                         <Dropdown :value="post.discussion_id" :items="discussions"/>
                     </div>
-                    <Textarea v-model="post.text" :placeholder="t('posts.edit.text.placeholder')"/>
+                    <Textarea 
+                        v-model="post.text" 
+                        :placeholder="t('posts.edit.text.placeholder')"
+                        :requirements="t('posts.edit.text.requirements')"
+                        :max-length="10000"
+                    />
                     <div id="post-save">
                         <div 
-                            :class="{'btn': true, 'disabled': post.title.trim().length < 5 , 'waiting': addModal.waiting }" 
-                            :hint="addModal.name.length < 5 ? t('discussions.list.add_modal.min_length') : ''"
-                            @click="addDiscussion"
+                            :class="{'btn': true, 'disabled': ! canSavePost, 'waiting': waiting }"
+                            @click="savePost"
                             >
                             <div class="btn-icon" style="background-image: url('/img/save.png')" />
                             {{ t('posts.edit.save') }}
@@ -42,22 +51,57 @@ import TextInput from '../../UI/Inputs/TextInput.vue';
 import Textarea from '../../UI/Inputs/Textarea.vue';
 import Dropdown from '../../UI/Inputs/Dropdown.vue';
 import { getList } from '../../../api/discussions';
-import { add } from '../../../api/posts';
+import { add, update } from '../../../api/posts';
+import { alerts } from '../../UI/alerts';
+import { throttle } from '../../../helpers/functions';
 
 const { t } = useI18n()
 const route = useRoute()
 
 const loading = ref(true)
 
+const postId = route.params.id && Number.isFinite(Number(route.params.id)) ? Number(route.params.id) : null
+
 const post = reactive({
-    title: '',
-    text: '',
+    id: postId,
+    title: postId ? '' : localStorage.getItem('tmp:posts:add:title') ?? '',
+    text: postId ? '' : localStorage.getItem('tmp:posts:add:text') ?? '',
     discussion_id: -1,
 })
 
-const canSave = computed(() => {
-    
+const waiting = ref(false)
+
+const canSavePost = computed(() => {
+    return post.title.length >= 5 
+        && post.title.length <= 32
+        && post.text.length >= 10
+        && post.text.length <= 10000
 })
+
+const savePost = () => {
+    if (waiting.value) {
+        return
+    }
+
+    waiting.value = true
+
+    const apiCall = post.id 
+        ? update(post.id, post.title, post.text, post.discussion_id)
+        : add(post.title, post.text, post.discussion_id)
+    
+    apiCall.then(() => {
+        waiting.value = false
+        alerts.send('', t('posts.edit.success'))
+        localStorage.removeItem('tmp:posts:add:title')
+        localStorage.removeItem('tmp:posts:add:text')
+    }).catch(err => {
+        if (err.response.data.message.split(':')[0] === 'failed_moderation') {
+            alerts.send('error', err.response.data.message.split(':')[1])
+        } else {
+            alerts.send('error', t('posts.edit.errors.' + err.response.data.message))
+        }
+    })
+}
 
 const discussions = ref<{ id: number, text: string }[]>([])
 
@@ -87,6 +131,13 @@ const tabs = [
 watch(() => route.params.tab, (newTabCode) => {
     tab.value = newTabCode !== undefined ? String(newTabCode) : '';
 }, { immediate: true });
+
+const saveTemporary = throttle(() => {
+    localStorage.setItem('tmp:posts:add:title', post.title)
+    localStorage.setItem('tmp:posts:add:text', post.text)
+}, 1000)
+
+watch(() => [post.title, post.text], saveTemporary)
 
 onMounted(() => {
     getList().then(r => {

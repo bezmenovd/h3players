@@ -115,7 +115,10 @@ export default {
                     text: 'Rating',
                     hint: 'Change today'
                 },
-                rank: 'Position',
+                rank: {
+                    text: 'Position',
+                    hint: 'Only players who have played at least one game after 27.06.2023 are included.',
+                },
                 max_rating: 'Max. Rating',
                 games_duration: {
                     text: 'Time in Games',

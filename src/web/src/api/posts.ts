@@ -4,10 +4,13 @@ import { MessageWithInfo } from "./messages"
 
 export type Post = {
     id: number
+    slug: string
     player_id: number
     discussion_id: number
     title: string
     text: string
+    created_at: number
+    updated_at: number
 }
 
 export type PostWithInfo = Post & {
@@ -25,12 +28,18 @@ export async function getList(discussionId?: number): Promise<PostWithInfo[]> {
 }
 
 export async function add(title: string, text: string, discussion_id: number): Promise<Post> {
-    return api.post('/posts', {
-        params: {
-            title,
-            text,
-            discussion_id,
-        }
+    return api.post('/posts/add', {
+        title,
+        text,
+        discussion_id,
+    }).then(r => r.data)
+}
+
+export async function update(id: number, title: string, text: string, discussion_id: number): Promise<Post> {
+    return api.post(`/posts/${id}`, {
+        title,
+        text,
+        discussion_id,
     }).then(r => r.data)
 }
 

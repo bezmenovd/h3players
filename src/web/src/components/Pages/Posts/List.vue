@@ -4,7 +4,7 @@
             <div id="posts">
                 <Header id="posts-top-panel">
                     <TextInput v-model="postsFilter.query" :placeholder="t('posts.filter.query')" :max-length="20"/>
-                    <Selector :value="postsFilter.sort.value" :items="postsFilter.sort.items"/>
+                    <Selector v-model="postsFilter.sort.value" :items="postsFilter.sort.items"/>
                     <div id="posts-add">
                         <div class="btn" @click="router.push({ name: 'posts.edit' })" v-if="userStore.hasNoRestriction()">
                             <div class="btn-icon" style="background-image: url('/img/add.png')"/>
@@ -17,7 +17,9 @@
                         <div id="posts-list-empty">{{ t('posts.list.empty') }}</div>
                     </template>
                     <template v-else>
-
+                        <template v-for="post in posts.list">
+                            <Post :post="post" />
+                        </template>
                     </template>
                 </div>
             </div>
@@ -41,6 +43,9 @@
                         {{ t('discussions.list.add.text') }}
                     </div>
                 </div>
+                <div id="discussions-info">
+                    <div id="discussions-mot" @click="infoModal.show = true">{{ t('discussions.list.mot') }}</div>
+                </div>
             </div>
         </div>
     </div>
@@ -48,10 +53,16 @@
     <Modal v-if="addModal.show" @close="addModal.show = false" :title="t('discussions.list.add_modal.title')">
         <div id="discussions-add-modal">
             <div id="discussions-add-modal-body">
-                <TextInput @keyup.enter="addDiscussion" id="discussions-add-modal-name-input" :placeholder="t('discussions.list.add_modal.name')" v-model="addModal.name" :max-length="32"/>
+                <TextInput 
+                    id="discussions-add-modal-name-input" 
+                    @keyup.enter="addDiscussion" 
+                    :placeholder="t('discussions.list.add_modal.name')"
+                    :requirements="t('discussions.list.add_modal.length')"
+                    v-model="addModal.name" :max-length="32"
+                />
             </div>
             <div 
-                :class="{'btn': true, 'disabled': addModal.name.trim().length < 5, 'waiting': addModal.waiting }" 
+                :class="{'btn': true, 'disabled': canAddDiscussion, 'waiting': addModal.waiting }" 
                 :hint="addModal.name.length < 5 ? t('discussions.list.add_modal.min_length') : ''"
                 @click="addDiscussion"
             >
@@ -60,10 +71,16 @@
             </div>
         </div>
     </Modal>
+
+    <Modal v-if="infoModal.show" @close="infoModal.show = false" :title="t('discussions.list.info_modal.title')">
+        <div id="discussions-info-modal">
+            <Markdown :source="info" class="markdown"/>
+        </div>
+    </Modal>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import Modal from '../../UI/Modal.vue';
 import Header from '../../UI/Table/Header.vue';
 import { useI18n } from 'vue-i18n';
@@ -75,8 +92,19 @@ import { alerts } from '../../UI/alerts';
 import Panel from '../../UI/Panel.vue';
 import { getList as getPosts, PostWithInfo } from '../../../api/posts';
 import router from '../../../router';
+import { useRoute } from 'vue-router';
+// @ts-ignore
+import Markdown from 'vue3-markdown-it';
+import ru from '../../../content/discussions/info/ru.md?raw';
+import en from '../../../content/discussions/info/en.md?raw';
+import pl from '../../../content/discussions/info/pl.md?raw';
+import { useSettingsStore } from '../../../stores/settings';
+import Post from '../../UI/Posts/Post.vue';
+
+const settingsStore = useSettingsStore()
 
 const { t } = useI18n()
+const route = useRoute()
 
 const userStore = useUserStore()
 
@@ -85,6 +113,20 @@ const addModal = reactive({
     show: false,
     waiting: false,
 })
+
+const infoModal = reactive({
+    show: false,
+})
+
+const info = ((): string => {
+    if (settingsStore.language === 1) {
+        return ru
+    }
+    if (settingsStore.language === 3) {
+        return pl
+    }
+    return en
+})()
 
 const discussions = reactive<{
     list: DiscussionWithInfo[],
@@ -105,12 +147,23 @@ const posts = reactive<{
 const postsFilter = reactive({
     query: '',
     sort: {
-        value: 1,
+        value: route.query.sort ? String(route.query.sort) : 'new',
         items: [
-            { id: 1, text: t('posts.filter.sort.items.new') },
-            { id: 2, text: t('posts.filter.sort.items.popular') },
+            { code: 'new', text: t('posts.filter.sort.items.new') },
+            { code: 'popular', text: t('posts.filter.sort.items.popular') },
+            { code: 'top', text: t('posts.filter.sort.items.top') },
         ]
     }
+})
+
+watch(() => postsFilter.sort.value, (newSortValue) => {
+    console.log(newSortValue)
+    router.replace({
+        query: {
+            ...route.query,
+            sort: newSortValue,
+        }
+    })
 })
 
 const addDiscussion = () => {
@@ -145,13 +198,30 @@ const selectDiscussion = (discussion: DiscussionWithInfo|null) => {
         posts.list = r
         posts.show = true
     })
+
+    router.push({
+        params: {
+            ...route.params,
+            discussion_id: discussion?.id ?? ''
+        },
+    });
 }
 
+const canAddDiscussion = computed<boolean>(() => {
+    return addModal.name.trim().length >= 5
+        && addModal.name.trim().length <= 32
+})
+
 onMounted(() => {
+    const discussionId = route.params.discussion_id && Number.isFinite(Number(route.params.discussion_id)) 
+        ? Number(route.params.discussion_id) 
+        : undefined
+
     getDiscussions().then(r => {
         discussions.list = r
+        discussions.active = r.find(d => d.id === discussionId) ?? null
     })
-    getPosts().then(r => {
+    getPosts(discussionId).then(r => {
         posts.list = r
         posts.show = true
     })
@@ -189,8 +259,20 @@ onMounted(() => {
 }
 #discussions {
     display: grid;
-    grid-template-columns: 1000px 1fr;
+    grid-template-columns: minmax(0px, 1000px) 300px;
     gap: 100px;
+    padding-right: 20px;
+}
+@media (max-width: 1600px) {
+    #discussions {
+        grid-template-columns: 1fr 200px;
+        gap: 50px;
+    }
+}
+#discussions-panel {
+    position: sticky;
+    top: 0;
+    height: fit-content;
 }
 #discussions-items {
     width: 300px;
@@ -199,11 +281,36 @@ onMounted(() => {
     gap: 1px;
     background: #272c3a;
 }
+@media (max-width: 1600px) {
+    #discussions-items {
+        width: 200px;
+    }
+}
 #discussions-add {
     width: fit-content;
     margin-top: 10px;
     display: flex;
     justify-content: center;
+}
+#discussions-info {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+#discussions-info-modal {
+    width: 800px;
+    padding: 20px;
+}
+#discussions-mot {
+    opacity: .6;
+    font-size: 14px;
+    width: fit-content;
+}
+#discussions-mot:hover {
+    cursor: pointer;
+    opacity: .8;
+    box-shadow: 0 -2px 0 0 rgba(255, 255, 255, 0.726) inset;
 }
 .discussion {
     display: flex;
@@ -249,6 +356,11 @@ onMounted(() => {
 }
 #posts-list-wrapper {
     max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding-top: 30px;
+
 }
 #posts-list-empty {
     width: 100%;

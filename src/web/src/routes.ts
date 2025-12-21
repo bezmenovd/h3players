@@ -60,12 +60,7 @@ export default [
         component: About,
     },
     {
-        path: '/posts',
-        name: 'posts',
-        component: PostList,
-    },
-    {
-        path: '/posts/edit',
+        path: '/posts/edit/:id?',
         name: 'posts.edit',
         component: PostEdit,
     },
@@ -73,6 +68,11 @@ export default [
         path: '/posts/@:slug',
         name: 'posts.view',
         component: PostView,
+    },
+    {
+        path: '/posts/:discussion_id?',
+        name: 'posts',
+        component: PostList,
     },
     {
         path: '/privacy-policy',

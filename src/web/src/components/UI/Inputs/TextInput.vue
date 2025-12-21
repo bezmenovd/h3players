@@ -1,5 +1,5 @@
 <template>
-    <div :class="{'input-wrapper': true, 'empty': modelValue.length === 0 }" :data-placeholder="props.placeholder">
+    <div :class="{'input-wrapper': true, 'empty': modelValue.length === 0 }" :data-placeholder="props.placeholder" :data-requirements="props.requirements">
         <input type="text" 
             v-model="modelValue" 
             :maxlength="props.maxLength"
@@ -14,7 +14,8 @@
 const modelValue = defineModel<string>({ default: '' })
 
 const props = defineProps<{
-    placeholder: string
+    placeholder?: string
+    requirements?: string
     maxLength?: number
 }>()
 
@@ -29,11 +30,22 @@ const props = defineProps<{
     content: attr(data-placeholder);
     pointer-events: none;
     position: absolute;
-    left: 12px;
+    left: 11px;
     color: #ffffff4a;
     font-size: 16px;
     line-height: 16px;
-    top: 50%;
+    top: calc(50% + 1px);
+    transform: translateY(-50%);
+}
+.input-wrapper.empty::after {
+    content: attr(data-requirements);
+    pointer-events: none;
+    position: absolute;
+    right: 11px;
+    color: #ffffff4a;
+    font-size: 14px;
+    line-height: 16px;
+    top: calc(50% + 1px);
     transform: translateY(-50%);
 }
 .input-wrapper input {

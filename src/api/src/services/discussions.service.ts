@@ -59,7 +59,7 @@ export class DiscussionsService {
 
         name = name.trim()
 
-        if (name.length > 32) {
+        if (name.length < 5 || name.length > 32) {
             throw new Error('invalid_name')
         }
 

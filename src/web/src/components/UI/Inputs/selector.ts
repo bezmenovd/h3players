@@ -1,5 +1,5 @@
 
 export type SelectorItem = {
-    id: number
+    code: string
     text: string
 }

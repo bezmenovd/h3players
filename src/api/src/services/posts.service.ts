@@ -28,12 +28,14 @@ export class PostsService {
         const [posts] = await this.mysql.execute<(Post & RowDataPacket)[]>(
             `SELECT 
                 p.*,
-                t.value as text
+                t1.value as title,
+                t2.value as text
             FROM posts p
-            LEFT JOIN texts t on t.entity_id = p.id AND t.entity_type = 2
+            LEFT JOIN texts t1 on t1.entity_id = p.id AND t1.entity_type = 2 AND t1.language = ? AND t1.tag = 'title'
+            LEFT JOIN texts t2 on t2.entity_id = p.id AND t2.entity_type = 2 AND t2.language = ? AND t2.tag = 'text'
             WHERE p.deleted_at IS NULL
             ORDER BY p.created_at DESC`,
-            []
+            [als.getStore()!.language, als.getStore()!.language]
         );
 
         return this.enrichPosts(posts);
@@ -43,12 +45,14 @@ export class PostsService {
         const [posts] = await this.mysql.execute<(Post & RowDataPacket)[]>(
             `SELECT 
                 p.*,
-                t.value as text
+                t1.value as title,
+                t2.value as text
             FROM posts p
-            LEFT JOIN texts t on t.entity_id = p.id AND t.entity_type = 2
+            LEFT JOIN texts t1 on t1.entity_id = p.id AND t1.entity_type = 2 AND t1.language = ? AND t1.tag = 'title'
+            LEFT JOIN texts t2 on t2.entity_id = p.id AND t2.entity_type = 2 AND t2.language = ? AND t2.tag = 'text'
             WHERE p.deleted_at IS NULL AND p.discussion_id = ? 
             ORDER BY p.created_at DESC`,
-            [discussionId]
+            [als.getStore()!.language, als.getStore()!.language, discussionId]
         );
 
         return this.enrichPosts(posts);
@@ -66,15 +70,25 @@ export class PostsService {
 
         title = title.trim()
 
-        if (title.length > 32) {
+        if (title.length < 5 || title.length > 32) {
             throw new Error('invalid_title')
         }
+        if (text.length < 10 || text.length > 10000) {
+            throw new Error('invalid text')
+        }
 
-        const result = await this.openaiService.moderateAndTranslate(`${title}: ${text}`, als.getStore()!.language)
+        const resultTitle = await this.openaiService.moderateAndTranslate(title, als.getStore()!.language)
 
-        if (! result.isValid) {
+        if (! resultTitle.isValid) {
             this.permissonsService.handleViolation(player)
-            throw new Error(`failed_moderation:${result.reason}`)
+            throw new Error(`failed_moderation:${resultTitle.reason}`)
+        }
+
+        const resultText = await this.openaiService.moderateAndTranslate(text, als.getStore()!.language)
+
+        if (! resultText.isValid) {
+            this.permissonsService.handleViolation(player)
+            throw new Error(`failed_moderation:${resultText.reason}`)
         }
 
         const slug = makeSlug(title)
@@ -110,7 +124,7 @@ export class PostsService {
             [player.id, postsAdded[0].id, 'text', als.getStore()!.language, text, now, now]
         )
 
-        Promise.all(result.translations.map(async (t) => {
+        Promise.all(resultTitle.translations.map(async (t) => {
             await this.mysql.execute(
                 `INSERT INTO texts 
                 (player_id, entity_type, entity_id, tag, language, value, created_at, updated_at) 
@@ -118,6 +132,9 @@ export class PostsService {
                 (?, 2, ?, ?, ?, ?, ?, ?)`,
                 [player.id, postsAdded[0].id, 'title', t.lang, t.value, now, now]
             )
+        }))
+
+        Promise.all(resultText.translations.map(async (t) => {
             await this.mysql.execute(
                 `INSERT INTO texts 
                 (player_id, entity_type, entity_id, tag, language, value, created_at, updated_at) 

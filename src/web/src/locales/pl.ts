@@ -115,7 +115,10 @@ export default {
                     text: 'Ocena',
                     hint: 'Zmiana dziś'
                 },
-                rank: 'Pozycja',
+                rank: {
+                    text: 'Pozycja',
+                    hint: 'Uwzględniani są tylko gracze, którzy rozegrali co najmniej jedną grę po 27.06.2023.',
+                },
                 max_rating: 'Maks. ocena',
                 games_duration: {
                     text: 'Czas w grach',

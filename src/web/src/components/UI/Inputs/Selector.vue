@@ -2,7 +2,7 @@
     <div class="selector" @click.stop>
         <div 
             v-for="item in items" 
-            :class="`selector-item ${item.id === selected?.id ? 'selected' : ''}`" 
+            :class="`selector-item ${item.code === selected?.code ? 'selected' : ''}`" 
             @mousedown="selectItem(item)"
         >
             {{ item.text }}
@@ -11,23 +11,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { ListItem } from './dropdown'
+import { computed, ref } from 'vue'
+import { SelectorItem } from './selector';
+
+const modelValue = defineModel<string>({ default: '' })
 
 const props = defineProps<{
-    value: number,
-    items: ListItem[],
+    items: SelectorItem[],
 }>()
 
-const emit = defineEmits({
-    select(item: ListItem) {}
+const selected = computed<SelectorItem|undefined>(() => {
+    return props.items.find(i => i.code === modelValue.value)
 })
 
-const selected = ref(props.items.find(i => i.id === props.value))
-
-const selectItem = function(item: ListItem) {
-    selected.value = item
-    emit('select', item)
+const selectItem = function(item: SelectorItem) {
+    modelValue.value = item.code
 }
 
 </script>
@@ -39,6 +37,7 @@ const selectItem = function(item: ListItem) {
     height: 100%;
     display: flex;
     align-items: center;
+    gap: 1px;
 }
 .selector-item {
     padding: 8px 14px;

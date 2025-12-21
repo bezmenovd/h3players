@@ -1,5 +1,4 @@
 import { BadRequestException, Body, Controller, ForbiddenException, Get, Post, Query, Req, UnauthorizedException } from '@nestjs/common';
-import { Request } from 'express';
 import { UserService } from '../services/user.service';
 import { PostsService } from '../services/posts.service';
 import { PostWithInfo } from '../types/mysql/h3players';
