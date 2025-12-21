@@ -9,3 +9,10 @@ Translation prompt used:
 ```
 <...> Requirements: similar structure, preservation of original formatting and style <...>
 ```
+
+
+### Moderation
+
+If you find a post that bypassed pre-moderation but violates site rules or common sense, please report it (using the button at the bottom of the post).
+
+Any post that receives 3 reports is automatically hidden from the main feed pending manual review (abusing this feature will lead to personal account restrictions).

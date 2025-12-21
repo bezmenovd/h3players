@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, ForbiddenException, Get, Post, Query, Req, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Body, Controller, ForbiddenException, Get, NotFoundException, Param, Post, Query, Req, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { PostsService } from '../services/posts.service';
 import { PostWithInfo } from '../types/mysql/h3players';
@@ -14,15 +14,19 @@ export class PostsController {
     ) {}
 
     @Get('/')
-    async getList(@Query('discussionId') discussionId?: number) {
+    async getList(
+        @Query('discussionId') discussionId?: number,
+        @Query('sort') sort?: string,
+        @Query('query') query?: string,
+    ) {
         let dId = Number(discussionId)
 
         let posts: PostWithInfo[] = []
         
         if (Number.isFinite(dId)) {
-            posts = await this.postsService.getDiscussionPostsList(dId)
+            posts = await this.postsService.getDiscussionPostsList(dId, sort, query)
         } else {
-            posts = await this.postsService.getList()
+            posts = await this.postsService.getList(sort, query)
         }
 
         return posts
@@ -57,5 +61,63 @@ export class PostsController {
         } catch (e: any) {
             throw new BadRequestException(e.message)
         }
+    }
+
+    @Post('/:id/register_view')
+    async registerView(
+        @Param('id') id: number,
+    ) {
+        if (! id) {
+            throw new BadRequestException()
+        }
+        
+        if (! als.getStore()!.token) {
+            throw new UnauthorizedException()
+        }
+
+        let player = await this.userService.getUserPlayer(als.getStore()!.token)
+
+        if (! player) {
+            throw new UnauthorizedException()
+        }
+
+        await this.postsService.registerView(player, id)
+    }
+
+    @Post('/:id/vote')
+    async vote(
+        @Param('id') id: number,
+        @Body('type') type: number,
+    ) {
+        if (! id || ! [1,2].includes(type)) {
+            throw new BadRequestException()
+        }
+        
+        if (! als.getStore()!.token) {
+            throw new UnauthorizedException()
+        }
+
+        let player = await this.userService.getUserPlayer(als.getStore()!.token)
+
+        if (! player) {
+            throw new UnauthorizedException()
+        }
+
+        await this.postsService.vote(player, id, type)
+    }
+
+    @Get('/by_slug/:slug')
+    async getBySlug(@Param('slug') slug: string) {
+        if (!slug) {
+            throw new BadRequestException();
+        }
+
+        const post = await this.postsService.getBySlug(slug)
+
+        if (! post) {
+            throw new NotFoundException()
+        }
+
+        return post
     }
 }

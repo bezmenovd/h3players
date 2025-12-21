@@ -17,3 +17,5 @@ h3players.com - неофициальный некоммерческий прое
 - h3players_bot8
 - h3players_bot9
 - h3players_test
+
+E-mail для связи: contact@h3players.com

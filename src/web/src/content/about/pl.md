@@ -17,3 +17,5 @@ Konta należące do h3players.com:
 - h3players_bot8
 - h3players_bot9
 - h3players_test
+
+E-mail kontaktowy: contact@h3players.com

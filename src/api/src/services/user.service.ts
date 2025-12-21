@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { createClient } from '@clickhouse/client';
 import mysql, { RowDataPacket } from 'mysql2/promise';
 import { Player } from '../types/clickhouse/lobby';
+import { als } from '../als';
 
 @Injectable()
 export class UserService {
@@ -46,5 +47,28 @@ export class UserService {
         }
 
         return players[0]
+    }
+
+    async getBlacklist(player: Player): Promise<number[]> {
+        let [rows] = await this.mysql.execute<({ target_player_id: number } & RowDataPacket)[]>(
+            'SELECT target_player_id FROM `blacklist` WHERE player_id = ?',
+            [player.id]
+        )
+
+        return rows.map(r => r.target_player_id)
+    }
+
+    async addToBlacklist(player: Player, target: Player): Promise<void> {
+        await this.mysql.execute(
+            'INSERT IGNORE INTO `blacklist` (player_id, target_player_id) VALUES (?, ?)',
+            [player.id, target.id]
+        );
+    }
+
+    async removeFromBlacklist(player: Player, target: Player): Promise<void> {
+        await this.mysql.execute(
+            'DELETE FROM `blacklist` WHERE player_id = ? AND target_player_id = ?',
+            [player.id, target.id]
+        );
     }
 }

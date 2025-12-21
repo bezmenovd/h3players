@@ -40,7 +40,9 @@ const loading = ref({
 const userStore = useUserStore()
 
 preload(resources.app, () => loading.value.counter++).then(() => {
-    userStore.load()
+    if (userStore.token) {
+        userStore.load()
+    }
     connect()
     loading.value.show = false
     loading.value.is = false
@@ -224,6 +226,9 @@ a:hover {
 .btn.waiting {
     opacity: .7;
 }
+.btn.disabled {
+    opacity: .5;
+}
 .btn.disabled::before {
     content: '';
     position: absolute;
@@ -317,5 +322,10 @@ a:hover {
 }
 .markdown hr {
     opacity: .2;
+}
+.markdown code {
+    background: #1a1e27;
+    padding: 0 4px;
+    user-select: all;
 }
 </style>

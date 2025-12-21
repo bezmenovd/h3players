@@ -16,6 +16,7 @@ export const useUserStore = defineStore('user', () => {
         permissions: [],
         restriction: null,
     })
+    const blacklist = ref<number[]>([])
 
     token.value = '4c285ce1c84e87053dd281a479d5bd7f'
     player.id = 1
@@ -52,6 +53,7 @@ export const useUserStore = defineStore('user', () => {
             player.id = p.id
             player.name = p.name
             player.permissions = p.permissions
+            blacklist.value = p.blacklist
         }).catch(() => {})
     }
 
@@ -68,6 +70,7 @@ export const useUserStore = defineStore('user', () => {
     return {
         token,
         player,
+        blacklist,
         isAuthenticated,
         hasPermission,
         hasNoRestriction,

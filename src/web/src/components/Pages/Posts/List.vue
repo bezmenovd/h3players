@@ -6,14 +6,21 @@
                     <TextInput v-model="postsFilter.query" :placeholder="t('posts.filter.query')" :max-length="20"/>
                     <Selector v-model="postsFilter.sort.value" :items="postsFilter.sort.items"/>
                     <div id="posts-add">
-                        <div class="btn" @click="router.push({ name: 'posts.edit' })" v-if="userStore.hasNoRestriction()">
+                        <div 
+                            v-if="userStore.hasNoRestriction()"
+                            :class="{'btn': true, 'disabled': ! userStore.isAuthenticated }" 
+                            @click="userStore.isAuthenticated && router.push({ name: 'posts.edit' })" 
+                        >
                             <div class="btn-icon" style="background-image: url('/img/add.png')"/>
                             {{ t('posts.add') }}
                         </div>
                     </div>
                 </Header>
                 <div id="posts-list-wrapper">
-                    <template v-if="posts.list.length === 0">
+                    <template v-if="postsFilter.waiting">
+                        <div id="posts-list-loading">{{ t('posts.list.loading') }}</div>
+                    </template>
+                    <template v-else-if="posts.list.length === 0">
                         <div id="posts-list-empty">{{ t('posts.list.empty') }}</div>
                     </template>
                     <template v-else>
@@ -62,7 +69,7 @@
                 />
             </div>
             <div 
-                :class="{'btn': true, 'disabled': canAddDiscussion, 'waiting': addModal.waiting }" 
+                :class="{'btn': true, 'disabled': ! canAddDiscussion, 'waiting': addModal.waiting }" 
                 :hint="addModal.name.length < 5 ? t('discussions.list.add_modal.min_length') : ''"
                 @click="addDiscussion"
             >
@@ -100,6 +107,7 @@ import en from '../../../content/discussions/info/en.md?raw';
 import pl from '../../../content/discussions/info/pl.md?raw';
 import { useSettingsStore } from '../../../stores/settings';
 import Post from '../../UI/Posts/Post.vue';
+import { debounce } from '../../../helpers/functions';
 
 const settingsStore = useSettingsStore()
 
@@ -138,14 +146,12 @@ const discussions = reactive<{
 
 const posts = reactive<{
     list: PostWithInfo[],
-    show: boolean,
 }>({
     list: [],
-    show: false,
 })
 
 const postsFilter = reactive({
-    query: '',
+    query: route.query.query ? String(route.query.query) : '',
     sort: {
         value: route.query.sort ? String(route.query.sort) : 'new',
         items: [
@@ -153,18 +159,28 @@ const postsFilter = reactive({
             { code: 'popular', text: t('posts.filter.sort.items.popular') },
             { code: 'top', text: t('posts.filter.sort.items.top') },
         ]
-    }
+    },
+    waiting: true
 })
 
-watch(() => postsFilter.sort.value, (newSortValue) => {
-    console.log(newSortValue)
+const updatePosts = debounce(() => {
     router.replace({
         query: {
             ...route.query,
-            sort: newSortValue,
+            sort: postsFilter.sort.value,
+            query: postsFilter.query,
         }
     })
-})
+
+    postsFilter.waiting = true
+
+    getPosts(discussions.active?.id ?? null, postsFilter.sort.value, postsFilter.query).then(r => {
+        posts.list = r
+        postsFilter.waiting = false
+    })
+}, 300)
+
+watch(() => [postsFilter.sort.value, postsFilter.query], () => updatePosts())
 
 const addDiscussion = () => {
     if (addModal.waiting) {
@@ -193,10 +209,11 @@ const addDiscussion = () => {
 
 const selectDiscussion = (discussion: DiscussionWithInfo|null) => {
     discussions.active = discussion
+    postsFilter.waiting = true
 
-    getPosts(discussion?.id).then(r => {
+    getPosts(discussion?.id ?? null).then(r => {
         posts.list = r
-        posts.show = true
+        postsFilter.waiting = false
     })
 
     router.push({
@@ -215,15 +232,15 @@ const canAddDiscussion = computed<boolean>(() => {
 onMounted(() => {
     const discussionId = route.params.discussion_id && Number.isFinite(Number(route.params.discussion_id)) 
         ? Number(route.params.discussion_id) 
-        : undefined
+        : null
 
     getDiscussions().then(r => {
         discussions.list = r
         discussions.active = r.find(d => d.id === discussionId) ?? null
     })
-    getPosts(discussionId).then(r => {
+    getPosts(discussionId, postsFilter.sort.value, postsFilter.query).then(r => {
         posts.list = r
-        posts.show = true
+        postsFilter.waiting = false
     })
 })
 
@@ -363,6 +380,15 @@ onMounted(() => {
 
 }
 #posts-list-empty {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    opacity: .5;
+}
+#posts-list-loading {
     width: 100%;
     height: 300px;
     display: flex;

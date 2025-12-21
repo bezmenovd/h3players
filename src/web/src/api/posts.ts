@@ -1,5 +1,6 @@
 import api from "../api"
 import { MessageWithInfo } from "./messages"
+import { VoteWithInfo } from "./votes"
 
 
 export type Post = {
@@ -11,18 +12,22 @@ export type Post = {
     text: string
     created_at: number
     updated_at: number
+    views_count: number
 }
 
 export type PostWithInfo = Post & {
     player_name: string
     comments: MessageWithInfo[]
+    votes: VoteWithInfo[]
 }
 
 
-export async function getList(discussionId?: number): Promise<PostWithInfo[]> {
+export async function getList(discussionId: number|null, sort: string = 'new', query: string = ''): Promise<PostWithInfo[]> {
     return api.get('/posts', {
         params: {
             discussionId,
+            sort,
+            query,
         }
     }).then(r => r.data)
 }
@@ -43,4 +48,17 @@ export async function update(id: number, title: string, text: string, discussion
     }).then(r => r.data)
 }
 
+export async function registerView(id: number): Promise<void> {
+    return api.post(`/posts/${id}/register_view`)
+}
+
+export async function vote(id: number, type: number): Promise<void> {
+    return api.post(`/posts/${id}/vote`, {
+        type,
+    })
+}
+
+export async function getBySlug(slug: string): Promise<PostWithInfo> {
+    return api.get(`/posts/by_slug/${slug}`).then(r => r.data)
+}
 

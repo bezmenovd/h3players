@@ -2,8 +2,13 @@
 export async function loadImg(url: string) {
     return new Promise<void>(async (resolve) => {
         let img = new Image()
+        img.crossOrigin = "anonymous";
         img.src = url
         img.onload = (e) => resolve()
+
+        if (img.complete) {
+            resolve();
+        }
     })
 }
 

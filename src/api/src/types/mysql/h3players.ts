@@ -23,6 +23,17 @@ export type Message = {
 
 export type MessageWithInfo = Message & {
     player_name: string
+    votes: VoteWithInfo[]
+}
+
+export type Vote = {
+    player_id: number
+    type: number
+    at: number
+}
+
+export type VoteWithInfo = Vote & {
+    player_name: string
 }
 
 export type Post = {
@@ -31,11 +42,13 @@ export type Post = {
     discussion_id: number
     title: string
     text: string
+    views_count: number
 }
 
 export type PostWithInfo = Post & {
     player_name: string
     comments: MessageWithInfo[]
+    votes: VoteWithInfo[]
 }
 
 export type Restriction = {

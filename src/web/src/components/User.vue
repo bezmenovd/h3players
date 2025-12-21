@@ -14,7 +14,7 @@
                     <div id="user-icon"></div>
                     {{ t('user.login_btn') }}
                 </div>
-                <div id="user-settings-button" class="btn" @click="showSettingsModal = true">
+                <div id="user-settings-button" class="btn" style="padding: 5px 4px" @click="showSettingsModal = true">
                     <div class="user-settings-icon"></div>
                 </div>
             </div>

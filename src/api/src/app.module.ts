@@ -26,6 +26,8 @@ import { PostsService } from './services/posts.service';
 import { OpenaiService } from './services/openai.service';
 import { AlsMiddleware } from './middlewares/als';
 import { PermissionsService } from './services/permissions.service';
+import { ReportsService } from './services/reports.service';
+import { ReportsController } from './controllers/reports.controller';
 
 
 @Module({
@@ -42,6 +44,7 @@ import { PermissionsService } from './services/permissions.service';
         UserController,
         DiscussionsController,
         PostsController,
+        ReportsController,
     ],
     providers: [
         { provide: APP_INTERCEPTOR, useClass: LimiterInterceptor },
@@ -58,6 +61,7 @@ import { PermissionsService } from './services/permissions.service';
         DiscussionsService,
         PostsService,
         OpenaiService,
+        ReportsService,
     ],
 })
 export class AppModule implements NestModule {

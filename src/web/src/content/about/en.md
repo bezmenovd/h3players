@@ -17,3 +17,5 @@ Accounts belonging to h3players.com:
 - h3players_bot8
 - h3players_bot9
 - h3players_test
+
+Contact e-mail: contact@h3players.com

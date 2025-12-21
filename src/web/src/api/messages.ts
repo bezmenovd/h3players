@@ -1,3 +1,4 @@
+import { VoteWithInfo } from "./votes"
 
 
 export type Message = {
@@ -10,5 +11,6 @@ export type Message = {
 
 export type MessageWithInfo = Message & {
     player_name: string
+    votes: VoteWithInfo[]
 }
 

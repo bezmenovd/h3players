@@ -12,8 +12,16 @@ export type Restriction = {
 export type Me = Player & {
     permissions: string[]
     restriction: Restriction|null
+    blacklist: number[]
 }
 
 export async function getMe(): Promise<Me|null> {
     return api.get(`/user/me`).then(r => r.data);
+}
+
+export async function blacklist(target_id: number, add: boolean = true): Promise<void> {
+    return api.post('/user/blacklist', {
+        target_id,
+        add,
+    }).then(r => r.data)
 }

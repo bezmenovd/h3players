@@ -8,8 +8,7 @@ CREATE TABLE votes (
     `entity_id` INT UNSIGNED NOT NULL,
     `type` TINYINT NOT NULL,
     
-    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `at` INT UNSIGNED NOT NULL,
 
-    PRIMARY KEY (`player_id`, `entity_type`, `entity_id`),
-    INDEX (`entity_type`, `entity_id`)
+    PRIMARY KEY (`player_id`, `entity_type`, `entity_id`)
 );

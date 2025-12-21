@@ -10,3 +10,8 @@ Użyty prompt tłumaczenia:
 <...> Wymagania: podobna struktura, zachowanie oryginalnego formatowania i stylu <...>
 ```
 
+### Moderacja
+
+Jeśli znajdziesz post, który przeszedł premoderację, ale narusza zasady serwisu lub zdrowy rozsądek — zgłoś naruszenie (przycisk na dole posta).
+
+Post, który otrzyma 3 zgłoszenia, zostaje automatycznie ukryty z kanału głównego do czasu ręcznej weryfikacji (nadużywanie tej funkcji do innych celów spowoduje nałożenie osobistych ograniczeń).
