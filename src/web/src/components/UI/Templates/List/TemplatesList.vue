@@ -2,9 +2,9 @@
     <div class="templates-list">
         <div class="template" v-for="template in props.items">
             <div :class="`template-name ${nameClass(template)}`">
-                <!-- <router-link :to="{ name: 'template.detail', params: { id: player.id } }"> -->
+                <router-link :to="{ name: 'templates.detail', params: { id: template.id } }">
                     {{ name(template) }}
-                <!-- </router-link> -->
+                </router-link>
             </div>
             <div class="template-games-count">{{ gamesCount(template) }}</div>
         </div>
@@ -94,10 +94,10 @@ const gamesCount = (template: TemplateWithInfo): string => {
 .template-name.scenario {
     color: gray;
 }
-.template-name.blue {
+.template-name.blue * {
     color: #7b7ba0;
 }
-.template-name.gold {
+.template-name.gold * {
     color: #e6c24c;
 }
 .template-games-count {

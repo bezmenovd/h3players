@@ -1,5 +1,6 @@
-import { Controller, Get, NotFoundException, Param, Query } from '@nestjs/common';
+import { BadRequestException, Controller, Get, NotFoundException, Param, Query } from '@nestjs/common';
 import { TemplatesService } from '../services/templates.service';
+import { BadRequestError } from 'openai';
 
 @Controller('templates')
 export class TemplatesController {
@@ -20,5 +21,28 @@ export class TemplatesController {
         let data = await this.templatesService.getList(l, o, i, q)
 
         return data
+    }
+
+    @Get('/:id')
+    async get(
+        @Param('id') id?: string
+    ) {
+        let i = Number(id)
+
+        if (! Number.isFinite(i)) {
+            throw new BadRequestException()
+        }
+
+        let template = await this.templatesService.getTemplate(i)
+        if (! template) {
+            throw new NotFoundException()
+        }
+
+        let versions = await this.templatesService.getVersions(template.name)
+
+        return {
+            template,
+            versions,
+        }
     }
 }

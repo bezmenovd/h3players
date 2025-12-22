@@ -25,10 +25,14 @@ export class GamesService {
                 WHERE id in (
                     SELECT id from games_mv_history_table
                     ORDER BY end_timestamp_desc ASC, id ASC
-                    LIMIT ${limit} OFFSET ${offset}
+                    LIMIT {limit:UInt32} OFFSET {offset:UInt32}
                 )
                 ORDER BY end_timestamp DESC, id DESC
             `,
+            query_params: {
+                offset,
+                limit,
+            },
             format: 'JSONEachRow',
         })).json<GameWithInfo>()
 

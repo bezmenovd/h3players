@@ -3,6 +3,7 @@ import PlayersSearch from './components/Pages/Players/Search.vue'
 import PlayersList from './components/Pages/Players/List.vue'
 import PlayersDetail from './components/Pages/Players/Detail.vue'
 import TemplatesList from './components/Pages/Templates/List.vue'
+import TemplatesDetail from './components/Pages/Templates/Detail.vue'
 import Games from './components/Pages/Lobby/Games.vue';
 import NotFound from './components/Pages/NotFound.vue';
 import Changelog from './components/Pages/Changelog.vue'
@@ -38,6 +39,11 @@ export default [
         path: '/templates',
         name: 'templates',
         component: TemplatesList,
+    },
+    {
+        path: '/templates/:id',
+        name: 'templates.detail',
+        component: TemplatesDetail,
     },
     {
         path: '/',

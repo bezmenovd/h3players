@@ -23,7 +23,7 @@ export class GamesVService {
                 FROM games_v
                 WHERE player_id = {playerId:UInt32}
                 ORDER BY end_timestamp DESC, game_id DESC
-                LIMIT ${limit} OFFSET ${offset}
+                LIMIT {limit:UInt32} OFFSET {offset:UInt32}
             `,
             query_params: {
                 playerId,

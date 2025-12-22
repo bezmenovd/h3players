@@ -79,10 +79,12 @@ export class LobbyService {
                 WHERE end_timestamp >= {startOfDay:UInt32}
                 GROUP BY player_id
                 ORDER BY rating_diff ${(anti ? 'ASC' : 'DESC')}, end_timestamp_max DESC
-                LIMIT ${limit} OFFSET ${offset}
+                LIMIT {limit:UInt32} OFFSET {offset:UInt32}
             `,
             query_params: {
                 startOfDay: timestamp.startOfDay(),
+                limit,
+                offset,
             },
             format: 'JSONEachRow',
         })).json<DailyTopPlayerWithRatingDiff>()
@@ -106,10 +108,12 @@ export class LobbyService {
                 WHERE end_timestamp >= {startOfDay:UInt32} AND template_id != 1
                 GROUP BY player_id
                 ORDER BY games_count DESC, end_timestamp_max DESC
-                LIMIT ${limit} OFFSET ${offset}
+                LIMIT {limit:UInt32} OFFSET {offset:UInt32}
             `,
             query_params: {
                 startOfDay: timestamp.startOfDay(),
+                limit,
+                offset,
             },
             format: 'JSONEachRow',
         })).json<DailyTopPlayerWithGamesCount>()

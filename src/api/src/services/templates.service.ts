@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { createClient } from '@clickhouse/client';
-import { TemplateWithInfo } from '../types/clickhouse/lobby';
+import { Template, TemplateWithInfo } from '../types/clickhouse/lobby';
 import { Paginated } from '../types/api';
 
 @Injectable()
@@ -31,13 +31,13 @@ export class TemplatesService {
     
         const sql = `
             SELECT 
-                min(templates.id) as id,
-                templates.name as name,
-                count(games.id) as games_count
-            FROM templates
-            LEFT JOIN games ON templates.id = games.template_id
+                min(t.id) as id,
+                t.name,
+                SUM(t_gc.games_count) as games_count
+            FROM templates AS t
+            LEFT JOIN templates_mv_gc_table AS t_gc ON t.id = t_gc.id
             ${where}
-            GROUP BY templates.name
+            GROUP by templates.name
             ${orderBy}
             LIMIT {limit:UInt32} OFFSET {offset:UInt32}
         `
@@ -54,7 +54,6 @@ export class TemplatesService {
             FROM (
                 SELECT 1
                 FROM templates
-                LEFT JOIN games ON templates.id = games.template_id
                 ${where}
                 GROUP BY templates.name
             )
@@ -73,5 +72,37 @@ export class TemplatesService {
                 games_count: Number(i.games_count),
             })),
         }
+    }
+
+    async getTemplate(id: number): Promise<Template|null> {
+        const templates = await (await this.clickhouse.query({
+            query: `
+                SELECT *
+                FROM templates
+                WHERE id = {id:UInt32}
+            `,
+            query_params: { 
+                id,
+            },
+            format: 'JSONEachRow',
+        })).json<Template>()
+
+        return templates.length > 0 ? templates[0] : null
+    }
+
+    async getVersions(name: string): Promise<Template[]> {
+        const templates = await (await this.clickhouse.query({
+            query: `
+                SELECT *
+                FROM templates
+                WHERE name = {name:String}
+            `,
+            query_params: { 
+                name,
+            },
+            format: 'JSONEachRow',
+        })).json<Template>()
+
+        return templates
     }
 }

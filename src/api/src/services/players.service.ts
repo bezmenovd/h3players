@@ -73,10 +73,11 @@ export class PlayersService {
                 players
                 WHERE positionCaseInsensitive(name, {query:String}) > 0
                 ORDER BY levenshteinDistanceUTF8(upper(name), {query:String}) ASC
-                LIMIT ${limit}
+                LIMIT {limit:UInt32}
             `,
             query_params: {
                 query, 
+                limit,
             },
             format: 'JSONEachRow',
         })).json<Player>()

@@ -20,3 +20,12 @@ export async function getList(limit: number, offset: number, ids: number[] = [],
         }
     }).then(r => r.data);
 }
+
+export type TemplateDetailInfo = {
+    template: Template
+    versions: Template[]
+}
+
+export async function getTemplate(id: number): Promise<TemplateDetailInfo> {
+    return api.get(`/templates/${id}`).then(r => r.data)
+}
