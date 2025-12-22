@@ -14,8 +14,29 @@ export type Template = {
     name: string
 }
 
-export type TemplateWithInfo = Template & {
+export type TemplateStats = {
     games_count: number
+    games_duration: number
+    players_count: number
+}
+
+export type TemplateGamesChartItem = {
+    start_of_day: number
+    games_count: number
+}
+
+export type TemplatesDurationChartItem = {
+    duration: number
+    games_count: number
+}
+
+export type TemplatesEndDayChartItem = {
+    end_day: number
+    games_count: number
+}
+
+export type TemplateWithInfo = Template & TemplateStats & {
+
 }
 
 export type GameV = {

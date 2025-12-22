@@ -1,6 +1,6 @@
 import { BadRequestException, Controller, Get, NotFoundException, Param, Query } from '@nestjs/common';
 import { TemplatesService } from '../services/templates.service';
-import { BadRequestError } from 'openai';
+
 
 @Controller('templates')
 export class TemplatesController {
@@ -39,10 +39,20 @@ export class TemplatesController {
         }
 
         let versions = await this.templatesService.getVersions(template.name)
+        let stats = await this.templatesService.getStats(template.name)
+        let chartGames = await this.templatesService.getGamesChart([template.id].concat(versions.map(v => v.id)))
+        let chartDuration = await this.templatesService.getDurationChart([template.id].concat(versions.map(v => v.id)))
+        let chartEndDay = await this.templatesService.getEndDayChart([template.id].concat(versions.map(v => v.id)))
 
         return {
             template,
             versions,
+            stats,
+            charts: {
+                games: chartGames,
+                duration: chartDuration,
+                end_day: chartEndDay,
+            },
         }
     }
 }

@@ -22,7 +22,7 @@
                     </Panel>
                 </template>
                 <template v-else>
-                    <Panel id="player-overview">
+                    <Panel id="player-overview" class="selectable">
                         <div id="player-info">
                             <div class="player-info-column">
                                 <div class="player-info-item">
@@ -394,7 +394,7 @@ onMounted(async () => {
 <style scoped>
 #player-overview {
     display: grid;
-    grid-template-rows: 1fr 560px;
+    grid-template-rows: auto 560px;
     gap: 30px;
     padding: 20px;
 }

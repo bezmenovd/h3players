@@ -83,6 +83,7 @@ const props = defineProps<{
     max: number[],
     formatters: ((value: number) => string)[]
     showNoData?: boolean,
+    startScrollPos?: number,
     showGrid?: boolean,
     xLabels?: { [key: number]: string },
 }>()
@@ -249,7 +250,9 @@ onMounted(async () => {
 
     if (showScroll.value) {
         scrollButtonWidth.value = Math.min(Math.round((props.size! / props.data.length) * (widthRef.value - 4)), widthRef.value-4)
-        scrollButtonX.value = Math.round(((props.data.length - props.size!) / props.data.length) * (widthRef.value - 2)) + 2
+        scrollButtonX.value = props.startScrollPos !== undefined 
+            ? props.startScrollPos
+            : Math.round(((props.data.length - props.size!) / props.data.length) * (widthRef.value - 2)) + 2
     }
 
     if (props.showGrid) {

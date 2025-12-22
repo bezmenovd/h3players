@@ -24,7 +24,11 @@
                 <div :class="`game-opponent-hero h3 h3-heroes-small-${ item.template_id > 1 ? (h3.heroes as any)[item.opponent_hero] : '' }`"></div>
             </div>
             <div class="game-size">{{ size(item) }}</div>
-            <div :class="`game-template ${templateClass(item)}`">{{ template(item) }}</div>
+            <div :class="`game-template template-name ${templateClass(item)}`">
+                <router-link :to="{ name: 'templates.detail', params: { id: item.template_id } }">
+                    {{ template(item) }}
+                </router-link>
+            </div>
             <div class="game-id">{{ item.game_id }}</div>
         </div>
     </div>
@@ -45,8 +49,6 @@ const settingsStore = useSettingsStore()
 const props = defineProps<{
     items: GameVWithInfo[],
 }>()
-
-const now = ref(timestamp.now())
 
 const end = (game: GameVWithInfo): string => {
     return datetime.from(game.end_timestamp)
@@ -114,16 +116,6 @@ const templateClass = (game: GameVWithInfo): string => {
     }
     return ''
 }
-
-onMounted(() => {
-    const updateNow = setInterval(() => {
-        now.value = timestamp.now()
-    }, 10000)
-
-    onBeforeUnmount(() => {
-        clearInterval(updateNow)
-    })
-})
 
 </script>
 
@@ -223,15 +215,6 @@ onMounted(() => {
     text-overflow: ellipsis;
     padding: 0 10px 0 20px;
     white-space: nowrap;
-}
-.game-template.scenario {
-    color: gray;
-}
-.game-template.blue {
-    color: #7b7ba0;
-}
-.game-template.gold {
-    color: #e6c24c;
 }
 .game[data-status="loss"] .game-player::before {
     content: '';

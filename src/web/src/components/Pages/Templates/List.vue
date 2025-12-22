@@ -60,7 +60,8 @@ const offset = computed<number>(() => {
 const queryOnChange = throttle((event: { value: string }) => {
     router.replace({
         query: {
-            ...route.query, 
+            ...route.query,
+            offset: 0,
             query: event.value,
         },
     })

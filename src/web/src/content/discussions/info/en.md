@@ -1,4 +1,4 @@
-The website utilizes automatic pre-moderation and automatic translation into other site languages powered by gpt-4o-mini.
+The website utilizes automatic pre-moderation and automatic translation into other site languages powered by gpt-5-mini.
 
 Pre-moderation prompt used:
 ```

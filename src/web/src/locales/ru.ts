@@ -79,6 +79,19 @@ export default {
             query: {
                 text: 'Введите название'
             }
+        },
+        detail: {
+            overview: {
+                games_count: 'Количество игр',
+                games_duration: 'Длительность',
+                games_duration_avg: 'В среднем',
+                players_count: 'Игроков',
+            },
+            tabs: {
+                games: 'Игры',
+                duration: 'По длительности',
+                end_day: 'По длительности (в днях)',
+            }
         }
     },
     performance:{
@@ -153,10 +166,6 @@ export default {
                 text: 'Авторизация запросов происходит через заголовок "Token". Токен выдается при авторизации через лобби, может быть найден в localStorage'
             }
         }
-    },
-    topics: {
-        list: {},
-        detail: {},
     },
     privacy_policy: {
         title: 'Политика конфиденциальности',

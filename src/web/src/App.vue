@@ -331,4 +331,31 @@ a:hover {
     padding: 0 4px;
     user-select: all;
 }
+
+.template-name.scenario:has(a) a,
+.template-name.scenario:not(:has(a)) {
+    color: gray;
+}
+.template-name.scenario a:hover {
+    box-shadow: 0 -2px 0 0 gray inset;
+}
+
+.template-name.blue:has(a) a,
+.template-name.blue:not(:has(a)) {
+    color: #7b7ba0;
+}
+.template-name.blue a:hover {
+    box-shadow: 0 -2px 0 0 #7b7ba0 inset;
+}
+
+.template-name.gold:has(a) a,
+.template-name.gold:not(:has(a)) {
+    color: #e6c24c;
+}
+.template-name.gold a:hover {
+    box-shadow: 0 -2px 0 0 #e6c24c inset;
+}
+.template-name a {
+    transition: box-shadow 0.2s ease;
+}
 </style>

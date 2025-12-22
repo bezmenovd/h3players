@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { createClient } from '@clickhouse/client';
-import { Template, TemplateWithInfo } from '../types/clickhouse/lobby';
+import { Template, TemplateGamesChartItem, TemplatesDurationChartItem, TemplatesEndDayChartItem, TemplateStats, TemplateWithInfo } from '../types/clickhouse/lobby';
 import { Paginated } from '../types/api';
+import { timestamp } from '../helpers/timestamp';
 
 @Injectable()
 export class TemplatesService {
@@ -21,7 +22,6 @@ export class TemplatesService {
         if (query.length > 0) {
             whereClauses.push('positionCaseInsensitive(templates.name, {query:String}) > 0')
         }
-        whereClauses.push('templates.id != 1')
     
         const where = whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''
     
@@ -33,9 +33,11 @@ export class TemplatesService {
             SELECT 
                 min(t.id) as id,
                 t.name,
-                SUM(t_gc.games_count) as games_count
+                SUM(t_stats.games_count) as games_count,
+                SUM(t_stats.games_duration) as games_duration,
+                uniqMerge(players_uniq) AS players_count
             FROM templates AS t
-            LEFT JOIN templates_mv_gc_table AS t_gc ON t.id = t_gc.id
+            LEFT JOIN templates_mv_stats_table AS t_stats ON t.id = t_stats.id
             ${where}
             GROUP by templates.name
             ${orderBy}
@@ -70,6 +72,8 @@ export class TemplatesService {
                 id: i.id,
                 name: i.name,
                 games_count: Number(i.games_count),
+                games_duration: Number(i.games_duration),
+                players_count: Number(i.players_count),
             })),
         }
     }
@@ -104,5 +108,110 @@ export class TemplatesService {
         })).json<Template>()
 
         return templates
+    }
+
+    async getStats(name: string): Promise<TemplateStats> {
+        const result = await (await this.clickhouse.query({
+            query: `
+                SELECT 
+                    SUM(t_stats.games_count) as games_count,
+                    SUM(t_stats.games_duration) as games_duration,
+                uniqMerge(players_uniq) AS players_count
+                FROM templates AS t
+                INNER JOIN templates_mv_stats_table AS t_stats ON t.id = t_stats.id
+                WHERE t.name = {name:String}
+            `,
+            query_params: { 
+                name,
+            },
+            format: 'JSONEachRow',
+        })).json<{ games_count: string, games_duration: string, players_count: string }>();
+
+        if (result.length === 0 || !result[0].games_count) {
+            return { games_count: 0, games_duration: 0, players_count: 0 };
+        }
+
+        return {
+            games_count: Number(result[0].games_count),
+            games_duration: Number(result[0].games_duration),
+            players_count: Number(result[0].players_count),
+        };
+    }
+
+    async getGamesChart(ids: number[]): Promise<TemplateGamesChartItem[]> {
+        const result = await (await this.clickhouse.query({
+            query: `
+                SELECT 
+                    toUnixTimestamp(toStartOfDay(toDateTime(g.end_timestamp))) as start_of_day,
+                    count() as games_count
+                FROM games AS g
+                WHERE g.template_id in {ids:Array(UInt32)}
+                GROUP BY start_of_day
+                ORDER BY start_of_day ASC 
+                WITH FILL TO{today:UInt32} + 1 STEP 86400
+            `,
+            query_params: { 
+                ids,
+                today: timestamp.startOfDay(),
+            },
+            format: 'JSONEachRow',
+        })).json<TemplateGamesChartItem>();
+
+        return result.map(row => ({
+            start_of_day: Number(row.start_of_day),
+            games_count: Number(row.games_count)
+        }));
+    }
+
+    async getDurationChart(ids: number[]): Promise<TemplatesDurationChartItem[]> {
+        const sql = `
+            SELECT 
+                floor((g.end_timestamp - g.start_timestamp) / 60) as duration,
+                count() as games_count
+            FROM games AS g
+            WHERE g.template_id IN {ids:Array(UInt32)}
+              AND g.end_timestamp > g.start_timestamp
+              AND g.end_timestamp - g.start_timestamp < 57600
+            GROUP BY duration
+            ORDER BY duration ASC
+            WITH FILL FROM 1 TO 961 STEP 1
+        `;
+    
+        const result = await (await this.clickhouse.query({
+            query: sql,
+            query_params: { ids },
+            format: 'JSONEachRow',
+        })).json<TemplatesDurationChartItem>();
+    
+        return result.map(row => ({
+            duration: Number(row.duration),
+            games_count: Number(row.games_count)
+        }));
+    }
+
+    async getEndDayChart(ids: number[]): Promise<TemplatesEndDayChartItem[]> {
+        const sql = `
+            SELECT 
+                end_day,
+                count() as games_count
+            FROM games AS g
+            WHERE g.template_id IN {ids:Array(UInt32)}
+              AND g.end_timestamp > g.start_timestamp
+              AND g.end_timestamp - g.start_timestamp < 57600
+            GROUP BY end_day
+            ORDER BY end_day ASC
+            WITH FILL FROM 1 TO 253 STEP 1
+        `;
+    
+        const result = await (await this.clickhouse.query({
+            query: sql,
+            query_params: { ids },
+            format: 'JSONEachRow',
+        })).json<TemplatesEndDayChartItem>();
+    
+        return result.map(row => ({
+            end_day: Number(row.end_day),
+            games_count: Number(row.games_count)
+        }));
     }
 }

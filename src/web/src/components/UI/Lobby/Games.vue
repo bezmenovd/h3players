@@ -13,7 +13,11 @@
                     <router-link :to="{ name: 'players.detail', params: { id: item.opponent_id }}">{{ item.opponent_name || '?' }}</router-link>
                 </div>
             </div>
-            <div :class="`game-template ${templateClass(item)}`">{{ template(item) }}</div>
+            <div :class="`game-template template-name ${templateClass(item)}`">    
+                <router-link :to="{ name: 'templates.detail', params: { id: item.template_id }}">
+                    {{ template(item) }}
+                </router-link>
+            </div>
         </div>
     </div>
 </template>
@@ -183,15 +187,6 @@ onMounted(() => {
     text-overflow: ellipsis;
     padding: 0 15px 0 0;
     white-space: nowrap;
-}
-.game-template.scenario {
-    color: gray;
-}
-.game-template.blue {
-    color: #7b7ba0;
-}
-.game-template.gold {
-    color: #e6c24c;
 }
 .game[data-status="2"] .game-host::before {
     content: '';

@@ -42,7 +42,7 @@ export class OpenaiService {
         `;
     
         const completion = await this.openai!.chat.completions.create({
-            model: 'gpt-4o-mini',
+            model: 'gpt-5-mini',
             messages: [
                 { role: 'system', content: prompt },
                 { role: 'user', content: text },
@@ -82,7 +82,7 @@ export class OpenaiService {
         `;
     
         const completion = await this.openai!.chat.completions.create({
-            model: 'gpt-4o-mini',
+            model: 'gpt-5-mini',
             messages: [
                 { role: 'system', content: prompt },
                 { role: 'user', content: text },

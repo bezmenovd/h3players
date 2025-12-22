@@ -1,4 +1,4 @@
-Strona korzysta z automatycznej premoderacji oraz automatycznego tłumaczenia na pozostałe języki serwisu przy użyciu modelu gpt-4o-mini.
+Strona korzysta z automatycznej premoderacji oraz automatycznego tłumaczenia na pozostałe języki serwisu przy użyciu modelu gpt-5-mini.
 
 Użyty prompt premoderacji:
 ```

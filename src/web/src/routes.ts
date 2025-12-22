@@ -41,7 +41,7 @@ export default [
         component: TemplatesList,
     },
     {
-        path: '/templates/:id',
+        path: '/templates/:id/:tab?',
         name: 'templates.detail',
         component: TemplatesDetail,
     },

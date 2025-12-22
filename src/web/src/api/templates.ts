@@ -6,7 +6,28 @@ export type Template = {
     name: string
 }
 
-export type TemplateWithInfo = Template & {
+export type TemplateStats = {
+    games_count: number
+    games_duration: number
+    players_count: number
+}
+
+export type TemplateWithInfo = Template & TemplateStats & {
+    
+}
+
+export type TemplateGamesChartItem = {
+    start_of_day: number
+    games_count: number
+}
+
+export type TemplatesDurationChartItem = {
+    duration: number
+    games_count: number
+}
+
+export type TemplatesEndDayChartItem = {
+    end_day: number
     games_count: number
 }
 
@@ -24,6 +45,12 @@ export async function getList(limit: number, offset: number, ids: number[] = [],
 export type TemplateDetailInfo = {
     template: Template
     versions: Template[]
+    stats: TemplateStats
+    charts: {
+        games: TemplateGamesChartItem[],
+        duration: TemplatesDurationChartItem[],
+        end_day: TemplatesEndDayChartItem[],
+    }
 }
 
 export async function getTemplate(id: number): Promise<TemplateDetailInfo> {

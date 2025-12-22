@@ -1,6 +1,6 @@
 <template>
     <div class="title">
-        <div class="title-text" v-if="props.text">
+        <div class="title-text">
             {{ props.text }}
             <slot name="in-text"/>
         </div>
@@ -11,7 +11,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue'
 
 const props = defineProps<{
     text: string
