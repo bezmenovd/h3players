@@ -1,6 +1,8 @@
 <template>
     <div id="templates-list">
-        <Title :text="t('templates.list.title')"></Title>
+        <Title :text="t('templates.list.title')">
+            <StatsButton @click="router.push({ name: 'templates.statistics' })" />
+        </Title>
         <Panel id="templates-list-panel">
             <Header>
                 <Query 
@@ -34,6 +36,7 @@ import router from '../../../router';
 import { debounce, throttle } from '../../../helpers/functions';
 import Loader from '../../UI/Loader.vue';
 import { useI18n } from 'vue-i18n';
+import StatsButton from '../../UI/Buttons/StatsButton.vue';
 
 const { t } = useI18n();
 

@@ -92,7 +92,12 @@ export default {
                 duration: 'По длительности',
                 end_day: 'По длительности (в днях)',
             }
-        }
+        },
+        statistics: {
+            title: 'Статистика',
+            scenario: 'сценарий',
+            default: 'по умолчанию',
+        },
     },
     performance:{
         title: 'Суммарная нагрузка',

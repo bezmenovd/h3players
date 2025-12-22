@@ -23,6 +23,17 @@ export class TemplatesController {
         return data
     }
 
+    @Get('/statistics')
+    async statistics(
+        @Query('offset') offset?: string,
+    ) {
+        let o = Number.isFinite(Number(offset)) && Number(offset) > 0 ? Math.min(Number(offset), 100) : 0
+
+        let data = await this.templatesService.getStatistics(o)
+
+        return data
+    }
+
     @Get('/:id')
     async get(
         @Param('id') id?: string

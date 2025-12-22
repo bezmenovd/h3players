@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { createClient } from '@clickhouse/client';
-import { Template, TemplateGamesChartItem, TemplatesDurationChartItem, TemplatesEndDayChartItem, TemplateStats, TemplateWithInfo } from '../types/clickhouse/lobby';
+import { Template, TemplateGamesChartItem, TemplatesDurationChartItem, TemplatesEndDayChartItem, TemplatesStatisticsChartItem, TemplateStats, TemplateWithInfo } from '../types/clickhouse/lobby';
 import { Paginated } from '../types/api';
 import { timestamp } from '../helpers/timestamp';
 
@@ -213,5 +213,63 @@ export class TemplatesService {
             end_day: Number(row.end_day),
             games_count: Number(row.games_count)
         }));
+    }
+
+    async getStatistics(offset: number = 0): Promise<TemplatesStatisticsChartItem[]> {
+        const monthAgo = timestamp.startOfDay() - (30 * 86400);
+        const todayStart = timestamp.startOfDay();
+    
+        const topNamesResult = await (await this.clickhouse.query({
+            query: `
+                SELECT if(t.name = '', 'scenario', t.name) as display_name
+                FROM games AS g
+                INNER JOIN templates AS t ON g.template_id = t.id
+                WHERE g.end_timestamp >= {monthAgo:UInt32}
+                GROUP BY display_name
+                ORDER BY count() DESC
+                LIMIT 10 OFFSET {offset:UInt32}
+            `,
+            query_params: { monthAgo, offset },
+            format: 'JSONEachRow',
+        })).json<{ display_name: string }>();
+    
+        if (topNamesResult.length === 0) return [];
+    
+        const topNames = topNamesResult.map(t => t.display_name);
+    
+        const result = await (await this.clickhouse.query({
+            query: `
+                SELECT 
+                    toUnixTimestamp(toStartOfDay(toDateTime(g.end_timestamp))) as start_of_day,
+                    if(t.name = '', 'scenario', t.name) as display_name,
+                    count() as games_count
+                FROM games AS g
+                INNER JOIN templates AS t ON g.template_id = t.id
+                WHERE display_name IN {topNames:Array(String)}
+                  AND g.end_timestamp >= {monthAgo:UInt32}
+                GROUP BY start_of_day, display_name
+                ORDER BY start_of_day ASC
+            `,
+            query_params: { topNames, monthAgo },
+            format: 'JSONEachRow',
+        })).json<{ start_of_day: string, display_name: string, games_count: string }>();
+    
+        const chartMap = new Map<number, TemplatesStatisticsChartItem>();
+        
+        for (let day = monthAgo; day <= todayStart; day += 86400) {
+            const item: TemplatesStatisticsChartItem = { start_of_day: day, templates: {} };
+            topNames.forEach(name => item.templates[name] = 0);
+            chartMap.set(day, item);
+        }
+    
+        result.forEach(row => {
+            const time = Number(row.start_of_day);
+            const dayEntry = chartMap.get(time);
+            if (dayEntry && row.display_name !== undefined) {
+                dayEntry.templates[row.display_name] = Number(row.games_count);
+            }
+        });
+    
+        return Array.from(chartMap.values());
     }
 }

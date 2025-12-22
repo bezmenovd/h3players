@@ -4,6 +4,7 @@ import PlayersList from './components/Pages/Players/List.vue'
 import PlayersDetail from './components/Pages/Players/Detail.vue'
 import TemplatesList from './components/Pages/Templates/List.vue'
 import TemplatesDetail from './components/Pages/Templates/Detail.vue'
+import TemplatesStatistics from './components/Pages/Templates/Statistics.vue'
 import Games from './components/Pages/Lobby/Games.vue';
 import NotFound from './components/Pages/NotFound.vue';
 import Changelog from './components/Pages/Changelog.vue'
@@ -39,6 +40,11 @@ export default [
         path: '/templates',
         name: 'templates',
         component: TemplatesList,
+    },
+    {
+        path: '/templates/statistics',
+        name: 'templates.statistics',
+        component: TemplatesStatistics,
     },
     {
         path: '/templates/:id/:tab?',

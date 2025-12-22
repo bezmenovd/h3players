@@ -56,3 +56,14 @@ export type TemplateDetailInfo = {
 export async function getTemplate(id: number): Promise<TemplateDetailInfo> {
     return api.get(`/templates/${id}`).then(r => r.data)
 }
+
+export type TemplatesStatisticsChartItem = {
+    start_of_day: number
+    templates: {
+        [key: string]: number
+    }
+}
+
+export async function getStatistics(): Promise<TemplatesStatisticsChartItem[]> {
+    return api.get(`/templates/statistics`).then(r => r.data)
+}

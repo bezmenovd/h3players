@@ -35,6 +35,13 @@ export type TemplatesEndDayChartItem = {
     games_count: number
 }
 
+export type TemplatesStatisticsChartItem = {
+    start_of_day: number
+    templates: {
+        [key: string]: number
+    }
+}
+
 export type TemplateWithInfo = Template & TemplateStats & {
 
 }
