@@ -1,6 +1,6 @@
 <template>
     <MainLoader v-if="loading.show" :loaded="loading.counter" :total="resources.app.length"/>
-    <div id="app" key="app" v-if="! loading.is">
+    <div id="app" key="app" v-if="! loading.is" :class="route.name">
         <div id="left">
             <div id="logo" @click="router.replace({ name: 'lobby' })"/>
             <Navigation />
@@ -29,6 +29,7 @@ import router from './router';
 import Alerts from './components/UI/Alerts.vue';
 import { connect } from './modules/websocket';
 import { useUserStore } from './stores/user';
+import { useRoute } from 'vue-router';
 
 
 const loading = ref({
@@ -38,6 +39,8 @@ const loading = ref({
 })
 
 const userStore = useUserStore()
+
+const route = useRoute()
 
 preload(resources.app, () => loading.value.counter++).then(() => {
     if (userStore.token) {
@@ -318,7 +321,7 @@ a:hover {
     max-width: 100%;
     width: 100%;
     display: block;
-    white-space: normal;
+    overflow-x: auto;
 }
 .markdown hr {
     opacity: .2;

@@ -399,3 +399,11 @@ onMounted(() => {
 }
 
 </style>
+
+<style>
+.posts .post:not(.expanded) .post-text {
+    max-height: 478px;
+    overflow: hidden;
+}
+
+</style>

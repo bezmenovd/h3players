@@ -59,8 +59,7 @@ const close = () => {
 #modal-title {
     width: 100%;
     height: 20px;
-    background: #2e3245;
-    opacity: .65;
+    background: #242738;
     display: grid;
     grid-template-columns: 1fr 40px;
     gap: 10px;
@@ -70,9 +69,10 @@ const close = () => {
 #modal-title-text {
     padding: 10px;
     font-size: 17px;
+    opacity: .7;
 }
 #modal-close {
-    background: #2e3245;
+    background: #242738;
     cursor: pointer;
     opacity: 1;
     height: 40px;

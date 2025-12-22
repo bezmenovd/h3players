@@ -48,7 +48,7 @@ const saveComment = () => {
     padding: 20px;
     display: grid;
     grid-template-rows: 1fr 20px;
-    gap: 15px;
+    gap: 20px;
 }
 .add-comment-textarea {
     height: 100%;

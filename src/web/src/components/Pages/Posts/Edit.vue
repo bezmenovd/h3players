@@ -1,41 +1,40 @@
 <template>
     <div id="post-edit">
-        <Title :text="title">
-            <Tabs :items="tabs"/>
-        </Title>
-        <template v-if="tab === ''">
-            <Panel id="edit-panel">
-                <div id="edit-wrapper">
-                    <div id="edit-title-group">
-                        <TextInput 
-                            v-model="post.title" 
-                            :placeholder="t('posts.edit.title.placeholder')" 
-                            :requirements="t('posts.edit.title.requirements')" 
-                            :max-length="100"
-                        />
-                        <Dropdown :value="post.discussion_id" :items="discussions"/>
-                    </div>
+        <Title :text="title"></Title>
+        <Panel id="edit-panel">
+            <div id="edit-wrapper">
+                <div id="edit-title-group">
+                    <TextInput 
+                        v-model="post.title" 
+                        :placeholder="t('posts.edit.title.placeholder')" 
+                        :requirements="t('posts.edit.title.requirements')" 
+                        :max-length="100"
+                    />
+                    <Dropdown :value="post.discussion_id" :items="discussions"/>
+                </div>
+                <div id="edit-text-group">
                     <Textarea 
                         v-model="post.text" 
+                        ref="textareaRef"
                         :placeholder="t('posts.edit.text.placeholder')"
                         :requirements="t('posts.edit.text.requirements')"
                         :max-length="10000"
                     />
-                    <div id="post-save">
-                        <div 
-                            :class="{'btn': true, 'disabled': ! canSavePost, 'waiting': waiting }"
-                            @click="savePost"
-                            >
-                            <div class="btn-icon" style="background-image: url('/img/save.png')" />
-                            {{ t('posts.edit.save') }}
-                        </div>
+                    <div id="edit-text-preview" ref="previewRef">
+                        <Markdown :source="post.text" class="markdown"/>
                     </div>
                 </div>
-            </Panel>
-        </template>
-        <template v-if="tab === 'preview'">
-            <Panel id="preview-panel"></Panel>
-        </template>
+                <div id="post-save">
+                    <div 
+                        :class="{'btn': true, 'disabled': ! canSavePost, 'waiting': waiting }"
+                        @click="savePost"
+                        >
+                        <div class="btn-icon" style="background-image: url('/img/save.png')" />
+                        {{ t('posts.edit.save') }}
+                    </div>
+                </div>
+            </div>
+        </Panel>
     </div>
 
     <Loader v-if="waiting" :text="t('posts.loader_text')"/>
@@ -48,7 +47,6 @@ import { useI18n } from 'vue-i18n';
 import { computed, onMounted, reactive, watch } from 'vue';
 import { ref } from 'vue';
 import Panel from '../../UI/Panel.vue';
-import Tabs from '../../UI/Tabs.vue';
 import TextInput from '../../UI/Inputs/TextInput.vue';
 import Textarea from '../../UI/Inputs/Textarea.vue';
 import Dropdown from '../../UI/Inputs/Dropdown.vue';
@@ -58,6 +56,8 @@ import { alerts } from '../../UI/alerts';
 import { throttle } from '../../../helpers/functions';
 import Loader from '../../UI/Posts/Loader.vue';
 import router from '../../../router';
+// @ts-ignore
+import Markdown from 'vue3-markdown-it';
 
 
 const { t } = useI18n()
@@ -124,21 +124,6 @@ const title = computed<string>(() => {
     }
 })
 
-const tab = ref<string>('');
-const tabs = [
-    {
-        code: '', 
-        name: t('posts.edit.tabs.edit')
-    }, { 
-        code: 'preview', 
-        name: t('posts.edit.tabs.preview')
-    }
-]
-
-watch(() => route.params.tab, (newTabCode) => {
-    tab.value = newTabCode !== undefined ? String(newTabCode) : '';
-}, { immediate: true });
-
 const saveTemporary = throttle(() => {
     localStorage.setItem('tmp:posts:add:title', post.title)
     localStorage.setItem('tmp:posts:add:text', post.text)
@@ -156,6 +141,31 @@ onMounted(() => {
     })
 })
 
+const textareaRef = ref(null);
+const previewRef = ref<HTMLElement | null>(null);
+
+const syncScroll = (event: Event) => {
+    const textarea = event.target as HTMLTextAreaElement;
+    // @ts-ignore
+    const preview = previewRef.value;
+
+    if (!textarea || !preview) return;
+
+    const scrollPercentage = textarea.scrollTop / (textarea.scrollHeight - textarea.clientHeight);
+
+    preview.scrollTop = scrollPercentage * (preview.scrollHeight - preview.clientHeight);
+}
+
+onMounted(() => {
+    if (textareaRef.value) {
+        const el = (textareaRef.value as any).$el || textareaRef.value;
+        
+        if (el) {
+            el.addEventListener('wheel', syncScroll);
+        }
+    }
+});
+
 </script>
 
 <style scoped>
@@ -168,12 +178,26 @@ onMounted(() => {
     gap: 20px;
     height: calc(100vh - 200px);
     max-height: 800px;
-    max-width: 1000px;
 }
 #edit-title-group {
     display: grid;
     grid-template-columns: 1fr 200px;
     gap: 20px;
+}
+#edit-text-group {
+    display: flex;
+    min-height: 0;
+}
+#edit-text-preview {
+    padding: 20px;
+    pointer-events: none;
+    overflow-y: auto;
+}
+#edit-text-group .markdown {
+    border: 1px solid #272c3a;
+    /* height: 100%;
+    max-height: 100%; */
+    border-top: none;
 }
 #post-save {
     width: 100%;
@@ -181,5 +205,39 @@ onMounted(() => {
     align-items: center;
     justify-content: center;
     margin-top: 20px;
+}
+
+@media (min-width: 1600px) {
+    #edit-wrapper {
+        max-width: 1600px;
+    }
+    #edit-text-group {
+        flex-direction: row;
+    }
+    #edit-text-preview {
+        width: 50%;
+        max-width: 50%;
+    }
+    #edit-text-group .textarea-wrapper {
+        max-width: 50%;
+        width: 50%;
+    }
+}
+
+@media (max-width: 1600px) {
+    #edit-wrapper {
+        max-width: 1000px;
+    }
+    #edit-text-group {
+        flex-direction: column;
+    }
+    #edit-text-preview {
+        height: 50%;
+        max-height: 50%;
+    }
+    #edit-text-group .textarea-wrapper {
+        max-height: 50%;
+        height: 50%;
+    }
 }
 </style>

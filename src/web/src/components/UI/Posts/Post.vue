@@ -1,6 +1,6 @@
 <template>
     <div class="post-wrapper">
-        <Panel class="post">
+        <Panel :class="{'post': true, 'expanded': expanded }">
             <div :class="{'post-top': true, 'blacklisted': postBlacklisted }">
                 <div class="post-title">
                     <template v-if="! postBlacklisted">
@@ -128,6 +128,8 @@ const { t } = useI18n()
 const props = defineProps<{
     post: PostWithInfo
 }>()
+
+const expanded = ref(false)
 
 const now = ref(timestamp.now())
 
@@ -281,6 +283,8 @@ const linkModal = reactive({
 })
 
 const handleMarkdownClick = (event: MouseEvent) => {
+    expanded.value = true
+
     const target = event.target as HTMLElement;
     const anchor = target.closest('a');
 
@@ -384,14 +388,14 @@ const sendReport = () => {
     gap: 8px;
 }
 .post-views-icon {
-    width: 16px;
-    height: 14px;
+    width: 18px;
+    height: 18px;
     background: url('/img/view.png');
     background-size: 100%;
     background-position: center;
     background-repeat: no-repeat;
     filter: invert(1);
-    opacity: .4;
+    opacity: .3;
 }
 .post-views-count {
     opacity: .6;
@@ -523,13 +527,16 @@ const sendReport = () => {
 
 <style>
 .post .markdown h1 {
-    font-size: 17px;
+    font-size: 19px;
+    font-weight: 500;
 }
 .post .markdown h2 {
-    font-size: 16px;
+    font-size: 18px;
+    font-weight: 500;
 }
 .post .markdown h3 {
-    font-size: 15px;
+    font-size: 17px;
+    font-weight: 500;
 }
 .post .markdown img {
     max-width: 100%;

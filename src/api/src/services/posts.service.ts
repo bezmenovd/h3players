@@ -161,7 +161,7 @@ export class PostsService {
         if ((text.match(new RegExp('\n', 'gi')) || []).length > 100) {
             throw new Error('too_many_lines')
         }
-        if ((text.match(new RegExp('![', 'gi')) || []).length > 3) {
+        if ((text.match(new RegExp('\\!\\[', 'gi')) || []).length > 3) {
             throw new Error('too_many_images')
         }
 

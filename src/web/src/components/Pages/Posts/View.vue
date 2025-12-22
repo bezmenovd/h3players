@@ -46,14 +46,6 @@ onMounted(() => {
     })
 })
 
-onMounted(() => {
-    document.body.classList.add('post-view');
-});
-
-onBeforeUnmount(() => {
-    document.body.classList.remove('post-view');
-});
-
 </script>
 
 <style scoped>
@@ -81,7 +73,7 @@ onBeforeUnmount(() => {
         top: -30px;
     }
 }
-.post-view #return-button {
+.posts\.view #return-button {
     position: sticky !important;
     left: 0 !important;
     top: -35px !important;
@@ -90,7 +82,7 @@ onBeforeUnmount(() => {
     transform: translate(-48px, 5px);
 }
 @media (max-width: 1600px) {
-    .post-view #return-button {
+    .posts\.view #return-button {
         transform: translate(-38px,3px);
         top: -19px !important;
     }

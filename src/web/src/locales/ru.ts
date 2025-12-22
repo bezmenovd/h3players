@@ -213,10 +213,6 @@ export default {
         add: 'Новый пост',
         edit: {
             new_post: 'Новый пост',
-            tabs: {
-                edit: 'Редактирование',
-                preview: 'Предпросмотр',
-            },
             title: {
                 placeholder: 'Название поста',
                 requirements: 'От 5 до 32 символов',
