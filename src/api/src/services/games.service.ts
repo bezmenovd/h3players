@@ -22,8 +22,12 @@ export class GamesService {
                     dictGet('players_dictionary', 'name', opponent_id) AS opponent_name,
                     dictGet('templates_dictionary', 'name', template_id) AS template_name
                 FROM games
+                WHERE id in (
+                    SELECT id from games_mv_history_table
+                    ORDER BY end_timestamp_desc ASC, id ASC
+                    LIMIT ${limit} OFFSET ${offset}
+                )
                 ORDER BY end_timestamp DESC, id DESC
-                LIMIT ${limit} OFFSET ${offset}
             `,
             format: 'JSONEachRow',
         })).json<GameWithInfo>()

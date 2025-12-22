@@ -251,7 +251,7 @@ export default {
             send: 'Отправить',
             reason: {
                 placeholder: 'Причина',
-                requirements: 'От 5 до 32 символов',
+                requirements: 'От 3 до 32 символов',
             },
             success: 'Сообщение о нарушении доставлено',
         },

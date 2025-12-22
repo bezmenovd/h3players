@@ -321,7 +321,7 @@ a:hover {
     max-width: 100%;
     width: 100%;
     display: block;
-    overflow-x: auto;
+    white-space: break-spaces;
 }
 .markdown hr {
     opacity: .2;

@@ -94,7 +94,7 @@
         <div id="report-modal">
             <div class="post-title" style="width: 100%;text-align: left; font-size: 16px">{{ props.post.title }}</div>
             <TextInput v-model="reportModal.reason" :placeholder="t('posts.report_modal.reason.placeholder')" :requirements="t('posts.report_modal.reason.requirements')" :max-length="32" />
-            <div :class="{'btn': true, 'disabled': reportModal.reason.length < 5 || reportModal.reason.length > 32}" @click="sendReport">
+            <div :class="{'btn': true, 'disabled': reportModal.reason.length < 3 || reportModal.reason.length > 32}" @click="sendReport">
                 <div class="btn-icon" style="background-image: url('/img/report.png')"/>
                 {{ t('posts.report_modal.send') }}
             </div>
@@ -340,7 +340,7 @@ const sendReport = () => {
     font-weight: 500;
 }
 .post-top {
-    padding: 15px;
+    padding: 15px 20px;
     display: flex;
     justify-content: space-between;
 }
@@ -378,7 +378,7 @@ const sendReport = () => {
 }
 .post-bottom {
     border-top: 1px dashed #ffffff1c;
-    padding: 15px;
+    padding: 15px 20px;
     display: grid;
     grid-template-columns: 100px 116px 1fr 200px;
 }

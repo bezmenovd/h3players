@@ -28,7 +28,7 @@ export class ReportsController {
             throw new NotFoundException()
         }
 
-        if (! entity_type || ! entity_id || reason.length < 5 || reason.length > 32) {
+        if (! entity_type || ! entity_id || reason.length < 3 || reason.length > 32) {
             throw new BadRequestException()
         }
 
