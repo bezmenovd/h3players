@@ -29,3 +29,7 @@ export type PlayerDetailInfo = {
 export async function getPlayer(id: number): Promise<PlayerDetailInfo> {
     return api.get(`/players/${id}`).then(r => r.data);
 }
+
+export async function getPopular(): Promise<Player[]> {
+    return api.get('/players/popular').then(r => r.data)
+}

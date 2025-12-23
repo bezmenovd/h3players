@@ -18,11 +18,6 @@ export const useUserStore = defineStore('user', () => {
     const authorized = ref(false)
 
 
-    token.value = '4c285ce1c84e87053dd281a479d5bd7f'
-    player.id = 1
-    player.name = "Temnotta"
-
-
     async function setToken(value: string) {
         token.value = value
         localStorage.setItem('user:token', token.value)

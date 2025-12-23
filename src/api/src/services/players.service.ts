@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import mysql, { RowDataPacket } from 'mysql2/promise';
 import { createClient } from '@clickhouse/client';
 import { createClient as createClientRedis } from 'redis'
 import { Player } from '../types/clickhouse/lobby';
 import { Paginated, PlayerInfo } from '../types/api';
+import { timestamp } from '../helpers/timestamp';
 
 @Injectable()
 export class PlayersService {
@@ -18,6 +20,13 @@ export class PlayersService {
             host: 'redis',
         }
     })
+    
+    private mysql = mysql.createPool({
+        host: 'h3players-mysql',
+        user: 'user',
+        database: 'h3players',
+        password: 'jk7S91xAC5bE5l3I',
+    });
 
     async onModuleInit() {
         await this.redis.connect()
@@ -137,5 +146,31 @@ export class PlayersService {
         rating = Number.isFinite(rating) ? rating+1 : -1
 
         return rating
+    }
+
+    async increasePlayerViews(id: number): Promise<void> {
+        await this.mysql.execute(`INSERT INTO players_views (player_id, at) VALUES (?, ?)`, [id, timestamp.now()])
+    }
+
+    async getPopular(): Promise<Player[]> {
+        const [rows] = await this.mysql.execute<RowDataPacket[]>(`
+            SELECT player_id, COUNT(*) as views
+            FROM players_views
+            GROUP BY player_id
+            ORDER BY views DESC
+            LIMIT 20
+        `);
+
+        if (rows.length === 0) {
+            return [];
+        }
+
+        const popularIds = rows.map(row => Number(row.player_id));
+
+        const players = await this.players(popularIds);
+
+        return players.sort((a, b) => {
+            return popularIds.indexOf(a.id) - popularIds.indexOf(b.id);
+        });
     }
 }

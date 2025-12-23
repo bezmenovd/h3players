@@ -21,7 +21,7 @@ export class LimiterInterceptor implements NestInterceptor {
         await this.redis.quit()
     }
 
-    async intercept(context: ExecutionContext, next: CallHandler) {        
+    async intercept(context: ExecutionContext, next: CallHandler) {
         const req = context.switchToHttp().getRequest()
         const start = timestamp.now()
 
@@ -45,9 +45,9 @@ export class LimiterInterceptor implements NestInterceptor {
         multi.expireAt(`api:quota:${url}:hour:${startOfHour}:ip_hash:${ip_hash}`, startOfHour+3600)
         multi.expireAt(`api:quota:${url}:day:${startOfDay}:ip_hash:${ip_hash}`, startOfDay+86400)
 
-        multi.get(`api:limiter:restriction:minute:${startOfMinute}:ip_hash:${ip_hash}`)
-        multi.get(`api:limiter:restriction:hour:${startOfHour}:ip_hash:${ip_hash}`)
-        multi.get(`api:limiter:restriction:day:${startOfDay}:ip_hash:${ip_hash}`)
+        multi.get(`api:limiter:restriction:${url}:minute:${startOfMinute}:ip_hash:${ip_hash}`)
+        multi.get(`api:limiter:restriction:${url}:hour:${startOfHour}:ip_hash:${ip_hash}`)
+        multi.get(`api:limiter:restriction:${url}:day:${startOfDay}:ip_hash:${ip_hash}`)
 
         if (token) {
             multi.incr(`api:quota:${url}:minute:${startOfMinute}:token:${token}`)
@@ -57,9 +57,9 @@ export class LimiterInterceptor implements NestInterceptor {
             multi.expireAt(`api:quota:${url}:hour:${startOfHour}:token:${token}`, startOfHour+3600)
             multi.expireAt(`api:quota:${url}:day:${startOfDay}:token:${token}`, startOfDay+86400)
 
-            multi.get(`api:limiter:restriction:minute:token:${token}`)
-            multi.get(`api:limiter:restriction:hour:token:${token}`)
-            multi.get(`api:limiter:restriction:day:token:${token}`)
+            multi.get(`api:limiter:restriction:${url}:minute:token:${token}`)
+            multi.get(`api:limiter:restriction:${url}:hour:token:${token}`)
+            multi.get(`api:limiter:restriction:${url}:day:token:${token}`)
         }
 
         let data = await multi.exec()
@@ -99,11 +99,11 @@ export class LimiterInterceptor implements NestInterceptor {
         if (minuteQuota >= minuteLimit) {
             let multi = this.redis.multi()
 
-            multi.set(`api:limiter:restriction:minute:${startOfMinute}:ip_hash:${ip_hash}`, '1')
-            multi.expireAt(`api:limiter:restriction:minute:${startOfMinute}:ip_hash:${ip_hash}`, startOfMinute+60)
+            multi.set(`api:limiter:restriction:${url}:minute:${startOfMinute}:ip_hash:${ip_hash}`, '1')
+            multi.expireAt(`api:limiter:restriction:${url}:minute:${startOfMinute}:ip_hash:${ip_hash}`, startOfMinute+60)
             if (token) {
-                multi.set(`api:limiter:restriction:minute:${startOfMinute}:token:${token}`, '1')
-                multi.expireAt(`api:limiter:restriction:minute:${startOfMinute}:token:${token}`, startOfMinute+60)
+                multi.set(`api:limiter:restriction:${url}:minute:${startOfMinute}:token:${token}`, '1')
+                multi.expireAt(`api:limiter:restriction:${url}:minute:${startOfMinute}:token:${token}`, startOfMinute+60)
             }
 
             multi.exec()
@@ -116,11 +116,11 @@ export class LimiterInterceptor implements NestInterceptor {
         if (hourQuota >= hourLimit) {
             let multi = this.redis.multi()
 
-            multi.set(`api:limiter:restriction:hour:ip_hash:${ip_hash}`, '1')
-            multi.expireAt(`api:limiter:restriction:hour:ip_hash:${ip_hash}`, startOfHour+3600)
+            multi.set(`api:limiter:restriction:${url}:hour:ip_hash:${ip_hash}`, '1')
+            multi.expireAt(`api:limiter:restriction:${url}:hour:ip_hash:${ip_hash}`, startOfHour+3600)
             if (token) {
-                multi.set(`api:limiter:restriction:hour:token:${token}`, '1')
-                multi.expireAt(`api:limiter:restriction:hour:token:${token}`, startOfHour+3600)
+                multi.set(`api:limiter:restriction:${url}:hour:token:${token}`, '1')
+                multi.expireAt(`api:limiter:restriction:${url}:hour:token:${token}`, startOfHour+3600)
             }
 
             multi.exec()
@@ -133,11 +133,11 @@ export class LimiterInterceptor implements NestInterceptor {
         if (dayQuota >= dayLimit) {
             let multi = this.redis.multi()
 
-            multi.set(`api:limiter:restriction:day:ip_hash:${ip_hash}`, '1')
-            multi.expireAt(`api:limiter:restriction:day:ip_hash:${ip_hash}`, startOfDay+86400)
+            multi.set(`api:limiter:restriction:${url}:day:ip_hash:${ip_hash}`, '1')
+            multi.expireAt(`api:limiter:restriction:${url}:day:ip_hash:${ip_hash}`, startOfDay+86400)
             if (token) {
-                multi.set(`api:limiter:restriction:day:token:${token}`, '1')
-                multi.expireAt(`api:limiter:restriction:day:token:${token}`, startOfDay+86400)
+                multi.set(`api:limiter:restriction:${url}:day:token:${token}`, '1')
+                multi.expireAt(`api:limiter:restriction:${url}:day:token:${token}`, startOfDay+86400)
             }
 
             multi.exec()
@@ -146,8 +146,6 @@ export class LimiterInterceptor implements NestInterceptor {
 
             throw new HttpException(`Too Many Requests. Rate Limit exceeded`, 429)
         }
-
-        logger.info(`time: ${Date.now() - start}ms`)
 
         return next.handle().pipe();
     }

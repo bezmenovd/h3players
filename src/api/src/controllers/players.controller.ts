@@ -1,5 +1,6 @@
 import { Controller, Get, NotFoundException, Param, Query } from '@nestjs/common';
 import { PlayersService } from '../services/players.service';
+import { logger } from '../helpers/logger';
 
 @Controller('players')
 export class PlayersController {
@@ -30,6 +31,13 @@ export class PlayersController {
         return data
     }
 
+    @Get('/popular')
+    async popular() {
+        const players = await this.playersService.getPopular()
+
+        return players
+    }
+
     @Get(':id')
     async info(@Param('id') id: string) {
         const i = Number(id)
@@ -45,8 +53,9 @@ export class PlayersController {
         }
 
         let rank = await this.playersService.playerRank(i)
-
         let rating = await this.playersService.playerRating(i)
+
+        this.playersService.increasePlayerViews(i)
 
         return {
             id: player.id,

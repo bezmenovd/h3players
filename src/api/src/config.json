@@ -41,6 +41,11 @@
                 "hour": 300,
                 "day": 600
             },
+            "/api/players/popular": {
+                "minute": 30,
+                "hour": 300,
+                "day": 600
+            },
             "/api/players/search": {
                 "minute": 300,
                 "hour": 1000,
@@ -67,9 +72,9 @@
                 "day": 600
             },
             "/api/user/me": {
-                "minute": 10,
-                "hour": 30,
-                "day": 60
+                "minute": 60,
+                "hour": 1000,
+                "day": 3000
             },
             "/api/performance/chart": {
                 "minute": 10,

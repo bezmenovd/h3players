@@ -38,7 +38,7 @@ import { onMounted, reactive, ref } from 'vue'
 import Panel from '../../UI/Panel.vue'
 import Title from '../../UI/Title.vue'
 import Search from '../../UI/Inputs/Search.vue'
-import { search, Player } from '../../../api/players'
+import { search, Player, getPopular } from '../../../api/players'
 import router from '../../../router'
 import { SearchItem } from '../../UI/Inputs/search'
 import { useSearchHistory } from '../players'
@@ -74,6 +74,10 @@ const popular = reactive<{
 
 onMounted(() => {
     document.getElementById("players-search-input")?.focus()
+
+    getPopular().then(r => {
+        popular.items = r
+    })
 })
 </script>
 
