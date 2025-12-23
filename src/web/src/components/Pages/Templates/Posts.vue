@@ -1,6 +1,6 @@
 <template>
     <div id="template-posts">
-        <Title :text="`Обсуждение шаблона '${posts.template_name}'`" />
+        <Title :text="`${t('templates.posts.title')} '${posts.template_name}'`" />
         <Loader v-if="! posts.show" :solid="false" />
         <List v-if="posts.show" :discussion_id="posts.discussion_id" />
     </div>

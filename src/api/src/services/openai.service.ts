@@ -76,7 +76,7 @@ export class OpenaiService {
         }
 
         const prompt = `
-            Переведи текст, сохраняя структуру, оригинальное форматирование и стиль, на ${languageName} язык
+            Переведи весь текст, полностью, сохраняя структуру, оригинальное форматирование и стиль, на ${languageName} язык
         `;
 
         const completion = await this.openai!.chat.completions.create({

@@ -101,6 +101,9 @@ export default {
             scenario: 'сценарий',
             default: 'по умолчанию',
         },
+        posts: {
+            title: 'Обсуждение шаблона',
+        },
     },
     performance:{
         title: 'Суммарная нагрузка',

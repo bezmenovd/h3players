@@ -51,6 +51,21 @@
                 "hour": 1000,
                 "day": 3000
             },
+            "/api/templates/#": {
+                "minute": 60,
+                "hour": 300,
+                "day": 600
+            },
+            "/api/templates/#/discussion": {
+                "minute": 60,
+                "hour": 300,
+                "day": 600
+            },
+            "/api/templates/statistics": {
+                "minute": 60,
+                "hour": 300,
+                "day": 600
+            },
             "/api/user/me": {
                 "minute": 10,
                 "hour": 30,
@@ -64,6 +79,46 @@
             "/api/discussions/add": {
                 "minute": 10,
                 "hour": 30,
+                "day": 60
+            },
+            "/api/discussions": {
+                "minute": 30,
+                "hour": 300,
+                "day": 600
+            },
+            "/api/posts": {
+                "minute": 30,
+                "hour": 300,
+                "day": 600
+            },
+            "/api/posts/add": {
+                "minute": 10,
+                "hour": 30,
+                "day": 60
+            },
+            "/api/posts/add_message": {
+                "minute": 20,
+                "hour": 60,
+                "day": 120
+            },
+            "/api/posts/#/register_view": {
+                "minute": 60,
+                "hour": 300,
+                "day": 600
+            },
+            "/api/posts/vote": {
+                "minute": 20,
+                "hour": 120,
+                "day": 600
+            },
+            "/api/posts/by_slug/$": {
+                "minute": 60,
+                "hour": 300,
+                "day": 1200
+            },
+            "/api/reports/add": {
+                "minute": 5,
+                "hour": 20,
                 "day": 60
             }
         },

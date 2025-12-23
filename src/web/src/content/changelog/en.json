@@ -1,5 +1,16 @@
 [
     {
+        "version": "0.6.0",
+        "date": "24.12.2025",
+        "changes": [
+            "Added discussions",
+            "Added template detail page",
+            "Added template discussions",
+            "Added most popular templates page",
+            "Optimized games list"
+        ]
+    },
+    {
         "version": "0.5.0",
         "date": "15.12.2025",
         "changes": [

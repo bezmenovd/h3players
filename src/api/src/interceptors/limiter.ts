@@ -21,9 +21,7 @@ export class LimiterInterceptor implements NestInterceptor {
         await this.redis.quit()
     }
 
-    async intercept(context: ExecutionContext, next: CallHandler) {
-        return next.handle().pipe();
-        
+    async intercept(context: ExecutionContext, next: CallHandler) {        
         const req = context.switchToHttp().getRequest()
         const start = timestamp.now()
 
@@ -32,7 +30,7 @@ export class LimiterInterceptor implements NestInterceptor {
             .substring(0, 32)
         const token = req.headers['token']
 
-        const url = String(req.url).split('?')[0].replace(/\d+/g, '#')
+        const url = String(req.url).split('?')[0].replace(/\d+/g, '#').replace(/(by_slug\/)[^\/]+/, '$1$')
 
         const startOfMinute = Math.floor(start / 60) * 60
         const startOfHour = Math.floor(start / 3600) * 3600
