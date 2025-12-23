@@ -1,17 +1,17 @@
 <template>
-    <div class="loader-wrapper">
+    <div class="loader-wrapper" v-if="contentLoader.visible">
         <div class="loader-block">
             <div class="loader"></div>
-            <div class="text">{{ props.text }}</div> 
+            <div class="text">{{ t('content_loader.text') }}</div> 
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { contentLoader } from './content_loader';
+import { useI18n } from 'vue-i18n';
 
-const props = defineProps<{
-    text: string
-}>()
+const { t } = useI18n()
 
 </script>
 

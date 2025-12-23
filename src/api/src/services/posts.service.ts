@@ -26,43 +26,39 @@ export class PostsService {
     
     async getList(sort: string = 'new', query: string = ''): Promise<PostWithInfo[]> {
         let orderBy = {
-            'new': 'ORDER BY p.created_at DESC',
-            'popular': 'ORDER BY views_count DESC',
-            'top': 'ORDER BY rating DESC',
-        }[sort] ?? 'ORDER BY p.created_at DESC'
+            'new': 'p.created_at DESC',
+            'popular': '(views_count + comments_count * 20) DESC',
+            'top': 'rating DESC',
+        }[sort] ?? 'p.created_at DESC'
 
         const params: any[] = [
             als.getStore()!.language, 
             als.getStore()!.language,
         ];
 
-        let whereConditions = []
+        let whereConditions = ['(SELECT COUNT(*) FROM reports r WHERE r.entity_id = p.id AND r.entity_type = 2) < 3']
 
         if (query) {
-            whereConditions.push(`ANY_VALUE(t1.value) LIKE ? OR ANY_VALUE(t2.value) LIKE ?`)
+            whereConditions.push(`t1.value LIKE ? OR t2.value LIKE ?`)
             params.push(`%${query}%`)
             params.push(`%${query}%`)
         }
 
-        let where = whereConditions.join(' AND ')
-
         const [posts] = await this.mysql.execute<(Post & RowDataPacket)[]>(
             `SELECT 
                 p.*,
-                ANY_VALUE(t1.value) as title,
-                ANY_VALUE(t2.value) as text,
-                count(v.post_id) as views_count,
-                COALESCE(SUM(CASE WHEN votes.type = 1 THEN 1 WHEN votes.type = 2 THEN -1 ELSE 0 END), 0) as rating
+                t1.value as title,
+                t2.value as text,
+                (SELECT COUNT(DISTINCT v.player_id) FROM post_views v WHERE v.post_id = p.id) as views_count,
+                (SELECT COALESCE(SUM(CASE WHEN v.type = 1 THEN 1 WHEN v.type = 2 THEN -1 ELSE 0 END), 0) 
+                FROM votes v WHERE v.entity_id = p.id AND v.entity_type = 2) as rating,
+                (SELECT COUNT(*) FROM messages m WHERE m.post_id = p.id AND m.deleted_at IS NULL) as comments_count,
+                (SELECT COUNT(*) FROM reports r WHERE r.entity_id = p.id AND r.entity_type = 2) as reports_count
             FROM posts p
             LEFT JOIN texts t1 on t1.entity_id = p.id AND t1.entity_type = 2 AND t1.language = ? AND t1.tag = 'title'
             LEFT JOIN texts t2 on t2.entity_id = p.id AND t2.entity_type = 2 AND t2.language = ? AND t2.tag = 'text'
-            LEFT JOIN post_views v on v.post_id = p.id
-            LEFT JOIN votes ON votes.entity_id = p.id AND votes.entity_type = 2
-            LEFT JOIN reports r ON r.entity_id = p.id AND r.entity_type = 2
-            WHERE p.deleted_at IS NULL ${ where ? `AND ${where}` : '' }
-            GROUP BY p.id
-            HAVING count(r.at) < 3
-            ${orderBy}`,
+            WHERE ${whereConditions.join(' AND ')} 
+            ORDER BY ${orderBy}`,
             params
         );
 
@@ -70,35 +66,34 @@ export class PostsService {
     }
 
     async getBySlug(slug: string): Promise<PostWithInfo|null> {
+        const lang = als.getStore()!.language;
+    
         const [posts] = await this.mysql.execute<(Post & RowDataPacket)[]>(
             `SELECT 
                 p.*,
-                ANY_VALUE(t1.value) as title,
-                ANY_VALUE(t2.value) as text,
-                count(v.post_id) as views_count
+                t1.value as title,
+                t2.value as text,
+                (SELECT COUNT(DISTINCT v.player_id) FROM post_views v WHERE v.post_id = p.id) as views_count
             FROM posts p
             LEFT JOIN texts t1 on t1.entity_id = p.id AND t1.entity_type = 2 AND t1.language = ? AND t1.tag = 'title'
             LEFT JOIN texts t2 on t2.entity_id = p.id AND t2.entity_type = 2 AND t2.language = ? AND t2.tag = 'text'
-            LEFT JOIN post_views v on v.post_id = p.id
-            WHERE p.slug = ? AND p.deleted_at IS NULL
-            GROUP BY p.id
-            ORDER BY p.created_at DESC`,
-            [als.getStore()!.language, als.getStore()!.language, slug]
+            WHERE p.slug = ? AND p.deleted_at IS NULL`,
+            [lang, lang, slug]
         );
 
         if (posts.length === 0) {
-            return null
+            return null;
         }
 
-        return (await this.enrichPosts(posts))[0]
+        return (await this.enrichPosts(posts))[0];
     }
     
     async getDiscussionPostsList(discussionId: number, sort: string = 'new', query: string = ''): Promise<PostWithInfo[]> {
         let orderBy = {
-            'new': 'ORDER BY p.created_at DESC',
-            'popular': 'ORDER BY views_count DESC',
-            'top': 'ORDER BY rating DESC',
-        }[sort] ?? 'ORDER BY p.created_at DESC'
+            'new': 'p.created_at DESC',
+            'popular': '(views_count + comments_count * 20) DESC',
+            'top': 'rating DESC',
+        }[sort] ?? 'p.created_at DESC'
 
         const params: any[] = [
             als.getStore()!.language, 
@@ -106,33 +101,32 @@ export class PostsService {
             discussionId,
         ];
 
-        let whereConditions = []
+        let whereConditions = [
+            'p.discussion_id = ?',
+            '(SELECT COUNT(*) FROM reports r WHERE r.entity_id = p.id AND r.entity_type = 2) < 3'
+        ]
 
         if (query) {
-            whereConditions.push(`ANY_VALUE(t1.value) LIKE ? OR ANY_VALUE(t2.value) LIKE ?`)
+            whereConditions.push(`t1.value LIKE ? OR t2.value LIKE ?`)
             params.push(`%${query}%`)
             params.push(`%${query}%`)
         }
 
-        let where = whereConditions.join(' AND ')
-
         const [posts] = await this.mysql.execute<(Post & RowDataPacket)[]>(
             `SELECT 
                 p.*,
-                ANY_VALUE(t1.value) as title,
-                ANY_VALUE(t2.value) as text,
-                count(v.post_id) as views_count,
-                COALESCE(SUM(CASE WHEN votes.type = 1 THEN 1 WHEN votes.type = 2 THEN -1 ELSE 0 END), 0) as rating
+                t1.value as title,
+                t2.value as text,
+                (SELECT COUNT(DISTINCT v.player_id) FROM post_views v WHERE v.post_id = p.id) as views_count,
+                (SELECT COALESCE(SUM(CASE WHEN v.type = 1 THEN 1 WHEN v.type = 2 THEN -1 ELSE 0 END), 0) 
+                FROM votes v WHERE v.entity_id = p.id AND v.entity_type = 2) as rating,
+                (SELECT COUNT(*) FROM messages m WHERE m.post_id = p.id AND m.deleted_at IS NULL) as comments_count,
+                (SELECT COUNT(*) FROM reports r WHERE r.entity_id = p.id AND r.entity_type = 2) as reports_count
             FROM posts p
             LEFT JOIN texts t1 on t1.entity_id = p.id AND t1.entity_type = 2 AND t1.language = ? AND t1.tag = 'title'
             LEFT JOIN texts t2 on t2.entity_id = p.id AND t2.entity_type = 2 AND t2.language = ? AND t2.tag = 'text'
-            LEFT JOIN post_views v on v.post_id = p.id
-            LEFT JOIN votes ON votes.entity_id = p.id AND votes.entity_type = 2
-            LEFT JOIN reports r ON r.entity_id = p.id AND r.entity_type = 2
-            WHERE p.deleted_at IS NULL AND p.discussion_id = ? ${ where ? `AND ${where}` : '' }
-            GROUP BY p.id
-            HAVING count(r.at) < 3
-            ${orderBy}`,
+            WHERE ${whereConditions.join(' AND ')} 
+            ORDER BY ${orderBy}`,
             params
         );
 
@@ -161,23 +155,22 @@ export class PostsService {
         if ((text.match(new RegExp('\n', 'gi')) || []).length > 100) {
             throw new Error('too_many_lines')
         }
-        if ((text.match(new RegExp('\\!\\[', 'gi')) || []).length > 3) {
-            throw new Error('too_many_images')
+        if ((text.match(new RegExp('\\!\\[', 'gi')) || []).length > 0) {
+            throw new Error('images_not_available_yet')
         }
 
-        const resultTitle = await this.openaiService.moderateAndTranslate(title, als.getStore()!.language)
-
-        if (! resultTitle.isValid) {
-            this.permissonsService.handleViolation(player)
-            throw new Error(`failed_moderation:${resultTitle.reason}`)
-        }
-
-        const resultText = await this.openaiService.moderateAndTranslate(text, als.getStore()!.language)
-
-        if (! resultText.isValid) {
-            this.permissonsService.handleViolation(player)
-            throw new Error(`failed_moderation:${resultText.reason}`)
-        }
+        await Promise.all([
+            this.openaiService.moderate(title).then(result => {
+                if (! result.isValid) {
+                    throw new Error(`failed_moderation:${result.reason}`)
+                }
+            }),
+            this.openaiService.moderate(text).then(result => {
+                if (! result.isValid) {
+                    throw new Error(`failed_moderation:${result.reason}`)
+                }
+            })
+        ])
 
         const slug = makeSlug(title)
         const now = timestamp.now()
@@ -198,41 +191,101 @@ export class PostsService {
 
         await this.mysql.execute(
             `INSERT INTO texts 
-            (player_id, entity_type, entity_id, tag, language, value, created_at, updated_at) 
+            (player_id, entity_type, entity_id, tag, language, value, at) 
             VALUES
-            (?, 2, ?, ?, ?, ?, ?, ?)`,
-            [player.id, postsAdded[0].id, 'title', als.getStore()!.language, title, now, now]
-        )
+            (?, ?, ?, ?, ?, ?, ?)`,
+            [player.id, 2, postsAdded[0].id, 'title', als.getStore()!.language, title, now]
+        );
 
         await this.mysql.execute(
             `INSERT INTO texts 
-            (player_id, entity_type, entity_id, tag, language, value, created_at, updated_at) 
+            (player_id, entity_type, entity_id, tag, language, value, at) 
             VALUES
-            (?, 2, ?, ?, ?, ?, ?, ?)`,
-            [player.id, postsAdded[0].id, 'text', als.getStore()!.language, text, now, now]
-        )
+            (?, ?, ?, ?, ?, ?, ?)`,
+            [player.id, 2, postsAdded[0].id, 'text', als.getStore()!.language, text, now]
+        );
 
-        Promise.all(resultTitle.translations.map(async (t) => {
-            await this.mysql.execute(
-                `INSERT INTO texts 
-                (player_id, entity_type, entity_id, tag, language, value, created_at, updated_at) 
-                VALUES
-                (?, 2, ?, ?, ?, ?, ?, ?)`,
-                [player.id, postsAdded[0].id, 'title', t.lang, t.value, now, now]
-            )
-        }))
-
-        Promise.all(resultText.translations.map(async (t) => {
-            await this.mysql.execute(
-                `INSERT INTO texts 
-                (player_id, entity_type, entity_id, tag, language, value, created_at, updated_at) 
-                VALUES
-                (?, 2, ?, ?, ?, ?, ?, ?)`,
-                [player.id, postsAdded[0].id, 'text', t.lang, t.value, now, now]
-            )
-        }))
+        [1,2,3].filter(l => l !== als.getStore()!.language).map(l => {
+            this.openaiService.translate(title, l).then(result => {
+                this.mysql.execute(
+                    `INSERT INTO texts 
+                    (player_id, entity_type, entity_id, tag, language, value, at) 
+                    VALUES
+                    (?, ?, ?, ?, ?, ?, ?)`,
+                    [player.id, 2, postsAdded[0].id, 'title', l, result, now]
+                )
+            })
+            this.openaiService.translate(text, l).then(result => {
+                this.mysql.execute(
+                    `INSERT INTO texts 
+                    (player_id, entity_type, entity_id, tag, language, value, at) 
+                    VALUES
+                    (?, ?, ?, ?, ?, ?, ?)`,
+                    [player.id, 2, postsAdded[0].id, 'text', l, result, now]
+                )
+            })
+        })
 
         return postsAdded[0]
+    }
+
+    async addMessage(player: Player, post_id: number, parent_id: number|null, text: string): Promise<Message> {
+        let [rows] = await this.mysql.execute<({ count: number } & RowDataPacket)[]>(
+            'SELECT count(*) as count FROM `messages` WHERE player_id = ? AND created_at > ?',
+            [player.id, timestamp.startOfDay()]
+        )
+
+        if (rows[0].count >= 20 && ! await this.permissonsService.authorize(player, 'messages.add.unlimit')) {
+            throw new Error('day_limit')
+        }
+
+        if (text.length < 5 || text.length > 500) {
+            throw new Error('invalid_text')
+        }
+
+        await this.openaiService.moderate(text).then(result => {
+            if (! result.isValid) {
+                throw new Error(`failed_moderation:${result.reason}`)
+            }
+        })
+
+        const now = timestamp.now()
+
+        await this.mysql.execute(
+            'INSERT INTO `messages` (player_id, post_id, parent_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',
+            [player.id, post_id, parent_id, now, now]
+        )
+        
+        const [messagesAdded] = await this.mysql.execute<(Message & RowDataPacket)[]>(
+            'SELECT * FROM `messages` WHERE player_id = ? AND created_at = ?',
+            [player.id, now]
+        )
+
+        if (messagesAdded.length === 0) {
+            throw new Error('fail')
+        }
+
+        await this.mysql.execute(
+            `INSERT INTO texts 
+            (player_id, entity_type, entity_id, tag, language, value, at) 
+            VALUES
+            (?, ?, ?, ?, ?, ?, ?)`,
+            [player.id, 3, messagesAdded[0].id, 'title', als.getStore()!.language, text, now]
+        );
+
+        [1,2,3].filter(l => l !== als.getStore()!.language).map(l => {
+            this.openaiService.translate(text, l).then(result => {
+                this.mysql.execute(
+                    `INSERT INTO texts 
+                    (player_id, entity_type, entity_id, tag, language, value, at) 
+                    VALUES
+                    (?, ?, ?, ?, ?, ?, ?)`,
+                    [player.id, 3, messagesAdded[0].id, 'text', l, result, now]
+                )
+            })
+        })
+
+        return messagesAdded[0]
     }
 
     async registerView(player: Player, id: number): Promise<void> {
@@ -246,14 +299,11 @@ export class PostsService {
         )
     }
 
-    async vote(player: Player, id: number, type: number): Promise<void> {
+    async vote(player: Player, entity_type: number, entity_id: number, type: number): Promise<void> {
         await this.mysql.execute(
             `INSERT IGNORE INTO votes (player_id, entity_type, entity_id, type, at)
-            SELECT ?, ?, id, ?, ?
-            FROM posts 
-            WHERE id = ? AND deleted_at IS NULL
-            `,
-            [player.id, 2, type, timestamp.now(), id]
+            VALUES (?, ?, ?, ?, ?)`,
+            [player.id, entity_type, entity_id, type, timestamp.now()]
         )
     }
     

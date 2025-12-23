@@ -37,6 +37,7 @@ router.beforeEach((to, from, next) => {
                 name: String(from.name),
                 path: from.path,
                 params: from.params,
+                query: from.query,
             })
         } else {
             let parentName = String(to.name).split('.').slice(0, -1).join('.')

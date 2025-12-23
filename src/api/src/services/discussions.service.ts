@@ -72,12 +72,11 @@ export class DiscussionsService {
             throw new Error('duplicate')
         }
 
-        const result = await this.openaiService.moderateAndTranslate(name, als.getStore()!.language)
-
-        if (! result.isValid) {
-            this.permissonsService.handleViolation(player)
-            throw new Error(`failed_moderation:${result.reason}`)
-        }
+        await this.openaiService.moderate(name).then(result => {
+            if (! result.isValid) {
+                throw new Error(`failed_moderation:${result.reason}`)
+            }
+        })
 
         const now = timestamp.now()
 
@@ -97,21 +96,23 @@ export class DiscussionsService {
 
         await this.mysql.execute(
             `INSERT INTO texts 
-            (player_id, entity_type, entity_id, language, value, created_at, updated_at) 
+            (player_id, entity_type, entity_id, language, value, at) 
             VALUES
-            (?, 1, ?, ?, ?, ?, ?)`,
-            [player.id, discussionsAdded[0].id, als.getStore()!.language, name, now, now]
-        )
+            (?, ?, ?, ?, ?, ?)`,
+            [player.id, 1, discussionsAdded[0].id, als.getStore()!.language, name, now]
+        );
 
-        Promise.all(result.translations.map(async (t) => {
-            await this.mysql.execute(
-                `INSERT INTO texts 
-                (player_id, entity_type, entity_id, language, value, created_at, updated_at) 
-                VALUES
-                (?, 1, ?, ?, ?, ?, ?)`,
-                [player.id, discussionsAdded[0].id, t.lang, t.value, now, now]
-            )
-        }))
+        [1,2,3].filter(l => l !== als.getStore()!.language).map(l => {
+            this.openaiService.translate(name, l).then(result => {
+                this.mysql.execute(
+                    `INSERT INTO texts 
+                    (player_id, entity_type, entity_id, language, value, at) 
+                    VALUES
+                    (?, ?, ?, ?, ?, ?)`,
+                    [player.id, 1, discussionsAdded[0].id, l, result, now]
+                )
+            })
+        })
 
         return discussionsAdded[0]
     }

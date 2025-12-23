@@ -18,5 +18,8 @@ export async function getList(): Promise<DiscussionWithInfo[]> {
 }
 
 export async function add(name: string): Promise<{}> {
-    return api.post('/discussions/add', { name }).then(r => r.data)
+    return api.post('/discussions/add', { name }, {
+        _errorsPath: 'errors.discussions.add',
+        _contentLoader: true,
+    }).then(r => r.data)
 }

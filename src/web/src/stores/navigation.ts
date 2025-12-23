@@ -7,7 +7,7 @@ export const useNavigationStore = defineStore('navigation', () => {
         return routes.value.length > 0 ? routes.value[routes.value.length-1] : null
     })
     
-    function push(route: { name: string, path: string, params?: object }) {
+    function push(route: { name: string, path: string, params?: object, query?: object }) {
         routes.value.push(route)
     }
 

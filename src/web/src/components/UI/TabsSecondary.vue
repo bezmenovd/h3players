@@ -54,7 +54,7 @@ const select = (code: string) => {
 
 </script>
 
-<style>
+<style scoped>
 .tabs-secondary {
     display: flex;
     background: #2e3245;

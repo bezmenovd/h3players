@@ -11,9 +11,7 @@ CREATE TABLE texts (
     `tag` VARCHAR(16) DEFAULT NULL,
     `value` TEXT,
 
-    `created_at` INT UNSIGNED NOT NULL,
-    `updated_at` INT UNSIGNED NOT NULL,
-    `deleted_at` INT UNSIGNED DEFAULT NULL,
+    `at` INT UNSIGNED NOT NULL,
 
     PRIMARY KEY (`id`),
     INDEX (`player_id`),

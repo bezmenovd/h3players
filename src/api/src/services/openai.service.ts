@@ -7,14 +7,7 @@ export type ModerateResult = {
     reason: string
 }
 
-export type ModerateAndTranslateResult = {
-    isValid: boolean
-    reason: string
-    translations: {
-        lang: number
-        value: string
-    }[]
-}
+export type TranslateResult = string
 
 @Injectable()
 export class OpenaiService {
@@ -27,17 +20,27 @@ export class OpenaiService {
     }
 
     async moderate(text: string): Promise<ModerateResult> {
+        const moderation = await this.openai!.moderations.create({ input: text });
+        const [result] = moderation.results;
+
+        if (result.flagged) {
+            const categories = Object.entries(result.categories)
+                .filter(([_, value]) => value)
+                .map(([key]) => key)
+                .join(', ');
+
+            return {
+                isValid: false,
+                reason: `${categories}`
+            };
+        }
+
         const prompt = `
             Ты модератор пользовательского контента на сайте
-            1. МОДЕРАЦИЯ:
-            - isValid: false только за мат, оскорбления, политику, религию, дискриминацию, личные данные или нелегальный контент (РФ/ЕС), а также любой непристойный или шокирующий контент (за исключением общепринятого игрового сленга). 
-            - В остальных случаях isValid: true.
-            - При isValid: false верни translations: [].
-
             ВЕРНИ ТОЛЬКО JSON:
             {
-                "isValid": boolean,
-                "reason": string|null,
+                "isValid": boolean, // false только за мат, оскорбления, политику, религию, дискриминацию, личные данные или нелегальный контент (РФ/ЕС), а также любой непристойный или шокирующий контент (за исключением общепринятого игрового сленга). 
+                "reason": string|null, // причина если isValid false
             }
         `;
     
@@ -56,47 +59,41 @@ export class OpenaiService {
             response: JSON.parse(completion.choices[0].message.content!) 
         })}`);
 
-        const result = JSON.parse(completion.choices[0].message.content!) as ModerateResult
+        const result2 = JSON.parse(completion.choices[0].message.content!) as ModerateResult
+
+        if (! result2.isValid) {
+            result2.reason = result2.reason.toLowerCase()
+        }
     
-        return result
+        return result2
     }
 
-    async moderateAndTranslate(text: string, userLanguage: number): Promise<ModerateAndTranslateResult> {
-        const prompt = `
-            Ты модератор и переводчик пользовательского контента на сайте
-            1. МОДЕРАЦИЯ:
-            - isValid: false только за мат, оскорбления, политику, религию, дискриминацию, личные данные (за исключением относящихся к игре и игровому сообществу) или нелегальный контент (РФ/ЕС), а также любой непристойный или шокирующий контент (за исключением общепринятого игрового сленга). 
-            - В остальных случаях isValid: true.
-            - При isValid: false верни translations: [].
-            2. ПЕРЕВОД (только если isValid: true):
-            - Переведи на языки из списка, ИСКЛЮЧАЯ ID ${userLanguage}:
-            1:Русский, 2:Английский, 3:Польский.
-            - Требования: похожая структура, сохранение оригинального форматирования и стиля.
+    async translate(text: string, language: number): Promise<TranslateResult> {
+        const languageName = { 1: 'русский', 2: 'английский', 3: 'польский'}[language] ?? null
 
-            ВЕРНИ ТОЛЬКО JSON:
-            {
-                "isValid": boolean,
-                "reason": string|null,
-                "translations": [{"lang": number, "value": "string"}]
-            }
+        if (! languageName) {
+            throw new Error('unknown language: ' + language)
+        }
+
+        const prompt = `
+            Переведи текст, сохраняя структуру, оригинальное форматирование и стиль, на ${languageName} язык
         `;
-    
+
         const completion = await this.openai!.chat.completions.create({
             model: 'gpt-5-mini',
             messages: [
                 { role: 'system', content: prompt },
                 { role: 'user', content: text },
             ],
-            response_format: { type: 'json_object' },
         });
 
         logger.info(`openai result: ${JSON.stringify({ 
             prompt: prompt.trim(), 
             text, 
-            response: JSON.parse(completion.choices[0].message.content!) 
+            response: completion.choices[0].message.content!
         })}`);
 
-        const result = JSON.parse(completion.choices[0].message.content!) as ModerateAndTranslateResult
+        const result = completion.choices[0].message.content! as TranslateResult
     
         return result;
     }

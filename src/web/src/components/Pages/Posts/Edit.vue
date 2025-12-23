@@ -36,8 +36,6 @@
             </div>
         </Panel>
     </div>
-
-    <Loader v-if="waiting" :text="t('posts.loader_text')"/>
 </template>
 
 <script setup lang="ts">
@@ -54,11 +52,9 @@ import { getList } from '../../../api/discussions';
 import { add, update } from '../../../api/posts';
 import { alerts } from '../../UI/alerts';
 import { throttle } from '../../../helpers/functions';
-import Loader from '../../UI/Posts/Loader.vue';
 import router from '../../../router';
 // @ts-ignore
 import Markdown from 'vue3-markdown-it';
-
 
 const { t } = useI18n()
 const route = useRoute()
@@ -95,18 +91,13 @@ const savePost = () => {
         : add(post.title, post.text, post.discussion_id)
     
     apiCall.then(() => {
-        waiting.value = false
         alerts.send('', t('posts.edit.success'))
         localStorage.removeItem('tmp:posts:add:title')
         localStorage.removeItem('tmp:posts:add:text')
 
         router.push({ name: 'posts', params: { discussion_id: post.discussion_id } })
-    }).catch(err => {
-        if (err.response.data.message.split(':')[0] === 'failed_moderation') {
-            alerts.send('error', err.response.data.message.split(':')[1])
-        } else {
-            alerts.send('error', t('posts.edit.errors.' + err.response.data.message))
-        }
+    }).finally(() => {
+        waiting.value = false
     })
 }
 

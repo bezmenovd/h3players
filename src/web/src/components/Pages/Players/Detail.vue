@@ -75,7 +75,7 @@
                                     <div class="player-info-item-label">{{ t('players.detail.overview.games_duration.text') }}</div>
                                     <div class="player-info-item-value">
                                         <template v-if="settingsStore.language === 1">
-                                            {{ info.games_duration }} {{ pluralize(info.games_duration, 'час', 'часа', 'часов') }}
+                                            {{ Intl.NumberFormat('ru-RU').format(info.games_duration) }} {{ pluralize(info.games_duration, 'час', 'часа', 'часов') }}
                                             <div class="today-games-duration" v-if="info.today_games_duration > 0" :hint=" t('players.detail.overview.games_duration.hint')">
                                                 +
                                                 <template v-if="info.today_games_duration >= 3600">

@@ -193,15 +193,7 @@ const addDiscussion = () => {
         alerts.send('', t('discussions.list.add_modal.success'))
         addModal.show = false
         addModal.name = ''
-        getDiscussions().then(r => {
-            discussions.list = r
-        })
-    }).catch((err) => {
-        if (err.response.data.message.split(':')[0] === 'failed_moderation') {
-            alerts.send('error', err.response.data.message.split(':')[1])
-        } else {
-            alerts.send('error', t('discussions.list.add_modal.errors.' + err.response.data.message))
-        }
+        router.go(0)
     }).finally(() => {
         addModal.waiting = false
     })

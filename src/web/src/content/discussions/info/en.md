@@ -2,12 +2,12 @@ The website utilizes automatic pre-moderation and automatic translation into oth
 
 Pre-moderation prompt used:
 ```
-<..> only for profanity, insults, politics, religion, discrimination, personal data (except those related to the game and the gaming community) or illegal content (RU/EU), as well as any obscene or shocking content (except for commonly accepted gaming slang) <..>
+<..> only for profanity, insults (excluding criticism of ideas, statements, or value judgments that do not target individuals personally), politics, religion, discrimination, personal data (except those related to the game and the gaming community) or illegal content (RU/EU), as well as any obscene or shocking content (except for commonly accepted gaming slang) <..>
 ```
 
 Translation prompt used:
 ```
-<...> Requirements: similar structure, preservation of original formatting and style <...>
+<...> Translate the text while preserving its structure, original formatting, and style <...>
 ```
 
 

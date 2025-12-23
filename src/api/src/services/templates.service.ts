@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { createClient } from '@clickhouse/client';
-import { Template, TemplateGamesChartItem, TemplatesDurationChartItem, TemplatesEndDayChartItem, TemplatesStatisticsChartItem, TemplateStats, TemplateWithInfo } from '../types/clickhouse/lobby';
+import { GameWithInfo, Template, TemplateGamesChartItem, TemplatesDurationChartItem, TemplatesEndDayChartItem, TemplatesStatisticsChartItem, TemplateStats, TemplateWithInfo } from '../types/clickhouse/lobby';
 import { Paginated } from '../types/api';
 import { timestamp } from '../helpers/timestamp';
 
@@ -92,6 +92,27 @@ export class TemplatesService {
         })).json<Template>()
 
         return templates.length > 0 ? templates[0] : null
+    }
+
+    async getFirstGame(ids: number[]): Promise<GameWithInfo|null> {
+        const result = await (await this.clickhouse.query({
+            query: `
+                SELECT
+                    *,
+                    dictGet('players_dictionary', 'name', host_id) AS host_name,
+                    dictGet('players_dictionary', 'name', opponent_id) AS opponent_name,
+                    dictGet('templates_dictionary', 'name', template_id) AS template_name
+                FROM games
+                WHERE template_id in {ids:Array(UInt32)}
+                ORDER BY start_timestamp ASC LIMIT 1
+            `,
+            query_params: { 
+                ids,
+            },
+            format: 'JSONEachRow',
+        })).json<GameWithInfo>();
+
+        return result.length === 1 ? result[0] : null
     }
 
     async getVersions(name: string): Promise<Template[]> {

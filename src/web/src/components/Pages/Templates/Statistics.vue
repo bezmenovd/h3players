@@ -32,7 +32,6 @@ import { pluralize, pluralizeEn, pluralizePl } from '../../../helpers/string';
 import LineChart from '../../UI/Charts/LineChart.vue';
 import { date } from '../../../helpers/timestamp';
 import Header from '../../UI/Table/Header.vue';
-import Selector from '../../UI/Inputs/Selector.vue';
 
 const settingsStore = useSettingsStore()
 

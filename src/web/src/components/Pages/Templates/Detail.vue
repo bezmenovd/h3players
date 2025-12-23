@@ -12,6 +12,17 @@
             <Panel id="template-overview" class="selectable">
                 <div id="template-info">
                     <div class="template-info-column">
+                        <div class="template-info-item" v-if="template.first_game">
+                            <div class="template-info-item-label">{{ t('templates.detail.overview.first_game') }}</div>
+                            <div class="template-info-item-value">
+                                <div class="first-game-datetime">
+                                    {{ datetime.from(template.first_game.start_timestamp) }}
+                                </div>
+                                <router-link :to="{ name: 'players.detail', params: { id: template.first_game.host_id }}">
+                                    {{ template.first_game.host_name }}
+                                </router-link>
+                            </div>
+                        </div>
                         <div class="template-info-item">
                             <div class="template-info-item-label">{{ t('templates.detail.overview.games_count') }}</div>
                             <div class="template-info-item-value">{{ gamesCount }}</div>
@@ -31,6 +42,14 @@
                         <div class="template-info-item">
                             <div class="template-info-item-label">{{ t('templates.detail.overview.players_count') }}</div>
                             <div class="template-info-item-value">{{ playersCount }}</div>
+                        </div>
+                        <div class="template-info-item">
+                            <div class="template-info-item-label">{{ t('templates.detail.overview.players_avg_games_count') }}</div>
+                            <div class="template-info-item-value">{{ playersAvgGamesCount }}</div>
+                        </div>
+                        <div class="template-info-item">
+                            <div class="template-info-item-label">{{ t('templates.detail.overview.players_avg_duration') }}</div>
+                            <div class="template-info-item-value">{{ playersAvgDuration }}</div>
                         </div>
                     </div>
                 </div>
@@ -97,7 +116,6 @@ import { computed, onMounted, reactive, watch } from 'vue';
 import Title from '../../UI/Title.vue';
 import { useRoute } from 'vue-router';
 import { getTemplate, Template, TemplateGamesChartItem, TemplatesDurationChartItem, TemplatesEndDayChartItem, TemplateStats } from '../../../api/templates';
-import { alerts } from '../../UI/alerts';
 import { useI18n } from 'vue-i18n';
 import router from '../../../router';
 import { ref } from 'vue';
@@ -108,6 +126,7 @@ import { pluralize, pluralizeEn, pluralizePl } from '../../../helpers/string';
 import TabsSecondary from '../../UI/TabsSecondary.vue';
 import { date, datetime } from '../../../helpers/timestamp';
 import LineChart from '../../UI/Charts/LineChart.vue';
+import { GameWithInfo } from '../../../api/games';
 
 const settingsStore = useSettingsStore()
 
@@ -119,6 +138,7 @@ const template = reactive<{
     name: string
     versions: Template[]
     stats: TemplateStats
+    first_game: GameWithInfo|null,
     charts: {
         games: TemplateGamesChartItem[],
         duration: TemplatesDurationChartItem[],
@@ -133,6 +153,7 @@ const template = reactive<{
         games_duration: 0,
         players_count: 0,
     },
+    first_game: null,
     charts: {
         games: [],
         duration: [],
@@ -231,11 +252,11 @@ onMounted(() => {
         template.name = r.template.name
         template.versions = r.versions
         template.stats = r.stats
+        template.first_game = r.first_game
         template.charts = r.charts
         
         loading.value = false
     }).catch(err => {
-        alerts.send('error', t('errors.' + err.status))
         router.push({ name: 'templates' })
     })
 })
@@ -318,6 +339,35 @@ const gamesDurationAvg = computed<string>((): string => {
     return `${h}:${m}`;
 })
 
+const playersAvgGamesCount = computed<string>((): string => {
+    if (!template.stats.games_count || !template.stats.players_count) {
+        return '0.00'
+    }
+
+    let value = template.stats.games_count / template.stats.players_count
+
+    return new Intl.NumberFormat('ru-RU', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(value)
+})
+
+const playersAvgDuration = computed<string>((): string => {
+    if (!template.stats.games_count || !template.stats.games_duration) {
+        return '00:00';
+    }
+
+    const avgSeconds = Math.round(template.stats.games_duration / template.stats.players_count);
+    
+    const hours = Math.floor(avgSeconds / 3600);
+    const minutes = Math.floor((avgSeconds % 3600) / 60);
+
+    const h = String(hours).padStart(2, '0');
+    const m = String(minutes).padStart(2, '0');
+
+    return `${h}:${m}`;
+})
+
 const playersCount = computed<string>((): string => {
     return `${ Intl.NumberFormat('ru-RU').format(template.stats.players_count || 0) }`
 })
@@ -332,7 +382,7 @@ const playersCount = computed<string>((): string => {
 }
 #template-info {
     display: flex;
-    gap: 50px;
+    gap: 30px;
 }
 .template-info-column {
     gap: 20px;
@@ -354,7 +404,7 @@ const playersCount = computed<string>((): string => {
 }
 .template-info-item {
     display: grid;
-    grid-template-columns: 130px 1fr;
+    grid-template-columns: 150px 1fr;
     gap: 10px;
 }
 .template-info-item-label {
@@ -381,5 +431,10 @@ const playersCount = computed<string>((): string => {
 #templates-detail-end_day {
     padding: 20px;
     height: 300px;
+}
+.first-game-datetime {
+    opacity: .9;
+    font-size: 15px;
+    margin-right: 8px;
 }
 </style>

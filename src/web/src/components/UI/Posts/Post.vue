@@ -31,7 +31,12 @@
             </div>
             <template v-if="! postBlacklisted">
                 <div class="post-text" ref="postRef" @click="handleMarkdownClick">
-                    <Markdown :source="post.text" class="markdown" />
+                    <template v-if="post.text?.length > 0">
+                        <Markdown :source="post.text" class="markdown" />
+                    </template>
+                    <template v-else>
+                        <div class="post-no-text">{{ t('posts.no_text') }}</div>
+                    </template>
                 </div>
                 <div class="post-bottom">
                     <div class="post-views">
@@ -107,7 +112,7 @@ import { PostWithInfo, registerView, vote } from '../../../api/posts';
 import Panel from '../Panel.vue';
 // @ts-ignore
 import Markdown from 'vue3-markdown-it';
-import { date, datetime, timestamp } from '../../../helpers/timestamp';
+import { datetime, timestamp } from '../../../helpers/timestamp';
 import { useSettingsStore } from '../../../stores/settings';
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { pluralize, pluralizeEn, pluralizePl } from '../../../helpers/string';
@@ -222,7 +227,7 @@ const sendVote = (type: number) => {
 
     let now = timestamp.now()
 
-    vote(props.post.id, type).then(() => {
+    vote(2, props.post.id, type).then(() => {
         props.post.votes.push({
             at: now,
             player_id: userStore.player!.id!,
@@ -325,7 +330,6 @@ const sendReport = () => {
         alerts.send('', t('posts.report_modal.success'))
         reportModal.show = false
     }).catch(err => {
-        alerts.send('error', t('errors.' + err.status))
         reportModal.show = false
     })
 }
@@ -375,6 +379,14 @@ const sendReport = () => {
 }
 .post-text {
     padding: 20px;
+}
+.post-no-text {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: .8;
 }
 .post-bottom {
     border-top: 1px dashed #ffffff1c;

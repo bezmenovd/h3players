@@ -2,12 +2,12 @@ Strona korzysta z automatycznej premoderacji oraz automatycznego tłumaczenia na
 
 Użyty prompt premoderacji:
 ```
-<..> wyłącznie za wulgaryzmy, obelgi, politykę, religię, dyskryminację, dane osobowe (z wyjątkiem tych związanych z grą i społecznością graczy) lub treści nielegalne (RU/UE), a także wszelkie nieprzyzwoite lub szokujące treści (z wyjątkiem ogólnie przyjętego slangu graczy) <..>
+<..> wyłącznie za wulgaryzmy, obelgi (z wyjątkiem krytyki pomysłów, wypowiedzi lub opinii, które nie są skierowane osobiście przeciwko komuś), politykę, religię, dyskryminację, dane osobowe (z wyjątkiem tych związanych z grą i społecznością graczy) lub treści nielegalne (RU/UE), a także wszelkie nieprzyzwoite lub szokujące treści (z wyjątkiem ogólnie przyjętego slangu graczy) <..>
 ```
 
 Użyty prompt tłumaczenia:
 ```
-<...> Wymagania: podobna struktura, zachowanie oryginalnego formatowania i stylu <...>
+<...> Przetłumacz tekst, zachowując jego strukturę, oryginalne formatowanie i styl <...>
 ```
 
 ### Moderacja

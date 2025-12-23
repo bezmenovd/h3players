@@ -50,15 +50,19 @@ export class TemplatesController {
         }
 
         let versions = await this.templatesService.getVersions(template.name)
+        let ids = [template.id].concat(versions.map(v => v.id))
+
         let stats = await this.templatesService.getStats(template.name)
-        let chartGames = await this.templatesService.getGamesChart([template.id].concat(versions.map(v => v.id)))
-        let chartDuration = await this.templatesService.getDurationChart([template.id].concat(versions.map(v => v.id)))
-        let chartEndDay = await this.templatesService.getEndDayChart([template.id].concat(versions.map(v => v.id)))
+        let firstGame = await this.templatesService.getFirstGame(ids)
+        let chartGames = await this.templatesService.getGamesChart(ids)
+        let chartDuration = await this.templatesService.getDurationChart(ids)
+        let chartEndDay = await this.templatesService.getEndDayChart(ids)
 
         return {
             template,
             versions,
             stats,
+            first_game: firstGame,
             charts: {
                 games: chartGames,
                 duration: chartDuration,

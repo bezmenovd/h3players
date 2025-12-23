@@ -1,5 +1,6 @@
 import { Paginated } from "./_general";
 import api from "../api";
+import { GameWithInfo } from "./games";
 
 export type Template = {
     id: number
@@ -46,6 +47,7 @@ export type TemplateDetailInfo = {
     template: Template
     versions: Template[]
     stats: TemplateStats
+    first_game: GameWithInfo
     charts: {
         games: TemplateGamesChartItem[],
         duration: TemplatesDurationChartItem[],

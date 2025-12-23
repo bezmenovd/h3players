@@ -8,15 +8,13 @@ export const useUserStore = defineStore('user', () => {
     const player = reactive<{
         id: number|null,
         name: string|null,
-        permissions: string[],
-        restriction: Restriction|null,
     }>({
         id: null,
         name: null,
-        permissions: [],
-        restriction: null,
     })
     const blacklist = ref<number[]>([])
+    const permissions = ref<string[]>([])
+    const restriction = ref<Restriction|null>(null)
 
     token.value = '4c285ce1c84e87053dd281a479d5bd7f'
     player.id = 1
@@ -52,17 +50,18 @@ export const useUserStore = defineStore('user', () => {
 
             player.id = p.id
             player.name = p.name
-            player.permissions = p.permissions
+            permissions.value = p.permissions
+            restriction.value = p.restriction
             blacklist.value = p.blacklist
         }).catch(() => {})
     }
 
     function hasPermission(permission: string): boolean {
-        return player.permissions.includes(permission)
+        return permissions.value?.includes(permission) ?? false
     }
 
     function hasNoRestriction(): boolean {
-        return player.restriction === null || player.restriction.finish_at < timestamp.now()
+        return ! restriction.value || restriction.value!.finish_at < timestamp.now()
     }
 
     const isAuthenticated = computed(() => token.value !== null)
@@ -71,6 +70,8 @@ export const useUserStore = defineStore('user', () => {
         token,
         player,
         blacklist,
+        restriction,
+        permissions,
         isAuthenticated,
         hasPermission,
         hasNoRestriction,

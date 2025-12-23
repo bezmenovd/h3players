@@ -4,26 +4,31 @@
         <template v-else>
             <Post :post="post.model!" />
             <div id="post-comments">
-                <AddComment :post_id="post.model!.id"/>
+                <AddComment :post_id="post.model!.id" @onadd="router.go(0)" v-if="userStore.isAuthenticated && userStore.hasNoRestriction" />
+                <CommentTree v-for="comment in postCommentsTree" :message="comment" />
             </div>
         </template>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { getBySlug, PostWithInfo } from '../../../api/posts';
-import { alerts } from '../../UI/alerts';
 import router from '../../../router';
 import Post from '../../UI/Posts/Post.vue';
 import Loader from '../../UI/Loader.vue';
 import AddComment from '../../UI/Posts/AddComment.vue';
+import CommentTree from '../../UI/Posts/CommentTree.vue';
+import { useUserStore } from '../../../stores/user';
+import { buildTree, TNode } from '../../../helpers/tree';
+import { MessageWithInfo } from '../../../api/messages';
 
 
 const { t } = useI18n()
 const route = useRoute()
+const userStore = useUserStore()
 
 const loading = ref(true)
 
@@ -35,13 +40,15 @@ const post = reactive<{
     model: null,
 })
 
+const postCommentsTree = computed<TNode<MessageWithInfo>[]>(() => {
+    return buildTree(post.model!.comments)
+})
+
 onMounted(() => {
     getBySlug(post.slug).then(r => {
         post.model = r
         loading.value = false
     }).catch(err => {
-        alerts.send('error', t('errors.' + err.response.status))
-
         router.push({ name: 'posts' })
     })
 })
@@ -58,6 +65,12 @@ onMounted(() => {
 }
 #post-comments {
     margin-top: 20px;
+    display: grid;
+}
+#post-comments-top {
+    padding: 15px 20px;
+    display: grid;
+    grid-template-columns: 250px auto 1fr;
 }
 </style>
 
@@ -86,5 +99,55 @@ onMounted(() => {
         transform: translate(-38px,3px);
         top: -19px !important;
     }
+}
+.comment {
+    margin-top: 20px;
+}
+.add-comment {
+    margin-top: 20px;
+}
+.comment-replies > .tree-item {
+    position: relative;
+}
+.comment-replies::before {
+    position: relative;
+    content: '';
+    display: block;
+    position: absolute;
+    left: 25px;
+    top: -20px;
+    height: calc(100% + 20px);
+    width: 1px;
+    background: #2e3245;
+}
+.comment-replies::after {
+    content: "";
+    display: block;
+    position: absolute;
+    left: -25px;
+    top: 0;
+    height: 100%;
+    width: 25px;
+    background: #272c3a;
+}
+.comment-replies .tree-item::before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: -25px;
+    top: 50%;
+    height: 1px;
+    width: 25px;
+    background: #2e3245;
+}
+.comment-replies .tree-item.last:after {
+    content: "";
+    display: block;
+    position: absolute;
+    left: -25px;
+    top: calc(50% + 1px);
+    height: 50%;
+    width: 25px;
+    background: #272c3a;
 }
 </style>

@@ -32,7 +32,7 @@ export class Supervisor {
 
             let now = timestamp.now()
     
-            let text = `[${process.env.APP_ENV}] clients:\n`
+            let text = ``
 
             this.clients.forEach(client => {
                 let state = this.states.get(client.name)!

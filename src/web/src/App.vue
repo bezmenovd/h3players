@@ -13,6 +13,7 @@
         </div>
 
         <Alerts />
+        <ContentLoader />
     </div>
 </template>
 
@@ -30,6 +31,7 @@ import Alerts from './components/UI/Alerts.vue';
 import { connect } from './modules/websocket';
 import { useUserStore } from './stores/user';
 import { useRoute } from 'vue-router';
+import ContentLoader from './components/UI/ContentLoader.vue';
 
 
 const loading = ref({

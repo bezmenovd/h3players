@@ -1,6 +1,6 @@
 <template>
     <Panel class="add-comment">
-        <Textarea v-model="comment.text" :max-length="1000" :placeholder="t('posts.add_comment.text.placeholder')" class="add-comment-textarea"/>
+        <Textarea v-model="comment.text" :max-length="500" :placeholder="t('posts.add_comment.text.placeholder')" class="add-comment-textarea"/>
         <div class="add-comment-bottom">
             <div 
                 :class="{'btn': true, 'disabled': ! canSaveComment, 'waiting': waiting }"
@@ -18,12 +18,19 @@ import { useI18n } from 'vue-i18n';
 import Textarea from '../Inputs/Textarea.vue';
 import Panel from '../Panel.vue';
 import { computed, reactive, ref } from 'vue';
+import { addMessage } from '../../../api/posts';
+import { Message } from '../../../api/messages';
 
 const { t } = useI18n()
 
 const props = defineProps<{
     post_id: number
+    parent_id?: number|null
 }>()
+
+const emit = defineEmits({
+    onadd: (comment: Message) => {}
+})
 
 const comment = reactive({
     text: ''
@@ -32,11 +39,21 @@ const comment = reactive({
 const waiting = ref(false)
 
 const canSaveComment = computed<boolean>(() => {
-    return comment.text.length > 5 && comment.text.length <= 1000
+    return comment.text.length > 5 && comment.text.length <= 500
 })
 
 const saveComment = () => {
+    if (waiting.value) {
+        return
+    }
 
+    waiting.value = true
+
+    addMessage(props.post_id, props.parent_id ?? null, comment.text).then(comment => {
+        emit('onadd', comment)
+    }).finally(() => {
+        waiting.value = false
+    })
 }
 
 </script>
@@ -44,7 +61,7 @@ const saveComment = () => {
 <style scoped>
 .add-comment {
     width: 100%;
-    height: 200px;
+    height: 170px;
     padding: 20px;
     display: grid;
     grid-template-rows: 1fr 20px;

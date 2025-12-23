@@ -63,6 +63,37 @@ export class PostsController {
         }
     }
 
+    @Post('/add_message')
+    async addMessage(
+        @Body('post_id') post_id: number,
+        @Body('parent_id') parent_id: number|null,
+        @Body('text') text: string,
+    ) {
+        if (! post_id || ! text) {
+            throw new BadRequestException()
+        }
+        
+        if (! als.getStore()!.token) {
+            throw new UnauthorizedException()
+        }
+
+        let player = await this.userService.getUserPlayer(als.getStore()!.token)
+
+        if (! player) {
+            throw new UnauthorizedException()
+        }
+
+        if (await this.permissonsService.getRestriction(player) !== null) {
+            throw new ForbiddenException('restricted')
+        }
+
+        try {
+            return await this.postsService.addMessage(player, post_id, parent_id, text)
+        } catch (e: any) {
+            throw new BadRequestException(e.message)
+        }
+    }
+
     @Post('/:id/register_view')
     async registerView(
         @Param('id') id: number,
@@ -84,12 +115,13 @@ export class PostsController {
         await this.postsService.registerView(player, id)
     }
 
-    @Post('/:id/vote')
+    @Post('/vote')
     async vote(
-        @Param('id') id: number,
+        @Body('entity_type') entity_type: number,
+        @Body('entity_id') entity_id: number,
         @Body('type') type: number,
     ) {
-        if (! id || ! [1,2].includes(type)) {
+        if (! [2,3].includes(entity_type) || ! entity_id || ! [1,2].includes(type)) {
             throw new BadRequestException()
         }
         
@@ -103,7 +135,7 @@ export class PostsController {
             throw new UnauthorizedException()
         }
 
-        await this.postsService.vote(player, id, type)
+        await this.postsService.vote(player, entity_type, entity_id, type)
     }
 
     @Get('/by_slug/:slug')

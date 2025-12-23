@@ -1,5 +1,5 @@
 import api from "../api"
-import { MessageWithInfo } from "./messages"
+import { Message, MessageWithInfo } from "./messages"
 import { VoteWithInfo } from "./votes"
 
 
@@ -37,6 +37,9 @@ export async function add(title: string, text: string, discussion_id: number): P
         title,
         text,
         discussion_id,
+    }, {
+        _errorsPath: 'errors.posts.add',
+        _contentLoader: true,
     }).then(r => r.data)
 }
 
@@ -45,6 +48,20 @@ export async function update(id: number, title: string, text: string, discussion
         title,
         text,
         discussion_id,
+    }, {
+        _errorsPath: 'errors.posts.update',
+        _contentLoader: true,
+    }).then(r => r.data)
+}
+
+export async function addMessage(post_id: number, parent_id: number|null, text: string): Promise<Message> {
+    return api.post('/posts/add_message', {
+        post_id,
+        parent_id,
+        text,
+    }, {
+        _errorsPath: 'errors.posts.addMessage',
+        _contentLoader: true,
     }).then(r => r.data)
 }
 
@@ -52,8 +69,10 @@ export async function registerView(id: number): Promise<void> {
     return api.post(`/posts/${id}/register_view`)
 }
 
-export async function vote(id: number, type: number): Promise<void> {
-    return api.post(`/posts/${id}/vote`, {
+export async function vote(entity_type: number, entity_id: number, type: number): Promise<void> {
+    return api.post(`/posts/vote`, {
+        entity_type,
+        entity_id,
         type,
     })
 }
