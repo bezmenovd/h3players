@@ -1,6 +1,6 @@
 <template>
     <div class="post-wrapper">
-        <Panel :class="{'post': true, 'expanded': expanded }">
+        <Panel :class="{'post': true, 'trimmed': trim, 'expanded': expanded }">
             <div :class="{'post-top': true, 'blacklisted': postBlacklisted }">
                 <div class="post-title">
                     <template v-if="! postBlacklisted">
@@ -114,7 +114,7 @@ import Panel from '../Panel.vue';
 import Markdown from 'vue3-markdown-it';
 import { datetime, timestamp } from '../../../helpers/timestamp';
 import { useSettingsStore } from '../../../stores/settings';
-import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { pluralize, pluralizeEn, pluralizePl } from '../../../helpers/string';
 import { useUserStore } from '../../../stores/user';
 import { useI18n } from 'vue-i18n';
@@ -132,6 +132,7 @@ const { t } = useI18n()
 
 const props = defineProps<{
     post: PostWithInfo
+    trim?: boolean
 }>()
 
 const expanded = ref(false)
@@ -244,7 +245,9 @@ let viewTimeout: NodeJS.Timeout|undefined = undefined;
 
 const viewRegistered = ref(false);
 
-onMounted(() => {
+const trim = ref(false)
+
+onMounted(async () => {
     const updateNow = setInterval(() => {
         now.value = timestamp.now()
     }, 10000)
@@ -252,6 +255,8 @@ onMounted(() => {
     onBeforeUnmount(() => {
         clearInterval(updateNow)
     })
+
+    await nextTick()
 
     if (userStore.isAuthenticated) {
         observer = new IntersectionObserver((entries) => {
@@ -261,7 +266,7 @@ onMounted(() => {
                         registerView(props.post.id).then(() => {
                             viewRegistered.value = true
                             // @ts-ignore
-                            observer!.unobserve(postRef.value)
+                            postRef.value && observer!.unobserve(postRef.value)
                         })
                     }, 1000);
                 } else {
@@ -275,6 +280,15 @@ onMounted(() => {
         // @ts-ignore
         postRef.value && observer.observe(postRef.value)
     }
+
+    if (props.trim) {
+        let size = (postRef.value! as HTMLElement).getBoundingClientRect()
+        console.log(size.height)
+        if (size.height > 500) {
+            trim.value = true
+        }
+    }
+
 })
 
 const votesModal = reactive({
@@ -379,6 +393,20 @@ const sendReport = () => {
 }
 .post-text {
     padding: 20px;
+    position: relative;
+}
+.post.trimmed:not(.expanded) .post-text {
+    cursor: pointer;
+    user-select: none;
+}
+.post.trimmed:not(.expanded) .post-text::after {
+    position: absolute;
+    content: '';
+    bottom: 0px;
+    height: 50px;
+    width: 100%;
+    background: linear-gradient(360deg, #00000033, transparent);
+    left: 0;
 }
 .post-no-text {
     width: 100%;
@@ -534,6 +562,10 @@ const sendReport = () => {
     flex-direction: column;
     align-items: center;
     gap: 20px;
+}
+.posts .post.trimmed:not(.expanded) .post-text {
+    max-height: 478px;
+    overflow: hidden;
 }
 </style>
 

@@ -56,7 +56,7 @@
                 </div>
             </template>
         </Panel>
-    
+        
         <div class="comment-replies">
             <AddComment 
                 v-if="reply" 

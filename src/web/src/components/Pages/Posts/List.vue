@@ -1,35 +1,7 @@
 <template>
     <div id="discussions-list">
         <div id="discussions">
-            <div id="posts">
-                <Header id="posts-top-panel">
-                    <TextInput v-model="postsFilter.query" :placeholder="t('posts.filter.query')" :max-length="20"/>
-                    <Selector v-model="postsFilter.sort.value" :items="postsFilter.sort.items"/>
-                    <div id="posts-add">
-                        <div 
-                            v-if="userStore.hasNoRestriction()"
-                            :class="{'btn': true, 'disabled': ! userStore.isAuthenticated }" 
-                            @click="userStore.isAuthenticated && router.push({ name: 'posts.edit' })" 
-                        >
-                            <div class="btn-icon" style="background-image: url('/img/add.png')"/>
-                            {{ t('posts.add') }}
-                        </div>
-                    </div>
-                </Header>
-                <div id="posts-list-wrapper">
-                    <template v-if="postsFilter.waiting">
-                        <div id="posts-list-loading">{{ t('posts.list.loading') }}</div>
-                    </template>
-                    <template v-else-if="posts.list.length === 0">
-                        <div id="posts-list-empty">{{ t('posts.list.empty') }}</div>
-                    </template>
-                    <template v-else>
-                        <template v-for="post in posts.list">
-                            <Post :post="post" />
-                        </template>
-                    </template>
-                </div>
-            </div>
+            <List :discussion_id="discussions.active?.id ?? null"/>
             <div id="discussions-panel">
                 <Panel id="discussions-items">
                     <div :class="{'discussion': true, 'active': discussions.active === null }" @click="selectDiscussion(null)">
@@ -89,15 +61,12 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import Modal from '../../UI/Modal.vue';
-import Header from '../../UI/Table/Header.vue';
 import { useI18n } from 'vue-i18n';
 import { useUserStore } from '../../../stores/user';
 import TextInput from '../../UI/Inputs/TextInput.vue';
-import Selector from '../../UI/Inputs/Selector.vue';
 import { add, DiscussionWithInfo, getList as getDiscussions } from '../../../api/discussions';
 import { alerts } from '../../UI/alerts';
 import Panel from '../../UI/Panel.vue';
-import { getList as getPosts, PostWithInfo } from '../../../api/posts';
 import router from '../../../router';
 import { useRoute } from 'vue-router';
 // @ts-ignore
@@ -106,8 +75,7 @@ import ru from '../../../content/discussions/info/ru.md?raw';
 import en from '../../../content/discussions/info/en.md?raw';
 import pl from '../../../content/discussions/info/pl.md?raw';
 import { useSettingsStore } from '../../../stores/settings';
-import Post from '../../UI/Posts/Post.vue';
-import { debounce } from '../../../helpers/functions';
+import List from '../../UI/Posts/List.vue';
 
 const settingsStore = useSettingsStore()
 
@@ -144,44 +112,6 @@ const discussions = reactive<{
     active: null,
 })
 
-const posts = reactive<{
-    list: PostWithInfo[],
-}>({
-    list: [],
-})
-
-const postsFilter = reactive({
-    query: route.query.query ? String(route.query.query) : '',
-    sort: {
-        value: route.query.sort ? String(route.query.sort) : 'new',
-        items: [
-            { code: 'new', text: t('posts.filter.sort.items.new') },
-            { code: 'popular', text: t('posts.filter.sort.items.popular') },
-            { code: 'top', text: t('posts.filter.sort.items.top') },
-        ]
-    },
-    waiting: true
-})
-
-const updatePosts = debounce(() => {
-    router.replace({
-        query: {
-            ...route.query,
-            sort: postsFilter.sort.value,
-            query: postsFilter.query,
-        }
-    })
-
-    postsFilter.waiting = true
-
-    getPosts(discussions.active?.id ?? null, postsFilter.sort.value, postsFilter.query).then(r => {
-        posts.list = r
-        postsFilter.waiting = false
-    })
-}, 300)
-
-watch(() => [postsFilter.sort.value, postsFilter.query], () => updatePosts())
-
 const addDiscussion = () => {
     if (addModal.waiting) {
         return
@@ -201,12 +131,6 @@ const addDiscussion = () => {
 
 const selectDiscussion = (discussion: DiscussionWithInfo|null) => {
     discussions.active = discussion
-    postsFilter.waiting = true
-
-    getPosts(discussion?.id ?? null).then(r => {
-        posts.list = r
-        postsFilter.waiting = false
-    })
 
     router.push({
         params: {
@@ -229,10 +153,6 @@ onMounted(() => {
     getDiscussions().then(r => {
         discussions.list = r
         discussions.active = r.find(d => d.id === discussionId) ?? null
-    })
-    getPosts(discussionId, postsFilter.sort.value, postsFilter.query).then(r => {
-        posts.list = r
-        postsFilter.waiting = false
     })
 })
 
@@ -347,55 +267,4 @@ onMounted(() => {
     font-variant-numeric: tabular-nums;
     color: gray;
 }
-#posts {
-    display: grid;
-    grid-template-rows: 50px 1fr;
-    gap: 20px;
-}
-#posts-top-panel {
-    display: grid;
-    grid-template-columns: 250px 130px 1fr;
-    gap: 15px;
-    align-items: center;
-    max-width: 1000px;
-}
-#posts-add {
-    width: fit-content;
-    margin-left: auto;
-}
-#posts-list-wrapper {
-    max-width: 1000px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    padding-top: 30px;
-
-}
-#posts-list-empty {
-    width: 100%;
-    height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    opacity: .5;
-}
-#posts-list-loading {
-    width: 100%;
-    height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    opacity: .5;
-}
-
-</style>
-
-<style>
-.posts .post:not(.expanded) .post-text {
-    max-height: 478px;
-    overflow: hidden;
-}
-
 </style>
