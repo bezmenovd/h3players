@@ -5,9 +5,9 @@
             <Selector v-model="postsFilter.sort.value" :items="postsFilter.sort.items"/>
             <div id="posts-add">
                 <div 
-                    v-if="userStore.hasNoRestriction()"
+                    v-if="userStore.hasNoRestriction"
                     :class="{'btn': true, 'disabled': ! userStore.isAuthenticated }" 
-                    @click="userStore.isAuthenticated && router.push({ name: 'posts.edit' })" 
+                    @click="userStore.isAuthenticated && router.push({ name: 'posts.edit', query: { discussion_id: props.discussion_id } })" 
                 >
                     <div class="btn-icon" style="background-image: url('/img/add.png')"/>
                     {{ t('posts.add') }}

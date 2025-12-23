@@ -58,7 +58,6 @@ const select = (code: string) => {
 .tabs-secondary {
     display: flex;
     background: #2e3245;
-    gap: 1px;
     height: 50px;
     width: fit-content;
 }
@@ -73,6 +72,7 @@ const select = (code: string) => {
     color: #82848f;
     padding: 0 20px;
     white-space: nowrap;
+    box-shadow: 0 -2px #ffffff17 inset;
 }
 .tab:not(.active):hover {
     cursor: pointer;

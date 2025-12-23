@@ -1,10 +1,16 @@
 import { BadRequestException, Controller, Get, NotFoundException, Param, Query } from '@nestjs/common';
 import { TemplatesService } from '../services/templates.service';
+import { DiscussionsService } from '../services/discussions.service';
+import { PostsService } from '../services/posts.service';
 
 
 @Controller('templates')
 export class TemplatesController {
-    constructor(private readonly templatesService: TemplatesService) {}
+    constructor(
+        private readonly templatesService: TemplatesService,
+        private readonly discussionsService: DiscussionsService,
+        private readonly postsService: PostsService,
+    ) {}
 
     @Get('/')
     async list(
@@ -58,6 +64,9 @@ export class TemplatesController {
         let chartDuration = await this.templatesService.getDurationChart(ids)
         let chartEndDay = await this.templatesService.getEndDayChart(ids)
 
+        let discussion = await this.discussionsService.getTemplateDiscussion(ids.sort((a, b) => a - b)[0])
+        let postsCount = await this.postsService.getPostsCount(discussion.id)
+
         return {
             template,
             versions,
@@ -68,6 +77,33 @@ export class TemplatesController {
                 duration: chartDuration,
                 end_day: chartEndDay,
             },
+            discussion: {
+                posts_count: postsCount,
+            },
         }
     }
+    
+        @Get('/:id/discussion')
+        async getTemplateDiscussion(
+            @Param('id') id: string,
+        ) {
+            let tid = Number(id)
+    
+            if (! tid) {
+                throw new BadRequestException()
+            }
+    
+            let template = await this.templatesService.getTemplate(tid)
+    
+            if (! template) {
+                throw new NotFoundException()
+            }
+    
+            let discussion = await this.discussionsService.getTemplateDiscussion(template.id)
+    
+            return {
+                template_name: template.name,
+                discussion_id: discussion.id,
+            }
+        }
 }

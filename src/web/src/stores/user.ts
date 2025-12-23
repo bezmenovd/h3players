@@ -15,24 +15,19 @@ export const useUserStore = defineStore('user', () => {
     const blacklist = ref<number[]>([])
     const permissions = ref<string[]>([])
     const restriction = ref<Restriction|null>(null)
+    const authorized = ref(false)
+
 
     token.value = '4c285ce1c84e87053dd281a479d5bd7f'
     player.id = 1
     player.name = "Temnotta"
 
+
     async function setToken(value: string) {
         token.value = value
         localStorage.setItem('user:token', token.value)
 
-        await getMe().then(p => {
-            if (! p) {
-                token.value = null
-                return
-            }
-
-            player.id = p.id
-            player.name = p.name
-        }).catch(() => {})
+        load()
     }
 
     async function logout() {
@@ -43,11 +38,7 @@ export const useUserStore = defineStore('user', () => {
 
     async function load() {
         getMe().then(p => {
-            if (! p) {
-                token.value = null
-                return
-            }
-
+            authorized.value = true
             player.id = p.id
             player.name = p.name
             permissions.value = p.permissions
@@ -60,11 +51,11 @@ export const useUserStore = defineStore('user', () => {
         return permissions.value?.includes(permission) ?? false
     }
 
-    function hasNoRestriction(): boolean {
+    const hasNoRestriction = computed<boolean>(() => {
         return ! restriction.value || restriction.value!.finish_at < timestamp.now()
-    }
+    })
 
-    const isAuthenticated = computed(() => token.value !== null)
+    const isAuthenticated = computed(() => authorized.value)
 
     return {
         token,

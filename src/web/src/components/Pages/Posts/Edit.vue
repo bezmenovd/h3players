@@ -10,7 +10,7 @@
                         :requirements="t('posts.edit.title.requirements')" 
                         :max-length="100"
                     />
-                    <Dropdown :value="post.discussion_id" :items="discussions"/>
+                    <Dropdown id="edit-discussion" :value="post.discussion_id" :items="discussions" v-if="needToSelectDiscussion"/>
                 </div>
                 <div id="edit-text-group">
                     <Textarea 
@@ -67,8 +67,12 @@ const post = reactive({
     id: postId,
     title: postId ? '' : localStorage.getItem('tmp:posts:add:title') ?? '',
     text: postId ? '' : localStorage.getItem('tmp:posts:add:text') ?? '',
-    discussion_id: -1,
+    discussion_id: route.query.discussion_id && Number.isFinite(Number(route.query.discussion_id))
+        ? Number(route.query.discussion_id)
+        : -1,
 })
+
+const needToSelectDiscussion = ref(false)
 
 const waiting = ref(false)
 
@@ -123,13 +127,16 @@ const saveTemporary = throttle(() => {
 watch(() => [post.title, post.text], saveTemporary)
 
 onMounted(() => {
-    getList().then(r => {
-        discussions.value = r.sort((a, b) => a.posts_count - b.posts_count).map(d => ({
-            id: d.id,
-            text: d.name,
-        }))
-        post.discussion_id = discussions.value[0].id
-    })
+    if (post.discussion_id === -1) {
+        getList().then(r => {
+            discussions.value = r.sort((a, b) => a.posts_count - b.posts_count).map(d => ({
+                id: d.id,
+                text: d.name,
+            }))
+            post.discussion_id = discussions.value[0].id
+            needToSelectDiscussion.value = true
+        })
+    }
 })
 
 const textareaRef = ref(null);
@@ -171,8 +178,7 @@ onMounted(() => {
     max-height: 800px;
 }
 #edit-title-group {
-    display: grid;
-    grid-template-columns: 1fr 200px;
+    display: flex;
     gap: 20px;
 }
 #edit-text-group {
@@ -189,6 +195,9 @@ onMounted(() => {
     /* height: 100%;
     max-height: 100%; */
     border-top: none;
+}
+#edit-discussion {
+    width: 200px;
 }
 #post-save {
     width: 100%;

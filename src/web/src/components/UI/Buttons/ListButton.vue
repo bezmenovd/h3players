@@ -8,7 +8,7 @@ const emit = defineEmits(['click'])
 
 </script>
 
-<style>
+<style scoped>
 .list-button {
     width: 24px;
     height: 24px;

@@ -135,6 +135,10 @@ export class PostsController {
             throw new UnauthorizedException()
         }
 
+        if (await this.permissonsService.getRestriction(player) !== null) {
+            throw new ForbiddenException('restricted')
+        }
+
         await this.postsService.vote(player, entity_type, entity_id, type)
     }
 

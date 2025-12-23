@@ -1,6 +1,6 @@
 import { Headers, Injectable } from '@nestjs/common';
 import mysql, { RowDataPacket } from 'mysql2/promise';
-import { Player } from '../types/clickhouse/lobby';
+import { Player, Template } from '../types/clickhouse/lobby';
 import { Discussion, DiscussionWithInfo } from '../types/mysql/h3players';
 import { timestamp } from '../helpers/timestamp';
 import { PlayersService } from './players.service';
@@ -45,6 +45,22 @@ export class DiscussionsService {
             ...r,
             player_name: players.find(p => p.id === r.player_id)?.name || '?',
         }))
+    }
+
+    async getTemplateDiscussion(template_id: number): Promise<Discussion> {
+        const discussionId = template_id + 100000;
+
+        await this.mysql.execute(
+            'INSERT IGNORE INTO `discussions` (id, player_id, created_at, is_public) VALUES (?, ?, ?, ?)',
+            [discussionId, 0, timestamp.startOfDay(), false]
+        );
+
+        const [discussions] = await this.mysql.execute<(Discussion & RowDataPacket)[]>(
+            'SELECT * FROM `discussions` WHERE id = ?',
+            [discussionId]
+        );
+
+        return discussions[0];
     }
     
     async add(player: Player, name: string): Promise<Discussion> {

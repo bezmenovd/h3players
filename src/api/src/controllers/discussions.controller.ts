@@ -1,5 +1,4 @@
-import { BadRequestException, Body, Controller, ForbiddenException, Get, Post, Req, UnauthorizedException } from '@nestjs/common';
-import { Request } from 'express';
+import { BadRequestException, Body, Controller, ForbiddenException, Get, NotFoundException, Post, Query, Req, UnauthorizedException } from '@nestjs/common';
 import { DiscussionsService } from '../services/discussions.service';
 import { UserService } from '../services/user.service';
 import { PermissionsService } from '../services/permissions.service';

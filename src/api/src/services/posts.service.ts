@@ -65,6 +65,20 @@ export class PostsService {
         return this.enrichPosts(posts);
     }
 
+    async getPostsCount(discussion_id: number): Promise<number> {
+        const [posts] = await this.mysql.execute<({ count: number } & RowDataPacket)[]>(
+            `SELECT 
+                count(*) as count
+            FROM posts p
+            WHERE (SELECT COUNT(*) FROM reports r WHERE r.entity_id = p.id AND r.entity_type = 2) < 3
+                AND p.discussion_id = ?
+            `,
+            [discussion_id]
+        );
+
+        return posts[0].count
+    }
+
     async getBySlug(slug: string): Promise<PostWithInfo|null> {
         const lang = als.getStore()!.language;
     

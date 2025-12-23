@@ -220,7 +220,7 @@ const showAuthor = () => {
 const voted = ref(false)
 
 const canVote = computed<boolean>(() => {
-    return userStore.isAuthenticated && ! voted.value && props.post.votes.find(v => v.player_id === userStore.player.id) === undefined
+    return userStore.isAuthenticated && userStore.hasNoRestriction && ! voted.value && props.post.votes.find(v => v.player_id === userStore.player.id) === undefined
 })
 
 const sendVote = (type: number) => {
@@ -282,9 +282,8 @@ onMounted(async () => {
     }
 
     if (props.trim) {
-        let size = (postRef.value! as HTMLElement).getBoundingClientRect()
-        console.log(size.height)
-        if (size.height > 500) {
+        let size = (postRef.value! as HTMLElement)?.getBoundingClientRect()
+        if (size?.height > 500) {
             trim.value = true
         }
     }

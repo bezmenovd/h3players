@@ -15,7 +15,7 @@ export type Me = Player & {
     blacklist: number[]
 }
 
-export async function getMe(): Promise<Me|null> {
+export async function getMe(): Promise<Me> {
     return api.get(`/user/me`).then(r => r.data);
 }
 

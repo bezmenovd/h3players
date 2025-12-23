@@ -53,6 +53,9 @@ export type TemplateDetailInfo = {
         duration: TemplatesDurationChartItem[],
         end_day: TemplatesEndDayChartItem[],
     }
+    discussion: {
+        posts_count: number
+    }
 }
 
 export async function getTemplate(id: number): Promise<TemplateDetailInfo> {
@@ -68,4 +71,13 @@ export type TemplatesStatisticsChartItem = {
 
 export async function getStatistics(): Promise<TemplatesStatisticsChartItem[]> {
     return api.get(`/templates/statistics`).then(r => r.data)
+}
+
+export type TemplateDiscussion = {
+    template_name: string
+    discussion_id: number
+}
+
+export async function getTemplateDiscussion(template_id: number): Promise<TemplateDiscussion> {
+    return api.get(`/templates/${template_id}/discussion`).then(r => r.data)
 }

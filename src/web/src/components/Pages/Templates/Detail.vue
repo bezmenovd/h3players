@@ -4,6 +4,10 @@
             <template #in-text>
                 <div :class="`template-name ${ templateClass }`">{{ templateName }}</div>
             </template>
+            <div class="posts-button">
+                {{ template.discussion.posts_count }}
+                <PostsButton @click="router.push({ name: 'templates.posts', params: { id: [template.id].concat(template.versions.map(v => v.id)).sort((a, b) => a - b)[0]} })"/>
+            </div>
         </Title>
         <template v-if="loading">
             <Loader :solid="false" />
@@ -127,6 +131,7 @@ import TabsSecondary from '../../UI/TabsSecondary.vue';
 import { date, datetime } from '../../../helpers/timestamp';
 import LineChart from '../../UI/Charts/LineChart.vue';
 import { GameWithInfo } from '../../../api/games';
+import PostsButton from '../../UI/Buttons/PostsButton.vue';
 
 const settingsStore = useSettingsStore()
 
@@ -144,6 +149,9 @@ const template = reactive<{
         duration: TemplatesDurationChartItem[],
         end_day: TemplatesEndDayChartItem[],
     }
+    discussion: {
+        posts_count: number
+    }
 }>({
     id: Number(route.params.id),
     name: '',
@@ -158,7 +166,10 @@ const template = reactive<{
         games: [],
         duration: [],
         end_day: [],
-    }
+    },
+    discussion: {
+        posts_count: 0,
+    },
 })
 
 const tab = ref<string>('');
@@ -254,6 +265,7 @@ onMounted(() => {
         template.stats = r.stats
         template.first_game = r.first_game
         template.charts = r.charts
+        template.discussion = r.discussion
         
         loading.value = false
     }).catch(err => {
@@ -436,5 +448,10 @@ const playersCount = computed<string>((): string => {
     opacity: .9;
     font-size: 15px;
     margin-right: 8px;
+}
+.posts-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 </style>

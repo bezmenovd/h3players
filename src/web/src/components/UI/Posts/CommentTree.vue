@@ -8,7 +8,7 @@
                     </div>
                     <div class="comment-datetime">{{ ago }}</div>
                     <div class="comment-top-right">
-                        <template v-if="userStore.isAuthenticated && message.player_id !== userStore.player.id || true">
+                        <template v-if="userStore.isAuthenticated && message.player_id !== userStore.player.id">
                             <template v-if="! commentBlacklisted">
                                 <div class="comment-action" id="post-hide-player" style="margin-left: auto" @click="hideAuthor()">{{ t('posts.hide_author') }}</div>
                             </template>
@@ -44,7 +44,7 @@
                         <div class="stub" />
                     </template>
                     <div class="comment-reply" @click="toggleReply">
-                        <template v-if="props.message.level < 2">
+                        <template v-if="props.message.level < 2 && userStore.isAuthenticated && userStore.hasNoRestriction">
                             <template v-if="! reply">
                                 {{ t('posts.comments.reply') }}
                             </template>
@@ -56,10 +56,10 @@
                 </div>
             </template>
         </Panel>
-        
+
         <div class="comment-replies">
             <AddComment 
-                v-if="reply" 
+                v-if="userStore.isAuthenticated && userStore.hasNoRestriction && reply" 
                 :post_id="props.message.post_id" 
                 :parent_id="props.message.id" 
                 @onadd="router.go(0)" 
@@ -116,6 +116,7 @@ import AddComment from './AddComment.vue';
 import { TNode } from '../../../helpers/tree';
 import router from '../../../router';
 import Modal from '../Modal.vue';
+import TextInput from '../Inputs/TextInput.vue';
 
 const userStore = useUserStore()
 const settingsStore = useSettingsStore()
@@ -206,7 +207,7 @@ const votes = computed<number>(() => {
 })
 
 const canVote = computed<boolean>(() => {
-    return userStore.isAuthenticated && ! voted.value && props.message.votes.find(v => v.player_id === userStore.player.id) === undefined
+    return userStore.isAuthenticated && userStore.hasNoRestriction && ! voted.value && props.message.votes.find(v => v.player_id === userStore.player.id) === undefined
 })
 
 const sendVote = (type: number) => {

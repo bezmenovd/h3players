@@ -16,7 +16,7 @@
                         <div class="discussion-posts-count" :hint="t('discussions.discussion.posts_count')">{{ discussion.posts_count }}</div>
                     </div>
                 </Panel>
-                <div id="discussions-add" v-if="userStore.hasPermission('discussions.add') && userStore.hasNoRestriction()">
+                <div id="discussions-add" v-if="userStore.hasPermission('discussions.add') && userStore.hasNoRestriction">
                     <div class="btn" @click="addModal.show = true">
                         <div class="btn-icon" style="background-image: url('/img/add.png')"/>
                         {{ t('discussions.list.add.text') }}
