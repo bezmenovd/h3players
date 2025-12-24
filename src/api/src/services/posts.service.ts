@@ -289,8 +289,10 @@ export class PostsService {
             [player.id, 3, messagesAdded[0].id, 'title', als.getStore()!.language, text, now]
         );
 
-        [1,2,3].filter(l => l !== als.getStore()!.language).map(l => {
-            this.openaiService.translate(text, l).then(result => {
+        const sourceLanguage = als.getStore()!.language;
+
+        [1,2,3].filter(l => l !== sourceLanguage).map(l => {
+            this.openaiService.translate(text, sourceLanguage, l).then(result => {
                 this.mysql.execute(
                     `INSERT INTO texts 
                     (player_id, entity_type, entity_id, tag, language, value, at) 
