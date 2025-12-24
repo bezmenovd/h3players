@@ -20,7 +20,10 @@ export class OpenaiService {
         this.openai = new OpenAI({
             apiKey: `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`,
             fetch: (async (url: any, init: any) => {
-                return fetch(url, { dispatcher: proxyAgent } as any);
+                return fetch(url, { 
+                    ...init,
+                    dispatcher: proxyAgent 
+                } as any);
             }) as any,
         });
     }
