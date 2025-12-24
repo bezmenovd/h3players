@@ -35,7 +35,7 @@ export class TemplatesService {
                 t.name,
                 SUM(t_stats.games_count) as games_count,
                 SUM(t_stats.games_duration) as games_duration,
-                uniqMerge(players_uniq) AS players_count
+                uniqMerge(t_stats.players_uniq) AS players_count
             FROM templates AS t
             LEFT JOIN templates_mv_stats_table AS t_stats ON t.id = t_stats.id
             ${where}
@@ -137,7 +137,7 @@ export class TemplatesService {
                 SELECT 
                     SUM(t_stats.games_count) as games_count,
                     SUM(t_stats.games_duration) as games_duration,
-                uniqMerge(players_uniq) AS players_count
+                    uniqMerge(t_stats.players_uniq) AS players_count
                 FROM templates AS t
                 INNER JOIN templates_mv_stats_table AS t_stats ON t.id = t_stats.id
                 WHERE t.name = {name:String}
