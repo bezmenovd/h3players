@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
 import { logger } from '../helpers/logger';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 export type ModerateResult = {
     isValid: boolean
@@ -9,6 +10,8 @@ export type ModerateResult = {
 
 export type TranslateResult = string
 
+const proxyAgent = new HttpsProxyAgent('http://SdaNWnab9SzVNCt3:ifJQL8vluEOeyCgV@geo.iproyal.com:12321');
+
 @Injectable()
 export class OpenaiService {
     private openai?: OpenAI;
@@ -16,6 +19,12 @@ export class OpenaiService {
     async onModuleInit() {
         this.openai = new OpenAI({
             apiKey: `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`,
+            fetch: async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+                return fetch(input, {
+                    ...init,
+                    agent: proxyAgent,
+                } as any);
+            },
         });
     }
 

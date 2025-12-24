@@ -327,10 +327,13 @@ export class PostsService {
         const postIds = posts.map(p => p.id);
     
         const [messages] = await this.mysql.query<(Message & RowDataPacket)[]>(
-            `SELECT m.*, t.value as text
+            `SELECT m.*, t.value as text,
+                (SELECT COUNT(*) FROM reports r WHERE r.entity_id = m.id AND r.entity_type = 3) as reports_count
              FROM messages m
              LEFT JOIN texts t on t.entity_id = m.id AND t.entity_type = 3 AND t.language = ?
-             WHERE m.deleted_at IS NULL AND m.post_id IN (?) 
+             WHERE m.deleted_at IS NULL 
+               AND m.post_id IN (?)
+               AND (SELECT COUNT(*) FROM reports r WHERE r.entity_id = m.id AND r.entity_type = 3) < 3
              ORDER BY m.created_at ASC`,
             [als.getStore()!.language, postIds]
         );
