@@ -112,6 +112,7 @@ onMounted(() => {
     gap: 15px;
     justify-content: space-between;
     padding: 5px 0;
+    height: 30px;
 }
 .players-search-history-item:hover .players-search-history-item-removebtn {
     opacity: .7;
@@ -141,7 +142,7 @@ onMounted(() => {
     display: grid;
     /* grid-template-columns: 1fr 1fr; */
     row-gap: 5px;
-    column-gap: 30%;
+    column-gap: 0%;
     padding: 15px 10px;
     grid-template-columns: 1fr 1fr;
 }
