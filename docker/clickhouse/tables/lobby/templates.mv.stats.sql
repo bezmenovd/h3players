@@ -9,7 +9,7 @@ CREATE TABLE templates_mv_stats_table
     games_duration UInt64,
     players_uniq AggregateFunction(uniq, UInt32)
 )
-ENGINE = SummingMergeTree
+ENGINE = AggregatingMergeTree()
 ORDER BY id;
 
 DROP VIEW IF EXISTS templates_mv_stats_view;
@@ -21,7 +21,7 @@ SELECT
     template_id AS id, 
     count() AS games_count, 
     sum(end_timestamp - start_timestamp) AS games_duration,
-    uniqState(arrayJoin([host_id, opponent_id])) AS players_uniq
+    uniqState(host_id, opponent_id) AS players_uniq
 FROM games
 WHERE end_timestamp > start_timestamp 
   AND (end_timestamp - start_timestamp) < 57600
@@ -32,7 +32,7 @@ SELECT
     template_id AS id, 
     count() AS games_count, 
     sum(end_timestamp - start_timestamp) AS games_duration,
-    uniqState(arrayJoin([host_id, opponent_id])) AS players_uniq
+    uniqState(host_id, opponent_id) AS players_uniq
 FROM games
 WHERE end_timestamp > start_timestamp 
   AND (end_timestamp - start_timestamp) < 57600
