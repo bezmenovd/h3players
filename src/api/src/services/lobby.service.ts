@@ -71,12 +71,12 @@ export class LobbyService {
         let items = await (await this.clickhouse.query({
             query: `
                 SELECT
-                    sum(player_new_rating - player_old_rating) as rating_diff,
                     player_id as id,
-                    max(end_timestamp) as end_timestamp_max,
+                    sumMerge(rating_diff_state) as rating_diff,
+                    maxMerge(last_game_time_state) as end_timestamp_max,
                     dictGet('players_dictionary', 'name', player_id) AS name
-                FROM games_v
-                WHERE end_timestamp >= {startOfDay:UInt32}
+                FROM games_mv_daily_table
+                WHERE end_day = toDate({startOfDay:UInt32})
                 GROUP BY player_id
                 ORDER BY rating_diff ${(anti ? 'ASC' : 'DESC')}, end_timestamp_max DESC
                 LIMIT {limit:UInt32} OFFSET {offset:UInt32}
@@ -100,12 +100,12 @@ export class LobbyService {
         let items = await (await this.clickhouse.query({
             query: `
                 SELECT
-                    count(*) as games_count,
                     player_id as id,
-                    max(end_timestamp) as end_timestamp_max,
+                    countMerge(games_count_state) as games_count,
+                    maxMerge(last_game_time_state) as end_timestamp_max,
                     dictGet('players_dictionary', 'name', player_id) AS name
-                FROM games_v
-                WHERE end_timestamp >= {startOfDay:UInt32} AND template_id != 1
+                FROM games_mv_daily_table
+                WHERE end_day = toDate({startOfDay:UInt32}) AND template_id != 1
                 GROUP BY player_id
                 ORDER BY games_count DESC, end_timestamp_max DESC
                 LIMIT {limit:UInt32} OFFSET {offset:UInt32}

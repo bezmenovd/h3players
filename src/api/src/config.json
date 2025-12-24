@@ -2,8 +2,8 @@
     "limits": {
         "ip": {
             "/api/lobby/chart": {
-                "minute": 10,
-                "hour": 100,
+                "minute": 30,
+                "hour": 300,
                 "day": 2500
             },
             "/api/lobby/dailyTop": {
