@@ -56,7 +56,7 @@ export class OpenaiService {
         const completion = await this.openai!.chat.completions.create({
             model: 'gpt-5-mini',
             messages: [
-                { role: 'system', content: prompt },
+                { role: 'developer', content: prompt },
                 { role: 'user', content: text },
             ],
             response_format: { type: 'json_object' },
@@ -77,21 +77,25 @@ export class OpenaiService {
         return result2
     }
 
-    async translate(text: string, language: number): Promise<TranslateResult> {
-        const languageName = { 1: 'русский', 2: 'английский', 3: 'польский'}[language] ?? null
+    async translate(text: string, sourceLanguage: number, toLanguage: number): Promise<TranslateResult> {
+        const sourceLanguageName = { 1: 'русский', 2: 'английский', 3: 'польский'}[sourceLanguage] ?? null
+        const toLanguageName = { 1: 'русский', 2: 'английский', 3: 'польский'}[toLanguage] ?? null
 
-        if (! languageName) {
-            throw new Error('unknown language: ' + language)
+        if (! sourceLanguageName) {
+            throw new Error('unknown language: ' + toLanguage)
+        }
+        if (! toLanguageName) {
+            throw new Error('unknown language: ' + toLanguageName)
         }
 
         const prompt = `
-            Переведи весь текст, полностью, сохраняя структуру, оригинальное форматирование и стиль, на ${languageName} язык
+            Переведи ВЕСЬ текст, ПОЛНОСТЬЮ, сохраняя оригинальное форматирование и стиль, с "${sourceLanguageName}" на "${toLanguageName}". Запрещено оставлять слова на исходном языке
         `;
 
         const completion = await this.openai!.chat.completions.create({
             model: 'gpt-5-mini',
             messages: [
-                { role: 'system', content: prompt },
+                { role: 'developer', content: prompt },
                 { role: 'user', content: text },
             ],
         });

@@ -118,8 +118,10 @@ export class DiscussionsService {
             [player.id, 1, discussionsAdded[0].id, als.getStore()!.language, name, now]
         );
 
-        [1,2,3].filter(l => l !== als.getStore()!.language).map(l => {
-            this.openaiService.translate(name, l).then(result => {
+        const sourceLanguage = als.getStore()!.language;
+
+        [1,2,3].filter(l => l !== sourceLanguage).map(l => {
+            this.openaiService.translate(name, sourceLanguage, l).then(result => {
                 this.mysql.execute(
                     `INSERT INTO texts 
                     (player_id, entity_type, entity_id, language, value, at) 
