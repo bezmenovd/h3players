@@ -115,7 +115,7 @@ onMounted(() => {
     height: 30px;
 }
 .players-search-history-item:hover .players-search-history-item-removebtn {
-    opacity: .7;
+    opacity: .5;
 }
 .players-search-history-item-removebtn {
     font-size: 26px;
@@ -129,6 +129,7 @@ onMounted(() => {
     transform: scaleX(0.9);
     position: relative;
     top: -3px;
+    margin-right: 30%;
 }
 .players-search-history-item-removebtn:hover {
     opacity: 1;
