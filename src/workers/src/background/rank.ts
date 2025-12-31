@@ -31,7 +31,7 @@ export async function update() {
             if (item.last_timestamp <= 1703970000) {
                 item.last_rating = Math.min(Math.round(item.last_rating * 0.5), 500)
             }
-            if (item.last_timestamp <= 1767225600) {
+            if (item.last_timestamp <= 1767214800) {
                 item.last_rating = Math.min(Math.round(item.last_rating * 0.5), 500)
             }
 

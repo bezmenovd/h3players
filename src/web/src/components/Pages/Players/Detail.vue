@@ -368,7 +368,7 @@ onMounted(async () => {
                             wiped1 = true
                         }
 
-                        if (cur > 1767225600 && ! wiped2) {
+                        if (cur > 1767214800 && ! wiped2) {
                             if (rIndex < gamesHistorical.length) {
                                 ratingChart.data[dIndex]![0] = gamesHistorical[rIndex].player_old_rating
                             } else {
