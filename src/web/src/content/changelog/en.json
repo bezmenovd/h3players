@@ -3,7 +3,8 @@
         "version": "0.7.0",
         "date": "01.01.2026",
         "changes": [
-            "Added display of the new city Kronwerk and its heroes"
+            "Added display of the new city Kronwerk and its heroes",
+            "Lobby rating recalculation applied"
         ]
     },
     {

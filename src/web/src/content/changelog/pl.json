@@ -3,7 +3,8 @@
         "version": "0.7.0",
         "date": "01.01.2026",
         "changes": [
-            "Dodano wyświetlanie nowego miasta Kronwerk i jego bohaterów."
+            "Dodano wyświetlanie nowego miasta Kronwerk i jego bohaterów.",
+            "Uwzględniono przeliczenie rankingu w lobby"
         ]
     },
     {
