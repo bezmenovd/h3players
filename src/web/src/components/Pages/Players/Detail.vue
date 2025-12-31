@@ -196,7 +196,7 @@ const info = computed(() => {
     if (gamesList.items[0].end_timestamp < 1703970000) {
         rating = Math.min(Math.round(rating * 0.5), 500)
     }
-    if (gamesList.items[0].end_timestamp < 1703970000) {
+    if (gamesList.items[0].end_timestamp < 1767214800) {
         rating = Math.min(Math.round(rating * 0.5), 500)
     }
 
