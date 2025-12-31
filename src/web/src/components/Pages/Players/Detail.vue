@@ -194,10 +194,10 @@ const info = computed(() => {
     let today_games_duration = 0
 
     if (gamesList.items[0].end_timestamp < 1703970000) {
-        rating = Math.min(Math.round(rating * 0.5), 500)
+        rating = Math.min(Math.floor(rating * 0.5), 500)
     }
     if (gamesList.items[0].end_timestamp < 1767214800) {
-        rating = Math.min(Math.round(rating * 0.5), 500)
+        rating = Math.min(Math.floor(rating * 0.5), 500)
     }
 
     for (let i = 0; i < gamesList.items.length; i++) {
@@ -363,7 +363,7 @@ onMounted(async () => {
                             if (rIndex < gamesHistorical.length) {
                                 ratingChart.data[dIndex]![0] = gamesHistorical[rIndex].player_old_rating
                             } else {
-                                ratingChart.data[dIndex]![0] = Math.min(Math.round(ratingChart.data[dIndex-1]![0] * 0.5), 500)
+                                ratingChart.data[dIndex]![0] = Math.min(Math.floor(ratingChart.data[dIndex-1]![0] * 0.5), 500)
                             }
                             wiped1 = true
                         }
@@ -372,7 +372,7 @@ onMounted(async () => {
                             if (rIndex < gamesHistorical.length) {
                                 ratingChart.data[dIndex]![0] = gamesHistorical[rIndex].player_old_rating
                             } else {
-                                ratingChart.data[dIndex]![0] = Math.min(Math.round(ratingChart.data[dIndex-1]![0] * 0.5), 500)
+                                ratingChart.data[dIndex]![0] = Math.min(Math.floor(ratingChart.data[dIndex-1]![0] * 0.5), 500)
                             }
                             wiped2 = true
                         }

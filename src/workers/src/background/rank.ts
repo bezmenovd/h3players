@@ -29,10 +29,10 @@ export async function update() {
         await Promise.all(rows.map(async (row: Row) => {
             let item = row.json() as { player_id: number, last_rating: number, last_timestamp: number }
             if (item.last_timestamp <= 1703970000) {
-                item.last_rating = Math.min(Math.round(item.last_rating * 0.5), 500)
+                item.last_rating = Math.min(Math.floor(item.last_rating * 0.5), 500)
             }
             if (item.last_timestamp <= 1767214800) {
-                item.last_rating = Math.min(Math.round(item.last_rating * 0.5), 500)
+                item.last_rating = Math.min(Math.floor(item.last_rating * 0.5), 500)
             }
 
             await Promise.all([
