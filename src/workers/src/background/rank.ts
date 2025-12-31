@@ -31,6 +31,9 @@ export async function update() {
             if (item.last_timestamp <= 1703970000) {
                 item.last_rating = Math.min(Math.round(item.last_rating * 0.5), 500)
             }
+            if (item.last_timestamp <= 1767225600) {
+                item.last_rating = Math.min(Math.round(item.last_rating * 0.5), 500)
+            }
 
             await Promise.all([
                 redis.set(`spectator:last-rating:${item.player_id}`, String(item.last_rating)),

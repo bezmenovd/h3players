@@ -10,7 +10,8 @@
         "7": "fortress",
         "8": "conflux",
         "9": "cove",
-        "10": "factory"
+        "10": "factory",
+        "11": "kronwerk"
     },
     "heroes": {
         "0": "orrin",
@@ -210,6 +211,21 @@
         "194": "eanswythe",
         "195": "frederick",
         "196": "tavin",
-        "197": "murdoch"
+        "197": "murdoch",
+        "198": "duin",
+        "199": "oidana",
+        "200": "neya",
+        "201": "aykturn",
+        "202": "kreile",
+        "203": "spadum",
+        "204": "ergon",
+        "205": "kriv",
+        "206": "glaciy",
+        "207": "siyal",
+        "208": "dalton",
+        "209": "blarma",
+        "210": "akka",
+        "211": "bexp",
+        "212": "allora"
     }
 }
