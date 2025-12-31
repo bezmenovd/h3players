@@ -10,7 +10,7 @@ const CSS_IMAGE_REF = '/img/h3.png';
 
 
 const glob = require('glob');
-const files = glob.sync('**/*.png', { cwd: ICON_CWD });
+const files = glob.sync('{heroes/small/*.png,towns/*.png}', { cwd: ICON_CWD });
 const srcPaths = files.map(file => path.resolve(ICON_CWD, file));
 
 if (srcPaths.length === 0) {

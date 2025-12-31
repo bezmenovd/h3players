@@ -6,4184 +6,1376 @@
     display: inline-block;
 }
 
-.h3-towns-tower {
-    width: 48px;
-    height: 32px;
-    background-position: -1478px -1122px;
-}
-
-.h3-towns-stronghold {
-    width: 48px;
-    height: 32px;
-    background-position: -1478px -1156px;
-}
-
-.h3-towns-rampart {
-    width: 48px;
-    height: 32px;
-    background-position: -1478px -1190px;
-}
-
-.h3-towns-necropolis {
-    width: 48px;
-    height: 32px;
-    background-position: -1478px -1224px;
-}
-
-.h3-towns-kronwerk {
-    width: 68px;
-    height: 45px;
-    background-position: -793px -697px;
-}
-
-.h3-towns-inferno {
-    width: 48px;
-    height: 32px;
-    background-position: -1478px -1258px;
-}
-
-.h3-towns-fortress {
-    width: 48px;
-    height: 32px;
-    background-position: -1478px -1292px;
-}
-
-.h3-towns-factory {
-    width: 48px;
-    height: 32px;
-    background-position: -1478px -1326px;
-}
-
-.h3-towns-dungeon {
-    width: 48px;
-    height: 32px;
-    background-position: -1478px -1360px;
-}
-
-.h3-towns-cove {
-    width: 48px;
-    height: 32px;
-    background-position: -1120px -1417px;
-}
-
-.h3-towns-conflux {
-    width: 48px;
-    height: 32px;
-    background-position: -1170px -1417px;
-}
-
-.h3-towns-castle {
-    width: 48px;
-    height: 32px;
-    background-position: -1220px -1417px;
-}
-
-.h3-spells-image99 {
-    width: 83px;
-    height: 61px;
-    background-position: -538px -0px;
-}
-
-.h3-spells-image98 {
-    width: 83px;
-    height: 61px;
-    background-position: -538px -63px;
-}
-
-.h3-spells-image97 {
-    width: 83px;
-    height: 61px;
-    background-position: -538px -126px;
-}
-
-.h3-spells-image96 {
-    width: 83px;
-    height: 61px;
-    background-position: -538px -189px;
-}
-
-.h3-spells-image95 {
-    width: 83px;
-    height: 61px;
-    background-position: -538px -252px;
-}
-
-.h3-spells-image94 {
-    width: 83px;
-    height: 61px;
-    background-position: -538px -315px;
-}
-
-.h3-spells-image93 {
-    width: 83px;
-    height: 61px;
-    background-position: -538px -378px;
-}
-
-.h3-spells-image92 {
-    width: 83px;
-    height: 61px;
-    background-position: -538px -441px;
-}
-
-.h3-spells-image91 {
-    width: 83px;
-    height: 61px;
-    background-position: -0px -505px;
-}
-
-.h3-spells-image90 {
-    width: 83px;
-    height: 61px;
-    background-position: -85px -505px;
-}
-
-.h3-spells-image89 {
-    width: 83px;
-    height: 61px;
-    background-position: -170px -505px;
-}
-
-.h3-spells-image88 {
-    width: 83px;
-    height: 61px;
-    background-position: -255px -505px;
-}
-
-.h3-spells-image87 {
-    width: 83px;
-    height: 61px;
-    background-position: -340px -505px;
-}
-
-.h3-spells-image86 {
-    width: 83px;
-    height: 61px;
-    background-position: -425px -505px;
-}
-
-.h3-spells-image85 {
-    width: 83px;
-    height: 61px;
-    background-position: -510px -505px;
-}
-
-.h3-spells-image84 {
-    width: 83px;
-    height: 61px;
-    background-position: -623px -0px;
-}
-
-.h3-spells-image83 {
-    width: 83px;
-    height: 61px;
-    background-position: -623px -63px;
-}
-
-.h3-spells-image82 {
-    width: 83px;
-    height: 61px;
-    background-position: -623px -126px;
-}
-
-.h3-spells-image81 {
-    width: 83px;
-    height: 61px;
-    background-position: -623px -189px;
-}
-
-.h3-spells-image80 {
-    width: 83px;
-    height: 61px;
-    background-position: -623px -252px;
-}
-
-.h3-spells-image79 {
-    width: 83px;
-    height: 61px;
-    background-position: -623px -315px;
-}
-
-.h3-spells-image78 {
-    width: 83px;
-    height: 61px;
-    background-position: -623px -378px;
-}
-
-.h3-spells-image77 {
-    width: 83px;
-    height: 61px;
-    background-position: -623px -441px;
-}
-
-.h3-spells-image76 {
-    width: 83px;
-    height: 61px;
-    background-position: -623px -504px;
-}
-
-.h3-spells-image625 {
-    width: 58px;
-    height: 64px;
-    background-position: -0px -757px;
-}
-
-.h3-spells-image623 {
-    width: 58px;
-    height: 64px;
-    background-position: -60px -757px;
-}
-
-.h3-spells-image622 {
-    width: 58px;
-    height: 64px;
-    background-position: -120px -757px;
-}
-
-.h3-spells-image146 {
-    width: 83px;
-    height: 61px;
-    background-position: -0px -568px;
-}
-
-.h3-spells-image145 {
-    width: 83px;
-    height: 61px;
-    background-position: -85px -568px;
-}
-
-.h3-spells-image144 {
-    width: 83px;
-    height: 61px;
-    background-position: -170px -568px;
-}
-
-.h3-spells-image143 {
-    width: 83px;
-    height: 61px;
-    background-position: -255px -568px;
-}
-
-.h3-spells-image141 {
-    width: 83px;
-    height: 61px;
-    background-position: -340px -568px;
-}
-
-.h3-spells-image140 {
-    width: 83px;
-    height: 61px;
-    background-position: -425px -568px;
-}
-
-.h3-spells-image139 {
-    width: 83px;
-    height: 61px;
-    background-position: -510px -568px;
-}
-
-.h3-spells-image138 {
-    width: 83px;
-    height: 61px;
-    background-position: -595px -568px;
-}
-
-.h3-spells-image137 {
-    width: 83px;
-    height: 61px;
-    background-position: -0px -631px;
-}
-
-.h3-spells-image136 {
-    width: 83px;
-    height: 61px;
-    background-position: -85px -631px;
-}
-
-.h3-spells-image135 {
-    width: 83px;
-    height: 61px;
-    background-position: -170px -631px;
-}
-
-.h3-spells-image134 {
-    width: 83px;
-    height: 61px;
-    background-position: -255px -631px;
-}
-
-.h3-spells-image133 {
-    width: 83px;
-    height: 61px;
-    background-position: -340px -631px;
-}
-
-.h3-spells-image132 {
-    width: 83px;
-    height: 61px;
-    background-position: -425px -631px;
-}
-
-.h3-spells-image131 {
-    width: 83px;
-    height: 61px;
-    background-position: -510px -631px;
-}
-
-.h3-spells-image130 {
-    width: 83px;
-    height: 61px;
-    background-position: -595px -631px;
-}
-
-.h3-spells-image129 {
-    width: 83px;
-    height: 61px;
-    background-position: -708px -0px;
-}
-
-.h3-spells-image128 {
-    width: 83px;
-    height: 61px;
-    background-position: -708px -63px;
-}
-
-.h3-spells-image127 {
-    width: 83px;
-    height: 61px;
-    background-position: -708px -126px;
-}
-
-.h3-spells-image126 {
-    width: 83px;
-    height: 61px;
-    background-position: -708px -189px;
-}
-
-.h3-spells-image125 {
-    width: 83px;
-    height: 61px;
-    background-position: -708px -252px;
-}
-
-.h3-spells-image124 {
-    width: 83px;
-    height: 61px;
-    background-position: -708px -315px;
-}
-
-.h3-spells-image123 {
-    width: 83px;
-    height: 61px;
-    background-position: -708px -378px;
-}
-
-.h3-spells-image122 {
-    width: 83px;
-    height: 61px;
-    background-position: -708px -441px;
-}
-
-.h3-spells-image121 {
-    width: 83px;
-    height: 61px;
-    background-position: -708px -504px;
-}
-
-.h3-spells-image120 {
-    width: 83px;
-    height: 61px;
-    background-position: -708px -567px;
-}
-
-.h3-spells-image119 {
-    width: 83px;
-    height: 61px;
-    background-position: -708px -630px;
-}
-
-.h3-spells-image118 {
-    width: 83px;
-    height: 61px;
-    background-position: -0px -694px;
-}
-
-.h3-spells-image117 {
-    width: 83px;
-    height: 61px;
-    background-position: -85px -694px;
-}
-
-.h3-spells-image116 {
-    width: 83px;
-    height: 61px;
-    background-position: -170px -694px;
-}
-
-.h3-spells-image115 {
-    width: 83px;
-    height: 61px;
-    background-position: -255px -694px;
-}
-
-.h3-spells-image114 {
-    width: 83px;
-    height: 61px;
-    background-position: -340px -694px;
-}
-
-.h3-spells-image113 {
-    width: 83px;
-    height: 61px;
-    background-position: -425px -694px;
-}
-
-.h3-spells-image112 {
-    width: 83px;
-    height: 61px;
-    background-position: -510px -694px;
-}
-
-.h3-spells-image111 {
-    width: 83px;
-    height: 61px;
-    background-position: -595px -694px;
-}
-
-.h3-spells-image110 {
-    width: 83px;
-    height: 61px;
-    background-position: -680px -694px;
-}
-
-.h3-spells-image109 {
-    width: 83px;
-    height: 61px;
-    background-position: -793px -0px;
-}
-
-.h3-spells-image108 {
-    width: 83px;
-    height: 61px;
-    background-position: -793px -63px;
-}
-
-.h3-spells-image107 {
-    width: 83px;
-    height: 61px;
-    background-position: -793px -126px;
-}
-
-.h3-spells-image106 {
-    width: 83px;
-    height: 61px;
-    background-position: -793px -189px;
-}
-
-.h3-spells-image105 {
-    width: 83px;
-    height: 61px;
-    background-position: -793px -252px;
-}
-
-.h3-spells-image104 {
-    width: 83px;
-    height: 61px;
-    background-position: -793px -315px;
-}
-
-.h3-spells-image103 {
-    width: 83px;
-    height: 61px;
-    background-position: -793px -378px;
-}
-
-.h3-spells-image102 {
-    width: 83px;
-    height: 61px;
-    background-position: -793px -441px;
-}
-
-.h3-spells-image101 {
-    width: 83px;
-    height: 61px;
-    background-position: -793px -504px;
-}
-
-.h3-spells-image100 {
-    width: 83px;
-    height: 61px;
-    background-position: -793px -567px;
-}
-
-.h3-skills-image64 {
-    width: 82px;
-    height: 93px;
-    background-position: -202px -0px;
-}
-
-.h3-skills-image63 {
-    width: 82px;
-    height: 93px;
-    background-position: -0px -125px;
-}
-
-.h3-skills-image62 {
-    width: 82px;
-    height: 93px;
-    background-position: -84px -125px;
-}
-
-.h3-skills-image61 {
-    width: 82px;
-    height: 93px;
-    background-position: -168px -125px;
-}
-
-.h3-skills-image60 {
-    width: 82px;
-    height: 93px;
-    background-position: -286px -0px;
-}
-
-.h3-skills-image59 {
-    width: 82px;
-    height: 93px;
-    background-position: -286px -95px;
-}
-
-.h3-skills-image58 {
-    width: 82px;
-    height: 93px;
-    background-position: -0px -220px;
-}
-
-.h3-skills-image57 {
-    width: 82px;
-    height: 93px;
-    background-position: -84px -220px;
-}
-
-.h3-skills-image56 {
-    width: 82px;
-    height: 93px;
-    background-position: -168px -220px;
-}
-
-.h3-skills-image55 {
-    width: 82px;
-    height: 93px;
-    background-position: -252px -220px;
-}
-
-.h3-skills-image54 {
-    width: 82px;
-    height: 93px;
-    background-position: -370px -0px;
-}
-
-.h3-skills-image53 {
-    width: 107px;
-    height: 123px;
-    background-position: -0px -0px;
-}
-
-.h3-skills-image52 {
-    width: 82px;
-    height: 93px;
-    background-position: -370px -95px;
-}
-
-.h3-skills-image51 {
-    width: 82px;
-    height: 93px;
-    background-position: -370px -190px;
-}
-
-.h3-skills-image50 {
-    width: 82px;
-    height: 93px;
-    background-position: -0px -315px;
-}
-
-.h3-skills-image49 {
-    width: 82px;
-    height: 93px;
-    background-position: -84px -315px;
-}
-
-.h3-skills-image48 {
-    width: 82px;
-    height: 93px;
-    background-position: -168px -315px;
-}
-
-.h3-skills-image47 {
-    width: 82px;
-    height: 93px;
-    background-position: -252px -315px;
-}
-
-.h3-skills-image46 {
-    width: 82px;
-    height: 93px;
-    background-position: -336px -315px;
-}
-
-.h3-skills-image45 {
-    width: 82px;
-    height: 93px;
-    background-position: -454px -0px;
-}
-
-.h3-skills-image44 {
-    width: 82px;
-    height: 93px;
-    background-position: -454px -95px;
-}
-
-.h3-skills-image43 {
-    width: 82px;
-    height: 93px;
-    background-position: -454px -190px;
-}
-
-.h3-skills-image42 {
-    width: 82px;
-    height: 93px;
-    background-position: -454px -285px;
-}
-
-.h3-skills-image41 {
-    width: 82px;
-    height: 93px;
-    background-position: -0px -410px;
-}
-
-.h3-skills-image40 {
-    width: 82px;
-    height: 93px;
-    background-position: -84px -410px;
-}
-
-.h3-skills-image39 {
-    width: 82px;
-    height: 93px;
-    background-position: -168px -410px;
-}
-
-.h3-skills-image38 {
-    width: 82px;
-    height: 93px;
-    background-position: -252px -410px;
-}
-
-.h3-skills-image37 {
-    width: 82px;
-    height: 93px;
-    background-position: -336px -410px;
-}
-
-.h3-skills-image36 {
-    width: 82px;
-    height: 93px;
-    background-position: -420px -410px;
-}
-
-.h3-heroes-zydar {
-    width: 58px;
-    height: 64px;
-    background-position: -180px -757px;
-}
-
-.h3-heroes-zubin {
-    width: 58px;
-    height: 64px;
-    background-position: -240px -757px;
-}
-
-.h3-heroes-ziph {
-    width: 58px;
-    height: 64px;
-    background-position: -300px -757px;
-}
-
-.h3-heroes-zilare {
-    width: 58px;
-    height: 64px;
-    background-position: -360px -757px;
-}
-
-.h3-heroes-yog {
-    width: 58px;
-    height: 64px;
-    background-position: -420px -757px;
-}
-
-.h3-heroes-xyron {
-    width: 58px;
-    height: 64px;
-    background-position: -480px -757px;
-}
-
-.h3-heroes-xsi {
-    width: 58px;
-    height: 64px;
-    background-position: -540px -757px;
-}
-
-.h3-heroes-xeron {
-    width: 58px;
-    height: 64px;
-    background-position: -600px -757px;
-}
-
-.h3-heroes-xarfax {
-    width: 58px;
-    height: 64px;
-    background-position: -660px -757px;
-}
-
-.h3-heroes-wystan {
-    width: 58px;
-    height: 64px;
-    background-position: -720px -757px;
-}
-
-.h3-heroes-wynona {
-    width: 58px;
-    height: 64px;
-    background-position: -780px -757px;
-}
-
-.h3-heroes-wrathmont {
-    width: 58px;
-    height: 64px;
-    background-position: -878px -0px;
-}
-
-.h3-heroes-voy {
-    width: 58px;
-    height: 64px;
-    background-position: -878px -66px;
-}
-
-.h3-heroes-vokial {
-    width: 58px;
-    height: 64px;
-    background-position: -878px -132px;
-}
-
-.h3-heroes-vidomina {
-    width: 58px;
-    height: 64px;
-    background-position: -878px -198px;
-}
-
-.h3-heroes-victoria {
-    width: 58px;
-    height: 64px;
-    background-position: -878px -264px;
-}
-
-.h3-heroes-vey {
-    width: 58px;
-    height: 64px;
-    background-position: -878px -330px;
-}
-
-.h3-heroes-verdish {
-    width: 58px;
-    height: 64px;
-    background-position: -878px -396px;
-}
-
-.h3-heroes-valeska {
-    width: 58px;
-    height: 64px;
-    background-position: -878px -462px;
-}
-
-.h3-heroes-uland {
-    width: 58px;
-    height: 64px;
-    background-position: -878px -528px;
-}
-
-.h3-heroes-ufretin {
-    width: 58px;
-    height: 64px;
-    background-position: -878px -594px;
-}
-
-.h3-heroes-tyris {
-    width: 58px;
-    height: 64px;
-    background-position: -878px -660px;
-}
-
-.h3-heroes-tyraxor {
-    width: 58px;
-    height: 64px;
-    background-position: -878px -726px;
-}
-
-.h3-heroes-torosar {
-    width: 58px;
-    height: 64px;
-    background-position: -0px -823px;
-}
-
-.h3-heroes-todd {
-    width: 58px;
-    height: 64px;
-    background-position: -60px -823px;
-}
-
-.h3-heroes-tiva {
-    width: 58px;
-    height: 64px;
-    background-position: -120px -823px;
-}
-
-.h3-heroes-thunar {
-    width: 58px;
-    height: 64px;
-    background-position: -180px -823px;
-}
-
-.h3-heroes-thorgrim {
-    width: 58px;
-    height: 64px;
-    background-position: -240px -823px;
-}
-
-.h3-heroes-theodorus {
-    width: 58px;
-    height: 64px;
-    background-position: -300px -823px;
-}
-
-.h3-heroes-thant {
-    width: 58px;
-    height: 64px;
-    background-position: -360px -823px;
-}
-
-.h3-heroes-thane {
-    width: 58px;
-    height: 64px;
-    background-position: -420px -823px;
-}
-
-.h3-heroes-terek {
-    width: 58px;
-    height: 64px;
-    background-position: -480px -823px;
-}
-
-.h3-heroes-tazar {
-    width: 58px;
-    height: 64px;
-    background-position: -540px -823px;
-}
-
-.h3-heroes-tavin {
-    width: 58px;
-    height: 64px;
-    background-position: -600px -823px;
-}
-
-.h3-heroes-tark {
-    width: 58px;
-    height: 65px;
-    background-position: -793px -630px;
-}
-
-.h3-heroes-tancred {
-    width: 58px;
-    height: 64px;
-    background-position: -660px -823px;
-}
-
-.h3-heroes-tamika {
-    width: 58px;
-    height: 64px;
-    background-position: -720px -823px;
-}
-
-.h3-heroes-synca {
-    width: 58px;
-    height: 64px;
-    background-position: -780px -823px;
-}
-
-.h3-heroes-sylvia {
-    width: 58px;
-    height: 64px;
-    background-position: -840px -823px;
-}
-
-.h3-heroes-styg {
-    width: 58px;
-    height: 64px;
-    background-position: -938px -0px;
-}
-
-.h3-heroes-straker {
-    width: 58px;
-    height: 64px;
-    background-position: -938px -66px;
-}
-
-.h3-heroes-spint {
-    width: 58px;
-    height: 64px;
-    background-position: -938px -132px;
-}
-
-.h3-heroes-sorsha {
-    width: 58px;
-    height: 64px;
-    background-position: -938px -198px;
-}
-
-.h3-heroes-solmyr {
-    width: 58px;
-    height: 64px;
-    background-position: -938px -264px;
-}
-
-.h3-heroes-sir_mullich {
-    width: 58px;
-    height: 64px;
-    background-position: -938px -330px;
-}
-
-.h3-heroes-shiva {
-    width: 58px;
-    height: 64px;
-    background-position: -938px -396px;
-}
-
-.h3-heroes-shakti {
-    width: 58px;
-    height: 64px;
-    background-position: -938px -462px;
-}
-
-.h3-heroes-serena {
-    width: 58px;
-    height: 64px;
-    background-position: -938px -528px;
-}
-
-.h3-heroes-septienna {
-    width: 58px;
-    height: 64px;
-    background-position: -938px -594px;
-}
-
-.h3-heroes-sephinroth {
-    width: 58px;
-    height: 64px;
-    background-position: -938px -660px;
-}
-
-.h3-heroes-saurug {
-    width: 58px;
-    height: 64px;
-    background-position: -938px -726px;
-}
-
-.h3-heroes-sanya {
-    width: 58px;
-    height: 64px;
-    background-position: -938px -792px;
-}
-
-.h3-heroes-sandro {
-    width: 58px;
-    height: 64px;
-    background-position: -0px -889px;
-}
-
-.h3-heroes-sam {
-    width: 58px;
-    height: 64px;
-    background-position: -60px -889px;
-}
-
-.h3-heroes-ryland {
-    width: 58px;
-    height: 64px;
-    background-position: -120px -889px;
-}
-
-.h3-heroes-rosic {
-    width: 58px;
-    height: 64px;
-    background-position: -180px -889px;
-}
-
-.h3-heroes-roland {
-    width: 58px;
-    height: 64px;
-    background-position: -240px -889px;
-}
-
-.h3-heroes-rissa {
-    width: 58px;
-    height: 64px;
-    background-position: -300px -889px;
-}
-
-.h3-heroes-rion {
-    width: 58px;
-    height: 64px;
-    background-position: -360px -889px;
-}
-
-.h3-heroes-rashka {
-    width: 58px;
-    height: 64px;
-    background-position: -420px -889px;
-}
-
-.h3-heroes-ranloo {
-    width: 58px;
-    height: 64px;
-    background-position: -480px -889px;
-}
-
-.h3-heroes-pyre {
-    width: 58px;
-    height: 64px;
-    background-position: -540px -889px;
-}
-
-.h3-heroes-piquedram {
-    width: 58px;
-    height: 64px;
-    background-position: -600px -889px;
-}
-
-.h3-heroes-pasis {
-    width: 58px;
-    height: 64px;
-    background-position: -660px -889px;
-}
-
-.h3-heroes-orrin {
-    width: 58px;
-    height: 64px;
-    background-position: -720px -889px;
-}
-
-.h3-heroes-oris {
-    width: 58px;
-    height: 64px;
-    background-position: -780px -889px;
-}
-
-.h3-heroes-ordwald {
-    width: 58px;
-    height: 64px;
-    background-position: -840px -889px;
-}
-
-.h3-heroes-olema {
-    width: 58px;
-    height: 64px;
-    background-position: -900px -889px;
-}
-
-.h3-heroes-octavia {
-    width: 58px;
-    height: 64px;
-    background-position: -998px -0px;
-}
-
-.h3-heroes-nymus {
-    width: 58px;
-    height: 64px;
-    background-position: -998px -66px;
-}
-
-.h3-heroes-nimbus {
-    width: 58px;
-    height: 64px;
-    background-position: -998px -132px;
-}
-
-.h3-heroes-neela {
-    width: 58px;
-    height: 64px;
-    background-position: -998px -198px;
-}
-
-.h3-heroes-nagash {
-    width: 58px;
-    height: 64px;
-    background-position: -998px -264px;
-}
-
-.h3-heroes-mutare_drake {
-    width: 58px;
-    height: 64px;
-    background-position: -998px -330px;
-}
-
-.h3-heroes-mutare {
-    width: 58px;
-    height: 64px;
-    background-position: -998px -396px;
-}
-
-.h3-heroes-murdoch {
-    width: 58px;
-    height: 64px;
-    background-position: -998px -462px;
-}
-
-.h3-heroes-morton {
-    width: 58px;
-    height: 64px;
-    background-position: -998px -528px;
-}
-
-.h3-heroes-monere {
-    width: 58px;
-    height: 64px;
-    background-position: -998px -594px;
-}
-
-.h3-heroes-moandor {
-    width: 58px;
-    height: 64px;
-    background-position: -998px -660px;
-}
-
-.h3-heroes-mirlanda {
-    width: 58px;
-    height: 64px;
-    background-position: -998px -726px;
-}
-
-.h3-heroes-miriam {
-    width: 58px;
-    height: 64px;
-    background-position: -998px -792px;
-}
-
-.h3-heroes-merist {
-    width: 58px;
-    height: 64px;
-    background-position: -998px -858px;
-}
-
-.h3-heroes-mephala {
-    width: 58px;
-    height: 64px;
-    background-position: -0px -955px;
-}
-
-.h3-heroes-melodia {
-    width: 58px;
-    height: 64px;
-    background-position: -60px -955px;
-}
-
-.h3-heroes-melchior {
-    width: 58px;
-    height: 64px;
-    background-position: -120px -955px;
-}
-
-.h3-heroes-marius {
-    width: 58px;
-    height: 64px;
-    background-position: -180px -955px;
-}
-
-.h3-heroes-manfred {
-    width: 58px;
-    height: 64px;
-    background-position: -240px -955px;
-}
-
-.h3-heroes-malekith {
-    width: 58px;
-    height: 64px;
-    background-position: -300px -955px;
-}
-
-.h3-heroes-malcom {
-    width: 58px;
-    height: 64px;
-    background-position: -360px -955px;
-}
-
-.h3-heroes-luna {
-    width: 58px;
-    height: 64px;
-    background-position: -420px -955px;
-}
-
-.h3-heroes-loynis {
-    width: 58px;
-    height: 64px;
-    background-position: -480px -955px;
-}
-
-.h3-heroes-lorelei {
-    width: 58px;
-    height: 64px;
-    background-position: -540px -955px;
-}
-
-.h3-heroes-lord_haart {
-    width: 58px;
-    height: 64px;
-    background-position: -600px -955px;
-}
-
-.h3-heroes-leena {
-    width: 58px;
-    height: 64px;
-    background-position: -660px -955px;
-}
-
-.h3-heroes-lacus {
-    width: 58px;
-    height: 64px;
-    background-position: -720px -955px;
-}
-
-.h3-heroes-labetha {
-    width: 58px;
-    height: 64px;
-    background-position: -780px -955px;
-}
-
-.h3-heroes-kyrre {
-    width: 58px;
-    height: 64px;
-    background-position: -840px -955px;
-}
-
-.h3-heroes-krellion {
-    width: 58px;
-    height: 64px;
-    background-position: -900px -955px;
-}
-
-.h3-heroes-korbac {
-    width: 58px;
-    height: 64px;
-    background-position: -960px -955px;
-}
-
-.h3-heroes-kinkeria {
-    width: 58px;
-    height: 64px;
-    background-position: -1058px -0px;
-}
-
-.h3-heroes-kilgor {
-    width: 58px;
-    height: 64px;
-    background-position: -1058px -66px;
-}
-
-.h3-heroes-kalt {
-    width: 58px;
-    height: 64px;
-    background-position: -1058px -132px;
-}
-
-.h3-heroes-josephine {
-    width: 58px;
-    height: 64px;
-    background-position: -1058px -198px;
-}
-
-.h3-heroes-jeremy {
-    width: 58px;
-    height: 64px;
-    background-position: -1058px -264px;
-}
-
-.h3-heroes-jenova {
-    width: 58px;
-    height: 64px;
-    background-position: -1058px -330px;
-}
-
-.h3-heroes-jeddite {
-    width: 58px;
-    height: 64px;
-    background-position: -1058px -396px;
-}
-
-.h3-heroes-jaegar {
-    width: 58px;
-    height: 64px;
-    background-position: -1058px -462px;
-}
-
-.h3-heroes-jabarkas {
-    width: 58px;
-    height: 64px;
-    background-position: -1058px -528px;
-}
-
-.h3-heroes-ivor {
-    width: 58px;
-    height: 64px;
-    background-position: -1058px -594px;
-}
-
-.h3-heroes-isra {
-    width: 58px;
-    height: 64px;
-    background-position: -1058px -660px;
-}
-
-.h3-heroes-iona {
-    width: 58px;
-    height: 64px;
-    background-position: -1058px -726px;
-}
-
-.h3-heroes-inteus {
-    width: 58px;
-    height: 64px;
-    background-position: -1058px -792px;
-}
-
-.h3-heroes-ingham {
-    width: 58px;
-    height: 64px;
-    background-position: -1058px -858px;
-}
-
-.h3-heroes-illor {
-    width: 58px;
-    height: 64px;
-    background-position: -1058px -924px;
-}
-
-.h3-heroes-ignissa {
-    width: 58px;
-    height: 64px;
-    background-position: -0px -1021px;
-}
-
-.h3-heroes-ignatius {
-    width: 58px;
-    height: 64px;
-    background-position: -60px -1021px;
-}
-
-.h3-heroes-henrietta {
-    width: 58px;
-    height: 64px;
-    background-position: -120px -1021px;
-}
-
-.h3-heroes-halon {
-    width: 58px;
-    height: 64px;
-    background-position: -180px -1021px;
-}
-
-.h3-heroes-haart_lich {
-    width: 58px;
-    height: 64px;
-    background-position: -240px -1021px;
-}
-
-.h3-heroes-gurnisson {
-    width: 58px;
-    height: 64px;
-    background-position: -300px -1021px;
-}
-
-.h3-heroes-gunnar {
-    width: 58px;
-    height: 64px;
-    background-position: -360px -1021px;
-}
-
-.h3-heroes-gundula {
-    width: 58px;
-    height: 64px;
-    background-position: -420px -1021px;
-}
-
-.h3-heroes-grindan {
-    width: 58px;
-    height: 64px;
-    background-position: -480px -1021px;
-}
-
-.h3-heroes-gretchin {
-    width: 58px;
-    height: 64px;
-    background-position: -540px -1021px;
-}
-
-.h3-heroes-giselle {
-    width: 58px;
-    height: 64px;
-    background-position: -600px -1021px;
-}
-
-.h3-heroes-gird {
-    width: 58px;
-    height: 64px;
-    background-position: -660px -1021px;
-}
-
-.h3-heroes-gerwulf {
-    width: 58px;
-    height: 64px;
-    background-position: -720px -1021px;
-}
-
-.h3-heroes-geon {
-    width: 58px;
-    height: 64px;
-    background-position: -780px -1021px;
-}
-
-.h3-heroes-gem {
-    width: 58px;
-    height: 64px;
-    background-position: -840px -1021px;
-}
-
-.h3-heroes-gelu {
-    width: 58px;
-    height: 64px;
-    background-position: -900px -1021px;
-}
-
-.h3-heroes-gelare {
-    width: 58px;
-    height: 64px;
-    background-position: -960px -1021px;
-}
-
-.h3-heroes-galthran {
-    width: 58px;
-    height: 64px;
-    background-position: -1020px -1021px;
-}
-
-.h3-heroes-frederick {
-    width: 58px;
-    height: 64px;
-    background-position: -1118px -0px;
-}
-
-.h3-heroes-floribert {
-    width: 58px;
-    height: 64px;
-    background-position: -1118px -66px;
-}
-
-.h3-heroes-fiur {
-    width: 58px;
-    height: 64px;
-    background-position: -1118px -132px;
-}
-
-.h3-heroes-fiona {
-    width: 58px;
-    height: 64px;
-    background-position: -1118px -198px;
-}
-
-.h3-heroes-finneas {
-    width: 58px;
-    height: 64px;
-    background-position: -1118px -264px;
-}
-
-.h3-heroes-fafner {
-    width: 58px;
-    height: 64px;
-    background-position: -1118px -330px;
-}
-
-.h3-heroes-erdamon {
-    width: 58px;
-    height: 64px;
-    background-position: -1118px -396px;
-}
-
-.h3-heroes-eovacius {
-    width: 58px;
-    height: 64px;
-    background-position: -1118px -462px;
-}
-
-.h3-heroes-elmore {
-    width: 58px;
-    height: 64px;
-    background-position: -1118px -528px;
-}
-
-.h3-heroes-elleshar {
-    width: 58px;
-    height: 64px;
-    background-position: -1118px -594px;
-}
-
-.h3-heroes-edric {
-    width: 58px;
-    height: 64px;
-    background-position: -1118px -660px;
-}
-
-.h3-heroes-eanswythe {
-    width: 58px;
-    height: 64px;
-    background-position: -1118px -726px;
-}
-
-.h3-heroes-dury {
-    width: 58px;
-    height: 64px;
-    background-position: -1118px -792px;
-}
-
-.h3-heroes-drakon {
-    width: 58px;
-    height: 64px;
-    background-position: -1118px -858px;
-}
-
-.h3-heroes-dracon {
-    width: 58px;
-    height: 64px;
-    background-position: -1118px -924px;
-}
-
-.h3-heroes-dessa {
-    width: 58px;
-    height: 64px;
-    background-position: -1118px -990px;
-}
-
-.h3-heroes-derek {
-    width: 58px;
-    height: 64px;
-    background-position: -0px -1087px;
-}
-
-.h3-heroes-deemer {
-    width: 58px;
-    height: 64px;
-    background-position: -60px -1087px;
-}
-
-.h3-heroes-darkstorn {
-    width: 58px;
-    height: 64px;
-    background-position: -120px -1087px;
-}
-
-.h3-heroes-dargem {
-    width: 58px;
-    height: 64px;
-    background-position: -180px -1087px;
-}
-
-.h3-heroes-daremyth {
-    width: 58px;
-    height: 64px;
-    background-position: -240px -1087px;
-}
-
-.h3-heroes-damacon {
-    width: 58px;
-    height: 64px;
-    background-position: -300px -1087px;
-}
-
-.h3-heroes-dace {
-    width: 58px;
-    height: 64px;
-    background-position: -360px -1087px;
-}
-
-.h3-heroes-cyra {
-    width: 58px;
-    height: 64px;
-    background-position: -420px -1087px;
-}
-
-.h3-heroes-cuthbert {
-    width: 58px;
-    height: 64px;
-    background-position: -480px -1087px;
-}
-
-.h3-heroes-crag_hack {
-    width: 58px;
-    height: 64px;
-    background-position: -540px -1087px;
-}
-
-.h3-heroes-coronius {
-    width: 58px;
-    height: 64px;
-    background-position: -600px -1087px;
-}
-
-.h3-heroes-corkes {
-    width: 58px;
-    height: 64px;
-    background-position: -660px -1087px;
-}
-
-.h3-heroes-clavius {
-    width: 58px;
-    height: 64px;
-    background-position: -720px -1087px;
-}
-
-.h3-heroes-clancy {
-    width: 58px;
-    height: 64px;
-    background-position: -780px -1087px;
-}
-
-.h3-heroes-ciele {
-    width: 58px;
-    height: 64px;
-    background-position: -840px -1087px;
-}
-
-.h3-heroes-christian {
-    width: 58px;
-    height: 64px;
-    background-position: -900px -1087px;
-}
-
-.h3-heroes-charna {
-    width: 58px;
-    height: 64px;
-    background-position: -960px -1087px;
-}
-
-.h3-heroes-celestine {
-    width: 58px;
-    height: 64px;
-    background-position: -1020px -1087px;
-}
-
-.h3-heroes-catherine {
-    width: 58px;
-    height: 64px;
-    background-position: -1080px -1087px;
-}
-
-.h3-heroes-cassiopeia {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -0px;
-}
-
-.h3-heroes-casmetra {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -66px;
-}
-
-.h3-heroes-calid {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -132px;
-}
-
-.h3-heroes-calh {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -198px;
-}
-
-.h3-heroes-caitlin {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -264px;
-}
-
-.h3-heroes-bron {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -330px;
-}
-
-.h3-heroes-broghild {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -396px;
-}
-
-.h3-heroes-brissa {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -462px;
-}
-
-.h3-heroes-boragus {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -528px;
-}
-
-.h3-heroes-bidley {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -594px;
-}
-
-.h3-heroes-bertram {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -660px;
-}
-
-.h3-heroes-beatrice {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -726px;
-}
-
-.h3-heroes-ayden {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -792px;
-}
-
-.h3-heroes-axsis {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -858px;
-}
-
-.h3-heroes-axis {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -924px;
-}
-
-.h3-heroes-astral {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -990px;
-}
-
-.h3-heroes-astra {
-    width: 58px;
-    height: 64px;
-    background-position: -1178px -1056px;
-}
-
-.h3-heroes-ash {
-    width: 58px;
-    height: 64px;
-    background-position: -0px -1153px;
-}
-
-.h3-heroes-arlach {
-    width: 58px;
-    height: 64px;
-    background-position: -60px -1153px;
-}
-
-.h3-heroes-andra {
-    width: 58px;
-    height: 64px;
-    background-position: -120px -1153px;
-}
-
-.h3-heroes-andal {
-    width: 58px;
-    height: 64px;
-    background-position: -180px -1153px;
-}
-
-.h3-heroes-anabel {
-    width: 58px;
-    height: 64px;
-    background-position: -240px -1153px;
-}
-
-.h3-heroes-alkin {
-    width: 58px;
-    height: 64px;
-    background-position: -300px -1153px;
-}
-
-.h3-heroes-alamar {
-    width: 58px;
-    height: 64px;
-    background-position: -360px -1153px;
-}
-
-.h3-heroes-alagar {
-    width: 58px;
-    height: 64px;
-    background-position: -420px -1153px;
-}
-
-.h3-heroes-ajit {
-    width: 58px;
-    height: 64px;
-    background-position: -480px -1153px;
-}
-
-.h3-heroes-aislinn {
-    width: 58px;
-    height: 64px;
-    background-position: -540px -1153px;
-}
-
-.h3-heroes-aine {
-    width: 58px;
-    height: 64px;
-    background-position: -600px -1153px;
-}
-
-.h3-heroes-agar {
-    width: 58px;
-    height: 64px;
-    background-position: -660px -1153px;
-}
-
-.h3-heroes-aeris {
-    width: 58px;
-    height: 64px;
-    background-position: -720px -1153px;
-}
-
-.h3-heroes-aenain {
-    width: 58px;
-    height: 64px;
-    background-position: -780px -1153px;
-}
-
-.h3-heroes-adrienne {
-    width: 58px;
-    height: 64px;
-    background-position: -840px -1153px;
-}
-
-.h3-heroes-adelaide {
-    width: 58px;
-    height: 64px;
-    background-position: -900px -1153px;
-}
-
-.h3-heroes-adela {
-    width: 58px;
-    height: 64px;
-    background-position: -960px -1153px;
-}
-
-.h3-heroes-hero_kalt {
-    width: 58px;
-    height: 64px;
-    background-position: -1020px -1153px;
-}
-
 .h3-heroes-small-zydar {
     width: 48px;
     height: 32px;
-    background-position: -1270px -1417px;
+    background-position: -0px -0px;
 }
 
 .h3-heroes-small-zubin {
     width: 48px;
     height: 32px;
-    background-position: -1320px -1417px;
+    background-position: -50px -0px;
 }
 
 .h3-heroes-small-ziph {
     width: 48px;
     height: 32px;
-    background-position: -1370px -1417px;
+    background-position: -0px -34px;
 }
 
 .h3-heroes-small-zilare {
     width: 48px;
     height: 32px;
-    background-position: -1420px -1417px;
+    background-position: -50px -34px;
 }
 
 .h3-heroes-small-yog {
     width: 48px;
     height: 32px;
-    background-position: -1470px -1417px;
+    background-position: -100px -0px;
 }
 
 .h3-heroes-small-xyron {
     width: 48px;
     height: 32px;
-    background-position: -0px -1464px;
+    background-position: -100px -34px;
 }
 
 .h3-heroes-small-xsi {
     width: 48px;
     height: 32px;
-    background-position: -50px -1464px;
+    background-position: -0px -68px;
 }
 
 .h3-heroes-small-xeron {
     width: 48px;
     height: 32px;
-    background-position: -100px -1464px;
+    background-position: -50px -68px;
 }
 
 .h3-heroes-small-xarfax {
     width: 48px;
     height: 32px;
-    background-position: -150px -1464px;
+    background-position: -100px -68px;
 }
 
 .h3-heroes-small-wystan {
     width: 48px;
     height: 32px;
-    background-position: -200px -1464px;
+    background-position: -0px -102px;
 }
 
 .h3-heroes-small-wynona {
     width: 48px;
     height: 32px;
-    background-position: -250px -1464px;
+    background-position: -50px -102px;
 }
 
 .h3-heroes-small-wrathmont {
     width: 48px;
     height: 32px;
-    background-position: -300px -1464px;
+    background-position: -100px -102px;
 }
 
 .h3-heroes-small-voy {
     width: 48px;
     height: 32px;
-    background-position: -350px -1464px;
+    background-position: -150px -0px;
 }
 
 .h3-heroes-small-vokial {
     width: 48px;
     height: 32px;
-    background-position: -400px -1464px;
+    background-position: -150px -34px;
 }
 
 .h3-heroes-small-vidomina {
     width: 48px;
     height: 32px;
-    background-position: -450px -1464px;
+    background-position: -150px -68px;
 }
 
 .h3-heroes-small-victoria {
     width: 48px;
     height: 32px;
-    background-position: -500px -1464px;
+    background-position: -150px -102px;
 }
 
 .h3-heroes-small-vey {
     width: 48px;
     height: 32px;
-    background-position: -550px -1464px;
+    background-position: -0px -136px;
 }
 
 .h3-heroes-small-verdish {
     width: 48px;
     height: 32px;
-    background-position: -600px -1464px;
+    background-position: -50px -136px;
 }
 
 .h3-heroes-small-valeska {
     width: 48px;
     height: 32px;
-    background-position: -650px -1464px;
+    background-position: -100px -136px;
 }
 
 .h3-heroes-small-uland {
     width: 48px;
     height: 32px;
-    background-position: -700px -1464px;
+    background-position: -150px -136px;
 }
 
 .h3-heroes-small-ufretin {
     width: 48px;
     height: 32px;
-    background-position: -750px -1464px;
+    background-position: -200px -0px;
 }
 
 .h3-heroes-small-tyris {
     width: 48px;
     height: 32px;
-    background-position: -800px -1464px;
+    background-position: -200px -34px;
 }
 
 .h3-heroes-small-tyraxor {
     width: 48px;
     height: 32px;
-    background-position: -850px -1464px;
+    background-position: -200px -68px;
 }
 
 .h3-heroes-small-torosar {
     width: 48px;
     height: 32px;
-    background-position: -900px -1464px;
+    background-position: -200px -102px;
 }
 
 .h3-heroes-small-todd {
     width: 48px;
     height: 32px;
-    background-position: -950px -1464px;
+    background-position: -200px -136px;
 }
 
 .h3-heroes-small-tiva {
     width: 48px;
     height: 32px;
-    background-position: -1000px -1464px;
+    background-position: -0px -170px;
 }
 
 .h3-heroes-small-thunar {
     width: 48px;
     height: 32px;
-    background-position: -1050px -1464px;
+    background-position: -50px -170px;
 }
 
 .h3-heroes-small-thorgrim {
     width: 48px;
     height: 32px;
-    background-position: -1100px -1464px;
+    background-position: -100px -170px;
 }
 
 .h3-heroes-small-theodorus {
     width: 48px;
     height: 32px;
-    background-position: -1150px -1464px;
+    background-position: -150px -170px;
 }
 
 .h3-heroes-small-thant {
     width: 48px;
     height: 32px;
-    background-position: -1200px -1464px;
+    background-position: -200px -170px;
 }
 
 .h3-heroes-small-thane {
     width: 48px;
     height: 32px;
-    background-position: -1250px -1464px;
+    background-position: -0px -204px;
 }
 
 .h3-heroes-small-terek {
     width: 48px;
     height: 32px;
-    background-position: -1300px -1464px;
+    background-position: -50px -204px;
 }
 
 .h3-heroes-small-tazar {
     width: 48px;
     height: 32px;
-    background-position: -1350px -1464px;
+    background-position: -100px -204px;
 }
 
 .h3-heroes-small-tavin {
     width: 48px;
     height: 32px;
-    background-position: -1400px -1464px;
+    background-position: -150px -204px;
 }
 
 .h3-heroes-small-tark {
     width: 48px;
     height: 32px;
-    background-position: -1450px -1464px;
+    background-position: -200px -204px;
 }
 
 .h3-heroes-small-tancred {
     width: 48px;
     height: 32px;
-    background-position: -0px -1498px;
+    background-position: -250px -0px;
 }
 
 .h3-heroes-small-tamika {
     width: 48px;
     height: 32px;
-    background-position: -50px -1498px;
+    background-position: -250px -34px;
 }
 
 .h3-heroes-small-synca {
     width: 48px;
     height: 32px;
-    background-position: -100px -1498px;
+    background-position: -250px -68px;
 }
 
 .h3-heroes-small-sylvia {
     width: 48px;
     height: 32px;
-    background-position: -150px -1498px;
+    background-position: -250px -102px;
 }
 
 .h3-heroes-small-styg {
     width: 48px;
     height: 32px;
-    background-position: -200px -1498px;
+    background-position: -250px -136px;
 }
 
 .h3-heroes-small-straker {
     width: 48px;
     height: 32px;
-    background-position: -250px -1498px;
+    background-position: -250px -170px;
 }
 
 .h3-heroes-small-spint {
     width: 48px;
     height: 32px;
-    background-position: -300px -1498px;
+    background-position: -250px -204px;
 }
 
 .h3-heroes-small-spadum {
-    width: 68px;
-    height: 45px;
-    background-position: -0px -1417px;
+    width: 48px;
+    height: 32px;
+    background-position: -0px -238px;
 }
 
 .h3-heroes-small-sorsha {
     width: 48px;
     height: 32px;
-    background-position: -350px -1498px;
+    background-position: -50px -238px;
 }
 
 .h3-heroes-small-solmyr {
     width: 48px;
     height: 32px;
-    background-position: -400px -1498px;
+    background-position: -100px -238px;
 }
 
 .h3-heroes-small-siyal {
-    width: 68px;
-    height: 45px;
-    background-position: -70px -1417px;
+    width: 48px;
+    height: 32px;
+    background-position: -150px -238px;
 }
 
 .h3-heroes-small-sir_mullich {
     width: 48px;
     height: 32px;
-    background-position: -450px -1498px;
+    background-position: -200px -238px;
 }
 
 .h3-heroes-small-shiva {
     width: 48px;
     height: 32px;
-    background-position: -500px -1498px;
+    background-position: -250px -238px;
 }
 
 .h3-heroes-small-shakti {
     width: 48px;
     height: 32px;
-    background-position: -550px -1498px;
+    background-position: -300px -0px;
 }
 
 .h3-heroes-small-serena {
     width: 48px;
     height: 32px;
-    background-position: -600px -1498px;
+    background-position: -300px -34px;
 }
 
 .h3-heroes-small-septienna {
     width: 48px;
     height: 32px;
-    background-position: -650px -1498px;
+    background-position: -300px -68px;
 }
 
 .h3-heroes-small-sephinroth {
     width: 48px;
     height: 32px;
-    background-position: -700px -1498px;
+    background-position: -300px -102px;
 }
 
 .h3-heroes-small-saurug {
     width: 48px;
     height: 32px;
-    background-position: -750px -1498px;
+    background-position: -300px -136px;
 }
 
 .h3-heroes-small-sanya {
     width: 48px;
     height: 32px;
-    background-position: -800px -1498px;
+    background-position: -300px -170px;
 }
 
 .h3-heroes-small-sandro {
     width: 48px;
     height: 32px;
-    background-position: -850px -1498px;
+    background-position: -300px -204px;
 }
 
 .h3-heroes-small-sam {
     width: 48px;
     height: 32px;
-    background-position: -900px -1498px;
+    background-position: -300px -238px;
 }
 
 .h3-heroes-small-ryland {
     width: 48px;
     height: 32px;
-    background-position: -950px -1498px;
+    background-position: -0px -272px;
 }
 
 .h3-heroes-small-rosic {
     width: 48px;
     height: 32px;
-    background-position: -1000px -1498px;
+    background-position: -50px -272px;
 }
 
 .h3-heroes-small-roland {
     width: 48px;
     height: 32px;
-    background-position: -1050px -1498px;
+    background-position: -100px -272px;
 }
 
 .h3-heroes-small-rissa {
     width: 48px;
     height: 32px;
-    background-position: -1100px -1498px;
+    background-position: -150px -272px;
 }
 
 .h3-heroes-small-rion {
     width: 48px;
     height: 32px;
-    background-position: -1150px -1498px;
+    background-position: -200px -272px;
 }
 
 .h3-heroes-small-rashka {
     width: 48px;
     height: 32px;
-    background-position: -1200px -1498px;
+    background-position: -250px -272px;
 }
 
 .h3-heroes-small-ranloo {
     width: 48px;
     height: 32px;
-    background-position: -1250px -1498px;
+    background-position: -300px -272px;
 }
 
 .h3-heroes-small-pyre {
     width: 48px;
     height: 32px;
-    background-position: -1300px -1498px;
+    background-position: -0px -306px;
 }
 
 .h3-heroes-small-piquedram {
     width: 48px;
     height: 32px;
-    background-position: -1350px -1498px;
+    background-position: -50px -306px;
 }
 
 .h3-heroes-small-pasis {
     width: 48px;
     height: 32px;
-    background-position: -1400px -1498px;
+    background-position: -100px -306px;
 }
 
 .h3-heroes-small-orrin {
     width: 48px;
     height: 32px;
-    background-position: -1450px -1498px;
+    background-position: -150px -306px;
 }
 
 .h3-heroes-small-oris {
     width: 48px;
     height: 32px;
-    background-position: -1538px -0px;
+    background-position: -200px -306px;
 }
 
 .h3-heroes-small-ordwald {
     width: 48px;
     height: 32px;
-    background-position: -1538px -34px;
+    background-position: -250px -306px;
 }
 
 .h3-heroes-small-olema {
     width: 48px;
     height: 32px;
-    background-position: -1538px -68px;
+    background-position: -300px -306px;
 }
 
 .h3-heroes-small-oidana {
-    width: 68px;
-    height: 45px;
-    background-position: -140px -1417px;
+    width: 48px;
+    height: 32px;
+    background-position: -350px -0px;
 }
 
 .h3-heroes-small-octavia {
     width: 48px;
     height: 32px;
-    background-position: -1538px -102px;
+    background-position: -350px -34px;
 }
 
 .h3-heroes-small-nymus {
     width: 48px;
     height: 32px;
-    background-position: -1538px -136px;
+    background-position: -350px -68px;
 }
 
 .h3-heroes-small-nimbus {
     width: 48px;
     height: 32px;
-    background-position: -1538px -170px;
+    background-position: -350px -102px;
 }
 
 .h3-heroes-small-neya {
-    width: 68px;
-    height: 45px;
-    background-position: -210px -1417px;
+    width: 48px;
+    height: 32px;
+    background-position: -350px -136px;
 }
 
 .h3-heroes-small-neela {
     width: 48px;
     height: 32px;
-    background-position: -1538px -204px;
+    background-position: -350px -170px;
 }
 
 .h3-heroes-small-nagash {
     width: 48px;
     height: 32px;
-    background-position: -1538px -238px;
+    background-position: -350px -204px;
 }
 
 .h3-heroes-small-mutare_drake {
     width: 48px;
     height: 32px;
-    background-position: -1538px -272px;
+    background-position: -350px -238px;
 }
 
 .h3-heroes-small-mutare {
     width: 48px;
     height: 32px;
-    background-position: -1538px -306px;
+    background-position: -350px -272px;
 }
 
 .h3-heroes-small-murdoch {
     width: 48px;
     height: 32px;
-    background-position: -1538px -340px;
+    background-position: -350px -306px;
 }
 
 .h3-heroes-small-morton {
     width: 48px;
     height: 32px;
-    background-position: -1538px -374px;
+    background-position: -0px -340px;
 }
 
 .h3-heroes-small-monere {
     width: 48px;
     height: 32px;
-    background-position: -1538px -408px;
+    background-position: -50px -340px;
 }
 
 .h3-heroes-small-moandor {
     width: 48px;
     height: 32px;
-    background-position: -1538px -442px;
+    background-position: -100px -340px;
 }
 
 .h3-heroes-small-mirlanda {
     width: 48px;
     height: 32px;
-    background-position: -1538px -476px;
+    background-position: -150px -340px;
 }
 
 .h3-heroes-small-miriam {
     width: 48px;
     height: 32px;
-    background-position: -1538px -510px;
+    background-position: -200px -340px;
 }
 
 .h3-heroes-small-merist {
     width: 48px;
     height: 32px;
-    background-position: -1538px -544px;
+    background-position: -250px -340px;
 }
 
 .h3-heroes-small-mephala {
     width: 48px;
     height: 32px;
-    background-position: -1538px -578px;
+    background-position: -300px -340px;
 }
 
 .h3-heroes-small-melodia {
     width: 48px;
     height: 32px;
-    background-position: -1538px -612px;
+    background-position: -350px -340px;
 }
 
 .h3-heroes-small-melchior {
     width: 48px;
     height: 32px;
-    background-position: -1538px -646px;
+    background-position: -400px -0px;
 }
 
 .h3-heroes-small-marius {
     width: 48px;
     height: 32px;
-    background-position: -1538px -680px;
+    background-position: -400px -34px;
 }
 
 .h3-heroes-small-manfred {
     width: 48px;
     height: 32px;
-    background-position: -1538px -714px;
+    background-position: -400px -68px;
 }
 
 .h3-heroes-small-malekith {
     width: 48px;
     height: 32px;
-    background-position: -1538px -748px;
+    background-position: -400px -102px;
 }
 
 .h3-heroes-small-malcom {
     width: 48px;
     height: 32px;
-    background-position: -1538px -782px;
+    background-position: -400px -136px;
 }
 
 .h3-heroes-small-luna {
     width: 48px;
     height: 32px;
-    background-position: -1538px -816px;
+    background-position: -400px -170px;
 }
 
 .h3-heroes-small-loynis {
     width: 48px;
     height: 32px;
-    background-position: -1538px -850px;
+    background-position: -400px -204px;
 }
 
 .h3-heroes-small-lorelei {
     width: 48px;
     height: 32px;
-    background-position: -1538px -884px;
+    background-position: -400px -238px;
 }
 
 .h3-heroes-small-lord_haart {
     width: 48px;
     height: 32px;
-    background-position: -1538px -918px;
+    background-position: -400px -272px;
 }
 
 .h3-heroes-small-leena {
     width: 48px;
     height: 32px;
-    background-position: -1538px -952px;
+    background-position: -400px -306px;
 }
 
 .h3-heroes-small-lacus {
     width: 48px;
     height: 32px;
-    background-position: -1538px -986px;
+    background-position: -400px -340px;
 }
 
 .h3-heroes-small-labetha {
     width: 48px;
     height: 32px;
-    background-position: -1538px -1020px;
+    background-position: -0px -374px;
 }
 
 .h3-heroes-small-kyrre {
     width: 48px;
     height: 32px;
-    background-position: -1538px -1054px;
+    background-position: -50px -374px;
 }
 
 .h3-heroes-small-kriv {
-    width: 68px;
-    height: 45px;
-    background-position: -280px -1417px;
+    width: 48px;
+    height: 32px;
+    background-position: -100px -374px;
 }
 
 .h3-heroes-small-krellion {
     width: 48px;
     height: 32px;
-    background-position: -1538px -1088px;
+    background-position: -150px -374px;
 }
 
 .h3-heroes-small-kreile {
-    width: 68px;
-    height: 45px;
-    background-position: -350px -1417px;
+    width: 48px;
+    height: 32px;
+    background-position: -200px -374px;
 }
 
 .h3-heroes-small-korbac {
     width: 48px;
     height: 32px;
-    background-position: -1538px -1122px;
+    background-position: -250px -374px;
 }
 
 .h3-heroes-small-kinr {
-    width: 68px;
-    height: 45px;
-    background-position: -420px -1417px;
+    width: 48px;
+    height: 32px;
+    background-position: -300px -374px;
 }
 
 .h3-heroes-small-kinkeria {
     width: 48px;
     height: 32px;
-    background-position: -1538px -1156px;
+    background-position: -350px -374px;
 }
 
 .h3-heroes-small-kilgor {
     width: 48px;
     height: 32px;
-    background-position: -1538px -1190px;
+    background-position: -400px -374px;
 }
 
 .h3-heroes-small-kalt {
     width: 48px;
     height: 32px;
-    background-position: -1538px -1224px;
+    background-position: -0px -408px;
 }
 
 .h3-heroes-small-josephine {
     width: 48px;
     height: 32px;
-    background-position: -1538px -1258px;
+    background-position: -50px -408px;
 }
 
 .h3-heroes-small-jeremy {
     width: 48px;
     height: 32px;
-    background-position: -1538px -1292px;
+    background-position: -100px -408px;
 }
 
 .h3-heroes-small-jenova {
     width: 48px;
     height: 32px;
-    background-position: -1538px -1326px;
+    background-position: -150px -408px;
 }
 
 .h3-heroes-small-jeddite {
     width: 48px;
     height: 32px;
-    background-position: -1538px -1360px;
+    background-position: -200px -408px;
 }
 
 .h3-heroes-small-jaegar {
     width: 48px;
     height: 32px;
-    background-position: -1538px -1394px;
+    background-position: -250px -408px;
 }
 
 .h3-heroes-small-jabarkas {
     width: 48px;
     height: 32px;
-    background-position: -1538px -1428px;
+    background-position: -300px -408px;
 }
 
 .h3-heroes-small-ivor {
     width: 48px;
     height: 32px;
-    background-position: -1538px -1462px;
+    background-position: -350px -408px;
 }
 
 .h3-heroes-small-isra {
     width: 48px;
     height: 32px;
-    background-position: -1538px -1496px;
+    background-position: -400px -408px;
 }
 
 .h3-heroes-small-iona {
     width: 48px;
     height: 32px;
-    background-position: -0px -1532px;
+    background-position: -450px -0px;
 }
 
 .h3-heroes-small-inteus {
     width: 48px;
     height: 32px;
-    background-position: -50px -1532px;
+    background-position: -450px -34px;
 }
 
 .h3-heroes-small-ingham {
     width: 48px;
     height: 32px;
-    background-position: -100px -1532px;
+    background-position: -450px -68px;
 }
 
 .h3-heroes-small-illor {
     width: 48px;
     height: 32px;
-    background-position: -150px -1532px;
+    background-position: -450px -102px;
 }
 
 .h3-heroes-small-ignissa {
     width: 48px;
     height: 32px;
-    background-position: -200px -1532px;
+    background-position: -450px -136px;
 }
 
 .h3-heroes-small-ignatius {
     width: 48px;
     height: 32px;
-    background-position: -250px -1532px;
+    background-position: -450px -170px;
 }
 
 .h3-heroes-small-henrietta {
     width: 48px;
     height: 32px;
-    background-position: -300px -1532px;
+    background-position: -450px -204px;
 }
 
 .h3-heroes-small-halon {
     width: 48px;
     height: 32px;
-    background-position: -350px -1532px;
+    background-position: -450px -238px;
 }
 
 .h3-heroes-small-haart_lich {
     width: 48px;
     height: 32px;
-    background-position: -400px -1532px;
+    background-position: -450px -272px;
 }
 
 .h3-heroes-small-gurnisson {
     width: 48px;
     height: 32px;
-    background-position: -450px -1532px;
+    background-position: -450px -306px;
 }
 
 .h3-heroes-small-gunnar {
     width: 48px;
     height: 32px;
-    background-position: -500px -1532px;
+    background-position: -450px -340px;
 }
 
 .h3-heroes-small-gundula {
     width: 48px;
     height: 32px;
-    background-position: -550px -1532px;
+    background-position: -450px -374px;
 }
 
 .h3-heroes-small-grindan {
     width: 48px;
     height: 32px;
-    background-position: -600px -1532px;
+    background-position: -450px -408px;
 }
 
 .h3-heroes-small-gretchin {
     width: 48px;
     height: 32px;
-    background-position: -650px -1532px;
+    background-position: -0px -442px;
 }
 
 .h3-heroes-small-glaciy {
-    width: 68px;
-    height: 45px;
-    background-position: -490px -1417px;
+    width: 48px;
+    height: 32px;
+    background-position: -50px -442px;
 }
 
 .h3-heroes-small-giselle {
     width: 48px;
     height: 32px;
-    background-position: -700px -1532px;
+    background-position: -100px -442px;
 }
 
 .h3-heroes-small-gird {
     width: 48px;
     height: 32px;
-    background-position: -750px -1532px;
+    background-position: -150px -442px;
 }
 
 .h3-heroes-small-gerwulf {
     width: 48px;
     height: 32px;
-    background-position: -800px -1532px;
+    background-position: -200px -442px;
 }
 
 .h3-heroes-small-geon {
     width: 48px;
     height: 32px;
-    background-position: -850px -1532px;
+    background-position: -250px -442px;
 }
 
 .h3-heroes-small-gem {
     width: 48px;
     height: 32px;
-    background-position: -900px -1532px;
+    background-position: -300px -442px;
 }
 
 .h3-heroes-small-gelu {
     width: 48px;
     height: 32px;
-    background-position: -950px -1532px;
+    background-position: -350px -442px;
 }
 
 .h3-heroes-small-gelare {
     width: 48px;
     height: 32px;
-    background-position: -1000px -1532px;
+    background-position: -400px -442px;
 }
 
 .h3-heroes-small-galthran {
     width: 48px;
     height: 32px;
-    background-position: -1050px -1532px;
+    background-position: -450px -442px;
 }
 
 .h3-heroes-small-frederick {
     width: 48px;
     height: 32px;
-    background-position: -1100px -1532px;
+    background-position: -500px -0px;
 }
 
 .h3-heroes-small-floribert {
     width: 48px;
     height: 32px;
-    background-position: -1150px -1532px;
+    background-position: -500px -34px;
 }
 
 .h3-heroes-small-fiur {
     width: 48px;
     height: 32px;
-    background-position: -1200px -1532px;
+    background-position: -500px -68px;
 }
 
 .h3-heroes-small-fiona {
     width: 48px;
     height: 32px;
-    background-position: -1250px -1532px;
+    background-position: -500px -102px;
 }
 
 .h3-heroes-small-finneas {
     width: 48px;
     height: 32px;
-    background-position: -1300px -1532px;
+    background-position: -500px -136px;
 }
 
 .h3-heroes-small-fafner {
     width: 48px;
     height: 32px;
-    background-position: -1350px -1532px;
+    background-position: -500px -170px;
 }
 
 .h3-heroes-small-ergon {
-    width: 68px;
-    height: 45px;
-    background-position: -560px -1417px;
+    width: 48px;
+    height: 32px;
+    background-position: -500px -204px;
 }
 
 .h3-heroes-small-erdamon {
     width: 48px;
     height: 32px;
-    background-position: -1400px -1532px;
+    background-position: -500px -238px;
 }
 
 .h3-heroes-small-eovacius {
     width: 48px;
     height: 32px;
-    background-position: -1450px -1532px;
+    background-position: -500px -272px;
 }
 
 .h3-heroes-small-elmore {
     width: 48px;
     height: 32px;
-    background-position: -1500px -1532px;
+    background-position: -500px -306px;
 }
 
 .h3-heroes-small-elleshar {
     width: 48px;
     height: 32px;
-    background-position: -1588px -0px;
+    background-position: -500px -340px;
 }
 
 .h3-heroes-small-edric {
     width: 48px;
     height: 32px;
-    background-position: -1588px -34px;
+    background-position: -500px -374px;
 }
 
 .h3-heroes-small-eanswythe {
     width: 48px;
     height: 32px;
-    background-position: -1588px -68px;
+    background-position: -500px -408px;
 }
 
 .h3-heroes-small-dury {
     width: 48px;
     height: 32px;
-    background-position: -1588px -102px;
+    background-position: -500px -442px;
 }
 
 .h3-heroes-small-duin {
-    width: 68px;
-    height: 45px;
-    background-position: -630px -1417px;
+    width: 48px;
+    height: 32px;
+    background-position: -0px -476px;
 }
 
 .h3-heroes-small-drakon {
     width: 48px;
     height: 32px;
-    background-position: -1588px -136px;
+    background-position: -50px -476px;
 }
 
 .h3-heroes-small-dracon {
     width: 48px;
     height: 32px;
-    background-position: -1588px -170px;
+    background-position: -100px -476px;
 }
 
 .h3-heroes-small-dessa {
     width: 48px;
     height: 32px;
-    background-position: -1588px -204px;
+    background-position: -150px -476px;
 }
 
 .h3-heroes-small-derek {
     width: 48px;
     height: 32px;
-    background-position: -1588px -238px;
+    background-position: -200px -476px;
 }
 
 .h3-heroes-small-deemer {
     width: 48px;
     height: 32px;
-    background-position: -1588px -272px;
+    background-position: -250px -476px;
 }
 
 .h3-heroes-small-darkstorn {
     width: 48px;
     height: 32px;
-    background-position: -1588px -306px;
+    background-position: -300px -476px;
 }
 
 .h3-heroes-small-dargem {
     width: 48px;
     height: 32px;
-    background-position: -1588px -340px;
+    background-position: -350px -476px;
 }
 
 .h3-heroes-small-daremyth {
     width: 48px;
     height: 32px;
-    background-position: -1588px -374px;
+    background-position: -400px -476px;
 }
 
 .h3-heroes-small-damacon {
     width: 48px;
     height: 32px;
-    background-position: -1588px -408px;
+    background-position: -450px -476px;
 }
 
 .h3-heroes-small-dalton {
-    width: 68px;
-    height: 45px;
-    background-position: -700px -1417px;
+    width: 48px;
+    height: 32px;
+    background-position: -500px -476px;
 }
 
 .h3-heroes-small-dace {
     width: 48px;
     height: 32px;
-    background-position: -1588px -442px;
+    background-position: -0px -510px;
 }
 
 .h3-heroes-small-cyra {
     width: 48px;
     height: 32px;
-    background-position: -1588px -476px;
+    background-position: -50px -510px;
 }
 
 .h3-heroes-small-cuthbert {
     width: 48px;
     height: 32px;
-    background-position: -1588px -510px;
+    background-position: -100px -510px;
 }
 
 .h3-heroes-small-crag_hack {
     width: 48px;
     height: 32px;
-    background-position: -1588px -544px;
+    background-position: -150px -510px;
 }
 
 .h3-heroes-small-coronius {
     width: 48px;
     height: 32px;
-    background-position: -1588px -578px;
+    background-position: -200px -510px;
 }
 
 .h3-heroes-small-corkes {
     width: 48px;
     height: 32px;
-    background-position: -1588px -612px;
+    background-position: -250px -510px;
 }
 
 .h3-heroes-small-clavius {
     width: 48px;
     height: 32px;
-    background-position: -1588px -646px;
+    background-position: -300px -510px;
 }
 
 .h3-heroes-small-clancy {
     width: 48px;
     height: 32px;
-    background-position: -1588px -680px;
+    background-position: -350px -510px;
 }
 
 .h3-heroes-small-ciele {
     width: 48px;
     height: 32px;
-    background-position: -1588px -714px;
+    background-position: -400px -510px;
 }
 
 .h3-heroes-small-christian {
     width: 48px;
     height: 32px;
-    background-position: -1588px -748px;
+    background-position: -450px -510px;
 }
 
 .h3-heroes-small-charna {
     width: 48px;
     height: 32px;
-    background-position: -1588px -782px;
+    background-position: -500px -510px;
 }
 
 .h3-heroes-small-celestine {
     width: 48px;
     height: 32px;
-    background-position: -1588px -816px;
+    background-position: -550px -0px;
 }
 
 .h3-heroes-small-catherine {
     width: 48px;
     height: 32px;
-    background-position: -1588px -850px;
+    background-position: -550px -34px;
 }
 
 .h3-heroes-small-cassiopeia {
     width: 48px;
     height: 32px;
-    background-position: -1588px -884px;
+    background-position: -550px -68px;
 }
 
 .h3-heroes-small-casmetra {
     width: 48px;
     height: 32px;
-    background-position: -1588px -918px;
+    background-position: -550px -102px;
 }
 
 .h3-heroes-small-calid {
     width: 48px;
     height: 32px;
-    background-position: -1588px -952px;
+    background-position: -550px -136px;
 }
 
 .h3-heroes-small-calh {
     width: 48px;
     height: 32px;
-    background-position: -1588px -986px;
+    background-position: -550px -170px;
 }
 
 .h3-heroes-small-caitlin {
     width: 48px;
     height: 32px;
-    background-position: -1588px -1020px;
+    background-position: -550px -204px;
 }
 
 .h3-heroes-small-bron {
     width: 48px;
     height: 32px;
-    background-position: -1588px -1054px;
+    background-position: -550px -238px;
 }
 
 .h3-heroes-small-broghild {
     width: 48px;
     height: 32px;
-    background-position: -1588px -1088px;
+    background-position: -550px -272px;
 }
 
 .h3-heroes-small-brissa {
     width: 48px;
     height: 32px;
-    background-position: -1588px -1122px;
+    background-position: -550px -306px;
 }
 
 .h3-heroes-small-boragus {
     width: 48px;
     height: 32px;
-    background-position: -1588px -1156px;
+    background-position: -550px -340px;
 }
 
 .h3-heroes-small-bidley {
     width: 48px;
     height: 32px;
-    background-position: -1588px -1190px;
+    background-position: -550px -374px;
 }
 
 .h3-heroes-small-biarma {
-    width: 68px;
-    height: 45px;
-    background-position: -770px -1417px;
+    width: 48px;
+    height: 32px;
+    background-position: -550px -408px;
 }
 
 .h3-heroes-small-bexp {
-    width: 68px;
-    height: 45px;
-    background-position: -840px -1417px;
+    width: 48px;
+    height: 32px;
+    background-position: -550px -442px;
 }
 
 .h3-heroes-small-bertram {
     width: 48px;
     height: 32px;
-    background-position: -1588px -1224px;
+    background-position: -550px -476px;
 }
 
 .h3-heroes-small-beatrice {
     width: 48px;
     height: 32px;
-    background-position: -1588px -1258px;
+    background-position: -550px -510px;
 }
 
 .h3-heroes-small-aykturn {
-    width: 68px;
-    height: 45px;
-    background-position: -910px -1417px;
+    width: 48px;
+    height: 32px;
+    background-position: -0px -544px;
 }
 
 .h3-heroes-small-ayden {
     width: 48px;
     height: 32px;
-    background-position: -1588px -1292px;
+    background-position: -50px -544px;
 }
 
 .h3-heroes-small-axis {
     width: 48px;
     height: 32px;
-    background-position: -1588px -1326px;
+    background-position: -100px -544px;
 }
 
 .h3-heroes-small-astral {
     width: 48px;
     height: 32px;
-    background-position: -1588px -1360px;
+    background-position: -150px -544px;
 }
 
 .h3-heroes-small-astra {
     width: 48px;
     height: 32px;
-    background-position: -1588px -1394px;
+    background-position: -200px -544px;
 }
 
 .h3-heroes-small-ash {
     width: 48px;
     height: 32px;
-    background-position: -1588px -1428px;
+    background-position: -250px -544px;
 }
 
 .h3-heroes-small-arlach {
     width: 48px;
     height: 32px;
-    background-position: -1588px -1462px;
+    background-position: -300px -544px;
 }
 
 .h3-heroes-small-andra {
     width: 48px;
     height: 32px;
-    background-position: -1588px -1496px;
+    background-position: -350px -544px;
 }
 
 .h3-heroes-small-andal {
     width: 48px;
     height: 32px;
-    background-position: -1588px -1530px;
+    background-position: -400px -544px;
 }
 
 .h3-heroes-small-anabel {
     width: 48px;
     height: 32px;
-    background-position: -0px -1566px;
+    background-position: -450px -544px;
 }
 
 .h3-heroes-small-allora {
-    width: 68px;
-    height: 45px;
-    background-position: -980px -1417px;
+    width: 48px;
+    height: 32px;
+    background-position: -500px -544px;
 }
 
 .h3-heroes-small-alkin {
     width: 48px;
     height: 32px;
-    background-position: -50px -1566px;
+    background-position: -550px -544px;
 }
 
 .h3-heroes-small-alamar {
     width: 48px;
     height: 32px;
-    background-position: -100px -1566px;
+    background-position: -600px -0px;
 }
 
 .h3-heroes-small-alagar {
     width: 48px;
     height: 32px;
-    background-position: -150px -1566px;
+    background-position: -600px -34px;
 }
 
 .h3-heroes-small-akka {
-    width: 68px;
-    height: 45px;
-    background-position: -1050px -1417px;
+    width: 48px;
+    height: 32px;
+    background-position: -600px -68px;
 }
 
 .h3-heroes-small-ajit {
     width: 48px;
     height: 32px;
-    background-position: -200px -1566px;
+    background-position: -600px -102px;
 }
 
 .h3-heroes-small-aislinn {
     width: 48px;
     height: 32px;
-    background-position: -250px -1566px;
+    background-position: -600px -136px;
 }
 
 .h3-heroes-small-aine {
     width: 48px;
     height: 32px;
-    background-position: -300px -1566px;
+    background-position: -600px -170px;
 }
 
 .h3-heroes-small-agar {
     width: 48px;
     height: 32px;
-    background-position: -350px -1566px;
+    background-position: -600px -204px;
 }
 
 .h3-heroes-small-aeris {
     width: 48px;
     height: 32px;
-    background-position: -400px -1566px;
+    background-position: -600px -238px;
 }
 
 .h3-heroes-small-aenain {
     width: 48px;
     height: 32px;
-    background-position: -450px -1566px;
+    background-position: -600px -272px;
 }
 
 .h3-heroes-small-adrienne {
     width: 48px;
     height: 32px;
-    background-position: -500px -1566px;
+    background-position: -600px -306px;
 }
 
 .h3-heroes-small-adelaide {
     width: 48px;
     height: 32px;
-    background-position: -550px -1566px;
+    background-position: -600px -340px;
 }
 
 .h3-heroes-small-adela {
     width: 48px;
     height: 32px;
-    background-position: -600px -1566px;
+    background-position: -600px -374px;
 }
 
 .h3-heroes-small-hero_kalt {
     width: 48px;
     height: 32px;
-    background-position: -650px -1566px;
+    background-position: -600px -408px;
 }
 
-.h3-artifacts-image584 {
-    width: 58px;
-    height: 64px;
-    background-position: -1080px -1153px;
+.h3-towns-tower {
+    width: 48px;
+    height: 32px;
+    background-position: -600px -442px;
 }
 
-.h3-artifacts-image583 {
-    width: 58px;
-    height: 64px;
-    background-position: -1140px -1153px;
+.h3-towns-stronghold {
+    width: 48px;
+    height: 32px;
+    background-position: -600px -476px;
 }
 
-.h3-artifacts-image582 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -0px;
+.h3-towns-rampart {
+    width: 48px;
+    height: 32px;
+    background-position: -600px -510px;
 }
 
-.h3-artifacts-image581 {
-    width: 91px;
-    height: 100px;
-    background-position: -109px -0px;
+.h3-towns-necropolis {
+    width: 48px;
+    height: 32px;
+    background-position: -600px -544px;
 }
 
-.h3-artifacts-image580 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -66px;
+.h3-towns-kronwerk {
+    width: 48px;
+    height: 32px;
+    background-position: -0px -578px;
 }
 
-.h3-artifacts-image579 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -132px;
+.h3-towns-inferno {
+    width: 48px;
+    height: 32px;
+    background-position: -50px -578px;
 }
 
-.h3-artifacts-image578 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -198px;
+.h3-towns-fortress {
+    width: 48px;
+    height: 32px;
+    background-position: -100px -578px;
 }
 
-.h3-artifacts-image577 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -264px;
+.h3-towns-factory {
+    width: 48px;
+    height: 32px;
+    background-position: -150px -578px;
 }
 
-.h3-artifacts-image576 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -330px;
+.h3-towns-dungeon {
+    width: 48px;
+    height: 32px;
+    background-position: -200px -578px;
 }
 
-.h3-artifacts-image572 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -396px;
+.h3-towns-cove {
+    width: 48px;
+    height: 32px;
+    background-position: -250px -578px;
 }
 
-.h3-artifacts-image571 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -462px;
+.h3-towns-conflux {
+    width: 48px;
+    height: 32px;
+    background-position: -300px -578px;
 }
 
-.h3-artifacts-image570 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -528px;
-}
-
-.h3-artifacts-image569 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -594px;
-}
-
-.h3-artifacts-image568 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -660px;
-}
-
-.h3-artifacts-image567 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -726px;
-}
-
-.h3-artifacts-image566 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -792px;
-}
-
-.h3-artifacts-image565 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -858px;
-}
-
-.h3-artifacts-image564 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -924px;
-}
-
-.h3-artifacts-image563 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -990px;
-}
-
-.h3-artifacts-image562 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -1056px;
-}
-
-.h3-artifacts-image561 {
-    width: 58px;
-    height: 64px;
-    background-position: -1238px -1122px;
-}
-
-.h3-artifacts-image560 {
-    width: 58px;
-    height: 64px;
-    background-position: -0px -1219px;
-}
-
-.h3-artifacts-image559 {
-    width: 58px;
-    height: 64px;
-    background-position: -60px -1219px;
-}
-
-.h3-artifacts-image558 {
-    width: 58px;
-    height: 64px;
-    background-position: -120px -1219px;
-}
-
-.h3-artifacts-image557 {
-    width: 58px;
-    height: 64px;
-    background-position: -180px -1219px;
-}
-
-.h3-artifacts-image556 {
-    width: 58px;
-    height: 64px;
-    background-position: -240px -1219px;
-}
-
-.h3-artifacts-image555 {
-    width: 58px;
-    height: 64px;
-    background-position: -300px -1219px;
-}
-
-.h3-artifacts-image554 {
-    width: 58px;
-    height: 64px;
-    background-position: -360px -1219px;
-}
-
-.h3-artifacts-image553 {
-    width: 58px;
-    height: 64px;
-    background-position: -420px -1219px;
-}
-
-.h3-artifacts-image552 {
-    width: 58px;
-    height: 64px;
-    background-position: -480px -1219px;
-}
-
-.h3-artifacts-image551 {
-    width: 58px;
-    height: 64px;
-    background-position: -540px -1219px;
-}
-
-.h3-artifacts-image550 {
-    width: 58px;
-    height: 64px;
-    background-position: -600px -1219px;
-}
-
-.h3-artifacts-image549 {
-    width: 58px;
-    height: 64px;
-    background-position: -660px -1219px;
-}
-
-.h3-artifacts-image548 {
-    width: 58px;
-    height: 64px;
-    background-position: -720px -1219px;
-}
-
-.h3-artifacts-image547 {
-    width: 58px;
-    height: 64px;
-    background-position: -780px -1219px;
-}
-
-.h3-artifacts-image546 {
-    width: 58px;
-    height: 64px;
-    background-position: -840px -1219px;
-}
-
-.h3-artifacts-image545 {
-    width: 58px;
-    height: 64px;
-    background-position: -900px -1219px;
-}
-
-.h3-artifacts-image544 {
-    width: 58px;
-    height: 64px;
-    background-position: -960px -1219px;
-}
-
-.h3-artifacts-image543 {
-    width: 58px;
-    height: 64px;
-    background-position: -1020px -1219px;
-}
-
-.h3-artifacts-image542 {
-    width: 58px;
-    height: 64px;
-    background-position: -1080px -1219px;
-}
-
-.h3-artifacts-image541 {
-    width: 58px;
-    height: 64px;
-    background-position: -1140px -1219px;
-}
-
-.h3-artifacts-image540 {
-    width: 58px;
-    height: 64px;
-    background-position: -1200px -1219px;
-}
-
-.h3-artifacts-image539 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -0px;
-}
-
-.h3-artifacts-image538 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -66px;
-}
-
-.h3-artifacts-image537 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -132px;
-}
-
-.h3-artifacts-image536 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -198px;
-}
-
-.h3-artifacts-image535 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -264px;
-}
-
-.h3-artifacts-image534 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -330px;
-}
-
-.h3-artifacts-image533 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -396px;
-}
-
-.h3-artifacts-image532 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -462px;
-}
-
-.h3-artifacts-image531 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -528px;
-}
-
-.h3-artifacts-image530 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -594px;
-}
-
-.h3-artifacts-image529 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -660px;
-}
-
-.h3-artifacts-image528 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -726px;
-}
-
-.h3-artifacts-image527 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -792px;
-}
-
-.h3-artifacts-image526 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -858px;
-}
-
-.h3-artifacts-image525 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -924px;
-}
-
-.h3-artifacts-image524 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -990px;
-}
-
-.h3-artifacts-image523 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -1056px;
-}
-
-.h3-artifacts-image522 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -1122px;
-}
-
-.h3-artifacts-image521 {
-    width: 58px;
-    height: 64px;
-    background-position: -1298px -1188px;
-}
-
-.h3-artifacts-image520 {
-    width: 58px;
-    height: 64px;
-    background-position: -0px -1285px;
-}
-
-.h3-artifacts-image519 {
-    width: 58px;
-    height: 64px;
-    background-position: -60px -1285px;
-}
-
-.h3-artifacts-image518 {
-    width: 58px;
-    height: 64px;
-    background-position: -120px -1285px;
-}
-
-.h3-artifacts-image517 {
-    width: 58px;
-    height: 64px;
-    background-position: -180px -1285px;
-}
-
-.h3-artifacts-image516 {
-    width: 58px;
-    height: 64px;
-    background-position: -240px -1285px;
-}
-
-.h3-artifacts-image515 {
-    width: 58px;
-    height: 64px;
-    background-position: -300px -1285px;
-}
-
-.h3-artifacts-image514 {
-    width: 58px;
-    height: 64px;
-    background-position: -360px -1285px;
-}
-
-.h3-artifacts-image513 {
-    width: 58px;
-    height: 64px;
-    background-position: -420px -1285px;
-}
-
-.h3-artifacts-image512 {
-    width: 58px;
-    height: 64px;
-    background-position: -480px -1285px;
-}
-
-.h3-artifacts-image511 {
-    width: 58px;
-    height: 64px;
-    background-position: -540px -1285px;
-}
-
-.h3-artifacts-image510 {
-    width: 58px;
-    height: 64px;
-    background-position: -600px -1285px;
-}
-
-.h3-artifacts-image509 {
-    width: 58px;
-    height: 64px;
-    background-position: -660px -1285px;
-}
-
-.h3-artifacts-image508 {
-    width: 58px;
-    height: 64px;
-    background-position: -720px -1285px;
-}
-
-.h3-artifacts-image507 {
-    width: 58px;
-    height: 64px;
-    background-position: -780px -1285px;
-}
-
-.h3-artifacts-image506 {
-    width: 58px;
-    height: 64px;
-    background-position: -840px -1285px;
-}
-
-.h3-artifacts-image505 {
-    width: 58px;
-    height: 64px;
-    background-position: -900px -1285px;
-}
-
-.h3-artifacts-image504 {
-    width: 58px;
-    height: 64px;
-    background-position: -960px -1285px;
-}
-
-.h3-artifacts-image503 {
-    width: 58px;
-    height: 64px;
-    background-position: -1020px -1285px;
-}
-
-.h3-artifacts-image502 {
-    width: 58px;
-    height: 64px;
-    background-position: -1080px -1285px;
-}
-
-.h3-artifacts-image501 {
-    width: 58px;
-    height: 64px;
-    background-position: -1140px -1285px;
-}
-
-.h3-artifacts-image500 {
-    width: 58px;
-    height: 64px;
-    background-position: -1200px -1285px;
-}
-
-.h3-artifacts-image499 {
-    width: 58px;
-    height: 64px;
-    background-position: -1260px -1285px;
-}
-
-.h3-artifacts-image498 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -0px;
-}
-
-.h3-artifacts-image497 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -66px;
-}
-
-.h3-artifacts-image496 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -132px;
-}
-
-.h3-artifacts-image495 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -198px;
-}
-
-.h3-artifacts-image494 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -264px;
-}
-
-.h3-artifacts-image493 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -330px;
-}
-
-.h3-artifacts-image492 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -396px;
-}
-
-.h3-artifacts-image491 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -462px;
-}
-
-.h3-artifacts-image490 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -528px;
-}
-
-.h3-artifacts-image489 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -594px;
-}
-
-.h3-artifacts-image488 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -660px;
-}
-
-.h3-artifacts-image487 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -726px;
-}
-
-.h3-artifacts-image486 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -792px;
-}
-
-.h3-artifacts-image485 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -858px;
-}
-
-.h3-artifacts-image484 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -924px;
-}
-
-.h3-artifacts-image483 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -990px;
-}
-
-.h3-artifacts-image482 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -1056px;
-}
-
-.h3-artifacts-image481 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -1122px;
-}
-
-.h3-artifacts-image480 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -1188px;
-}
-
-.h3-artifacts-image479 {
-    width: 58px;
-    height: 64px;
-    background-position: -1358px -1254px;
-}
-
-.h3-artifacts-image478 {
-    width: 58px;
-    height: 64px;
-    background-position: -0px -1351px;
-}
-
-.h3-artifacts-image477 {
-    width: 58px;
-    height: 64px;
-    background-position: -60px -1351px;
-}
-
-.h3-artifacts-image476 {
-    width: 58px;
-    height: 64px;
-    background-position: -120px -1351px;
-}
-
-.h3-artifacts-image475 {
-    width: 58px;
-    height: 64px;
-    background-position: -180px -1351px;
-}
-
-.h3-artifacts-image474 {
-    width: 58px;
-    height: 64px;
-    background-position: -240px -1351px;
-}
-
-.h3-artifacts-image473 {
-    width: 58px;
-    height: 64px;
-    background-position: -300px -1351px;
-}
-
-.h3-artifacts-image472 {
-    width: 58px;
-    height: 64px;
-    background-position: -360px -1351px;
-}
-
-.h3-artifacts-image471 {
-    width: 58px;
-    height: 64px;
-    background-position: -420px -1351px;
-}
-
-.h3-artifacts-image470 {
-    width: 58px;
-    height: 64px;
-    background-position: -480px -1351px;
-}
-
-.h3-artifacts-image469 {
-    width: 58px;
-    height: 64px;
-    background-position: -540px -1351px;
-}
-
-.h3-artifacts-image468 {
-    width: 58px;
-    height: 64px;
-    background-position: -600px -1351px;
-}
-
-.h3-artifacts-image467 {
-    width: 58px;
-    height: 64px;
-    background-position: -660px -1351px;
-}
-
-.h3-artifacts-image466 {
-    width: 58px;
-    height: 64px;
-    background-position: -720px -1351px;
-}
-
-.h3-artifacts-image465 {
-    width: 58px;
-    height: 64px;
-    background-position: -780px -1351px;
-}
-
-.h3-artifacts-image464 {
-    width: 58px;
-    height: 64px;
-    background-position: -840px -1351px;
-}
-
-.h3-artifacts-image463 {
-    width: 58px;
-    height: 64px;
-    background-position: -900px -1351px;
-}
-
-.h3-artifacts-image462 {
-    width: 58px;
-    height: 64px;
-    background-position: -960px -1351px;
-}
-
-.h3-artifacts-image461 {
-    width: 58px;
-    height: 64px;
-    background-position: -1020px -1351px;
-}
-
-.h3-artifacts-image460 {
-    width: 58px;
-    height: 64px;
-    background-position: -1080px -1351px;
-}
-
-.h3-artifacts-image459 {
-    width: 58px;
-    height: 64px;
-    background-position: -1140px -1351px;
-}
-
-.h3-artifacts-image458 {
-    width: 58px;
-    height: 64px;
-    background-position: -1200px -1351px;
-}
-
-.h3-artifacts-image457 {
-    width: 58px;
-    height: 64px;
-    background-position: -1260px -1351px;
-}
-
-.h3-artifacts-image456 {
-    width: 58px;
-    height: 64px;
-    background-position: -1320px -1351px;
-}
-
-.h3-artifacts-image455 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -0px;
-}
-
-.h3-artifacts-image454 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -66px;
-}
-
-.h3-artifacts-image453 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -132px;
-}
-
-.h3-artifacts-image452 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -198px;
-}
-
-.h3-artifacts-image451 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -264px;
-}
-
-.h3-artifacts-image450 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -330px;
-}
-
-.h3-artifacts-image449 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -396px;
-}
-
-.h3-artifacts-image448 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -462px;
-}
-
-.h3-artifacts-image447 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -528px;
-}
-
-.h3-artifacts-image446 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -594px;
-}
-
-.h3-artifacts-image445 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -660px;
-}
-
-.h3-artifacts-image444 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -726px;
-}
-
-.h3-artifacts-image443 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -792px;
-}
-
-.h3-artifacts-image442 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -858px;
-}
-
-.h3-artifacts-image441 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -924px;
-}
-
-.h3-artifacts-image440 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -990px;
-}
-
-.h3-artifacts-image439 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -1056px;
-}
-
-.h3-artifacts-image438 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -1122px;
-}
-
-.h3-artifacts-image437 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -1188px;
-}
-
-.h3-artifacts-image436 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -1254px;
-}
-
-.h3-artifacts-image435 {
-    width: 58px;
-    height: 64px;
-    background-position: -1418px -1320px;
-}
-
-.h3-artifacts-image434 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -0px;
-}
-
-.h3-artifacts-image433 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -66px;
-}
-
-.h3-artifacts-image432 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -132px;
-}
-
-.h3-artifacts-image431 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -198px;
-}
-
-.h3-artifacts-image430 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -264px;
-}
-
-.h3-artifacts-image429 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -330px;
-}
-
-.h3-artifacts-image428 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -396px;
-}
-
-.h3-artifacts-image427 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -462px;
-}
-
-.h3-artifacts-image426 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -528px;
-}
-
-.h3-artifacts-image425 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -594px;
-}
-
-.h3-artifacts-image424 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -660px;
-}
-
-.h3-artifacts-image423 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -726px;
-}
-
-.h3-artifacts-image422 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -792px;
-}
-
-.h3-artifacts-image421 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -858px;
-}
-
-.h3-artifacts-image420 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -924px;
-}
-
-.h3-artifacts-image419 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -990px;
-}
-
-.h3-artifacts-image418 {
-    width: 58px;
-    height: 64px;
-    background-position: -1478px -1056px;
+.h3-towns-castle {
+    width: 48px;
+    height: 32px;
+    background-position: -350px -578px;
 }
