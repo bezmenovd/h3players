@@ -78,21 +78,6 @@ export default [
         component: About,
     },
     {
-        path: '/posts/edit/:id?',
-        name: 'posts.edit',
-        component: PostEdit,
-    },
-    {
-        path: '/posts/@:slug',
-        name: 'posts.view',
-        component: PostView,
-    },
-    {
-        path: '/posts/:discussion_id?',
-        name: 'posts',
-        component: PostList,
-    },
-    {
         path: '/privacy-policy',
         name: 'privacy-policy',
         component: PrivacyPolicy,

@@ -39,11 +39,6 @@ const links: (Link & { style?: { [key: string]: string }})[] = [
         img: '/img/templates.png',
         text: t('navigation.templates'),
     },
-    {
-        route: { name: 'posts' },
-        img: '/img/posts.png',
-        text: t('navigation.posts'),
-    },
 ]
 
 const route = useRoute()
