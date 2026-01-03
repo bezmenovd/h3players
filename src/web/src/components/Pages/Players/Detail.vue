@@ -334,63 +334,52 @@ onMounted(async () => {
             ratingChart.data = new Array<number[]|undefined>(ratingChartDataLength)
             ratingChart.labels = new Array<string|undefined>(ratingChartDataLength)
             ratingChart.max = [0]
+
+            const gamesMap = new Map<number, number>()
+
+            gamesHistorical.forEach(g => {
+                gamesMap.set(timestamp.startOfDay(g.end_timestamp), g.player_new_rating)
+            })
     
             let now = timestamp.nowDay()
             let cur = now - (ratingChartDataLength * 86400)
-
-            let dIndex = 0
-            let rIndex = 0
+            let lastRating = undefined
             let wiped1 = false
             let wiped2 = false
-    
-            while (cur <= now) {
-                while (rIndex < gamesHistorical.length && timestamp.startOfDay(gamesHistorical[rIndex].end_timestamp) < cur) {
-                    rIndex++
-                }
-                while (rIndex < gamesHistorical.length && timestamp.startOfDay(gamesHistorical[rIndex].end_timestamp) === cur) {
-                    if (ratingChart.data[dIndex] === undefined) {
-                        ratingChart.data[dIndex] = [gamesHistorical[rIndex].player_new_rating]
-                    } else {
-                        ratingChart.data[dIndex]![0] = gamesHistorical[rIndex].player_new_rating
+            let beforeGames = true
+
+            for (let i = 0; i < ratingChartDataLength; i++) {
+                if (gamesMap.has(cur)) {
+                    beforeGames = false
+                    lastRating = gamesMap.get(cur)!
+                } else {
+                    if (beforeGames && (gamesHistorical[0].player_old_rating > 0 || timestamp.startOfDay(gamesHistorical[0].end_timestamp) === cur + 86400)) {
+                        lastRating = gamesHistorical[0].player_old_rating
                     }
-                    rIndex++
-                }
-                if (ratingChart.data[dIndex] === undefined) {
-                    if (dIndex > 0 && ratingChart.data[dIndex-1] && rIndex > 0) {
-                        ratingChart.data[dIndex] = [ratingChart.data[dIndex-1]![0]]
-
-                        if (cur > 1703970000 && ! wiped1) {
-                            if (rIndex < gamesHistorical.length) {
-                                ratingChart.data[dIndex]![0] = gamesHistorical[rIndex].player_old_rating
-                            } else {
-                                ratingChart.data[dIndex]![0] = Math.min(Math.floor(ratingChart.data[dIndex-1]![0] * 0.5), 500)
-                            }
-                            wiped1 = true
-                        }
-
-                        if (cur > 1767214800 && ! wiped2) {
-                            if (rIndex < gamesHistorical.length) {
-                                ratingChart.data[dIndex]![0] = gamesHistorical[rIndex].player_old_rating
-                            } else {
-                                ratingChart.data[dIndex]![0] = Math.min(Math.floor(ratingChart.data[dIndex-1]![0] * 0.5), 500)
-                            }
-                            wiped2 = true
-                        }
+                    if (cur === 1703894400 && ! wiped1 && lastRating !== undefined) {
+                        lastRating = Math.min(Math.floor(lastRating! * 0.5), 500) 
+                        wiped1 = true
+                    }
+                    if (cur === 1767225600 && ! wiped2 && lastRating !== undefined) {
+                        lastRating = Math.min(Math.floor(lastRating! * 0.5), 500) 
+                        wiped2 = true
                     }
                 }
-    
-                if (ratingChart.data[dIndex] && ratingChart.data[dIndex]![0] > ratingChart.max[0]) {
-                    ratingChart.max[0] = Math.ceil(ratingChart.data[dIndex]![0] / 250) * 250
+                console.log(cur)
+                
+                if (lastRating !== undefined) {
+                    ratingChart.data[i] = [lastRating]
                 }
-    
-                ratingChart.labels[dIndex] = date.from(cur)
+                ratingChart.labels[i] = date.from(cur)
 
                 if (cur === timestamp.startOfMonth(cur)) {
-                    ratingChart.xLabels[dIndex] = '01.' + month.from(cur)
+                    ratingChart.xLabels[i] = '01.' + month.from(cur)
                 }
-    
+                if (ratingChart.data[i] && ratingChart.data[i]![0] > ratingChart.max[0]) {
+                    ratingChart.max[0] = Math.ceil(ratingChart.data[i]![0] / 250) * 250
+                }
+
                 cur += 86400
-                dIndex++
             }
     
             ratingChart.show = true
