@@ -360,7 +360,7 @@ onMounted(async () => {
                         lastRating = Math.min(Math.floor(lastRating! * 0.5), 500) 
                         wiped1 = true
                     }
-                    if (cur === 1767139200 && ! wiped2 && lastRating !== undefined) {
+                    if (cur === 1767225600 && ! wiped2 && lastRating !== undefined) {
                         lastRating = Math.min(Math.floor(lastRating! * 0.5), 500) 
                         wiped2 = true
                     }

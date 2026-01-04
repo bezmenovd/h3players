@@ -360,4 +360,7 @@ a:hover {
 .template-name a {
     transition: box-shadow 0.2s ease;
 }
+.template-name {
+    display: flex;
+}
 </style>
