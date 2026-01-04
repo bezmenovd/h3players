@@ -196,7 +196,7 @@ const info = computed(() => {
     if (gamesList.items[0].end_timestamp < 1703970000) {
         rating = Math.min(Math.floor(rating * 0.5), 500)
     }
-    if (gamesList.items[0].end_timestamp < 1767214800) {
+    if (gamesList.items[0].end_timestamp < 1767213000) {
         rating = Math.min(Math.floor(rating * 0.5), 500)
     }
 
@@ -348,7 +348,7 @@ onMounted(async () => {
             let wiped2 = false
             let beforeGames = true
 
-            for (let i = 0; i < ratingChartDataLength; i++) {
+            for (let i = 0; i <= ratingChartDataLength; i++) {
                 if (gamesMap.has(cur)) {
                     beforeGames = false
                     lastRating = gamesMap.get(cur)!
@@ -360,12 +360,11 @@ onMounted(async () => {
                         lastRating = Math.min(Math.floor(lastRating! * 0.5), 500) 
                         wiped1 = true
                     }
-                    if (cur === 1767225600 && ! wiped2 && lastRating !== undefined) {
+                    if (cur === 1767139200 && ! wiped2 && lastRating !== undefined) {
                         lastRating = Math.min(Math.floor(lastRating! * 0.5), 500) 
                         wiped2 = true
                     }
                 }
-                console.log(cur)
                 
                 if (lastRating !== undefined) {
                     ratingChart.data[i] = [lastRating]
