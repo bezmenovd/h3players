@@ -10,6 +10,7 @@ dist/workers/processor/*
 dist/workers/background/*
 dist/workers/inbox/*
 dist/wss/*
+dist/rmg/*
 yarn-cache
 docker/nginx/ssl/*
 output

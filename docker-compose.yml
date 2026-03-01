@@ -51,6 +51,19 @@ services:
       - 8000:8000
     command: bash -c "sleep 10000000"
 
+  rmg:
+    image: node:22
+    container_name: h3players-rmg
+    depends_on:
+      - mysql
+      - redis
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - yarn-cache:/root/.yarn/cache
+      - /home/user/Heroes3_HotA/games/:/var/www/saves/
+    command: bash -c "sleep 10000000"
+
   nginx:
     image: nginx:alpine
     container_name: h3players-nginx
