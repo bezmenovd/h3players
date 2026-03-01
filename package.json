@@ -41,7 +41,10 @@
     "wss:dev": "tsx src/wss/server.ts",
     "wss:build": "tsup --config src/wss/tsup.config.ts --clean",
     "workers:build": "yarn workers:spectator:build && yarn workers:journalist:build && yarn workers:archivist:build && yarn workers:coordinator:build && yarn workers:processor:build && yarn workers:background:build && yarn workers:inbox:build",
-    "web:spritesmith": "node src/web/spritesmith.js"
+    "web:spritesmith": "node src/web/spritesmith.js",
+    "rmg": "node dist/rmg/rmg.js",
+    "rmg:dev": "tsx src/rmg/rmg.ts",
+    "rmg:build": "tsup --config src/rmg/tsup.config.ts --clean"
   },
   "dependencies": {
     "@clickhouse/client": "^1.12.1",
