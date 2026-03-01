@@ -63,7 +63,7 @@ async function main() {
             continue
         }
 
-        await sleep(200)
+        await sleep(500)
 
         let { playerId } = JSON.parse(event)
 
@@ -90,7 +90,7 @@ async function main() {
 
         while (true) {
             if (beforeTimestamp) {
-                await sleep(800)
+                await sleep(1000)
             }
 
             let history: History
@@ -281,7 +281,7 @@ async function main() {
 
                 while (i < unknownOpponents.length) {
                     if (i > 0) {
-                        await sleep(500)
+                        await sleep(800)
                     }
 
                     let chunk = unknownOpponents.slice(i, Math.min(i+10, unknownOpponents.length))
@@ -325,7 +325,7 @@ async function main() {
 
                 while (i < unknownTemplates.length) {
                     if (i > 0) {
-                        await sleep(500)
+                        await sleep(800)
                     }
 
                     let chunk = unknownTemplates.slice(i, Math.min(i+10, unknownTemplates.length))
