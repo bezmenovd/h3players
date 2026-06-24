@@ -37,7 +37,6 @@ services:
     volumes:
       - ./:/var/www
       - yarn-cache:/root/.yarn/cache
-    network_mode: host
     command: bash -c "yarn && yarn workers:build && yarn pm2 restart pm2/prod/* && sleep infinity"
 
   wss:
