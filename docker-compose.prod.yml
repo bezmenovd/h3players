@@ -23,7 +23,7 @@ services:
     volumes:
       - ./:/var/www
       - yarn-cache:/root/.yarn/cache
-    command: api:start:prod
+    command: yarn api:start:prod
 
   workers:
     image: node:22
