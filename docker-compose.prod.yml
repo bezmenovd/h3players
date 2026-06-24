@@ -102,6 +102,7 @@ services:
       - ./docker/clickhouse/initdb:/docker-entrypoint-initdb.d:ro
       - ./docker/clickhouse/:/usr/src
       - ./docker/clickhouse/listen.xml:/etc/clickhouse-server/config.d/listen.xml:ro
+      - ./docker/clickhouse/system_logs_ttl.xml:/etc/clickhouse-server/config.d/system_logs_ttl.xml:ro
     ulimits:
       nofile:
         soft: 262144

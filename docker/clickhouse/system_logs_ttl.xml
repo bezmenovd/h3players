@@ -1,0 +1,29 @@
+<clickhouse>
+    <processors_profile_log remove="1"/>
+    <trace_log remove="1"/>
+
+    <query_log>
+        <engine>ENGINE = MergeTree PARTITION BY event_date ORDER BY event_time
+            TTL event_date + INTERVAL 14 DAY DELETE</engine>
+    </query_log>
+
+    <metric_log>
+        <engine>ENGINE = MergeTree PARTITION BY event_date ORDER BY event_time
+            TTL event_date + INTERVAL 7 DAY DELETE</engine>
+    </metric_log>
+
+    <part_log>
+        <engine>ENGINE = MergeTree PARTITION BY event_date ORDER BY event_time
+            TTL event_date + INTERVAL 14 DAY DELETE</engine>
+    </part_log>
+
+    <asynchronous_metric_log>
+        <engine>ENGINE = MergeTree PARTITION BY event_date ORDER BY event_time
+            TTL event_date + INTERVAL 7 DAY DELETE</engine>
+    </asynchronous_metric_log>
+
+    <query_views_log>
+        <engine>ENGINE = MergeTree PARTITION BY event_date ORDER BY event_time
+            TTL event_date + INTERVAL 14 DAY DELETE</engine>
+    </query_views_log>
+</clickhouse>
