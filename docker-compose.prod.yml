@@ -105,14 +105,11 @@ services:
 
 volumes:
   mysql-volume:
-    driver: local
     external: true
     name: www_mysql-volume
   redis-volume:
-    driver: local
     external: true
     name: www_redis-volume
   clickhouse-volume:
-    driver: local
     external: true
     name: www_clickhouse-volume
