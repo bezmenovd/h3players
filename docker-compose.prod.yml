@@ -8,8 +8,7 @@ services:
     working_dir: /var/www
     volumes:
       - ./:/var/www
-      - yarn-cache:/root/.yarn/cache
-    command: bash -c "yarn && yarn web:build && sleep infinity"
+    command: bash -c "yarn && yarn cache clean && yarn web:build && sleep infinity"
 
   api:
     image: node:22
@@ -22,8 +21,7 @@ services:
     working_dir: /var/www
     volumes:
       - ./:/var/www
-      - yarn-cache:/root/.yarn/cache
-    command: bash -c "yarn && yarn api:build && yarn api:start:prod"
+    command: bash -c "yarn && yarn cache clean && yarn api:build && yarn api:start:prod"
 
   workers:
     image: node:22
@@ -36,8 +34,7 @@ services:
     working_dir: /var/www
     volumes:
       - ./:/var/www
-      - yarn-cache:/root/.yarn/cache
-    command: bash -c "yarn && yarn workers:build && yarn pm2 restart pm2/prod/* && sleep infinity"
+    command: bash -c "yarn && yarn cache clean && yarn workers:build && yarn pm2 restart pm2/prod/* && sleep infinity"
 
   wss:
     image: node:22
@@ -50,8 +47,7 @@ services:
     working_dir: /var/www
     volumes:
       - ./:/var/www
-      - yarn-cache:/root/.yarn/cache
-    command: bash -c "yarn && yarn wss:build && yarn wss"
+    command: bash -c "yarn && yarn cache clean && yarn wss:build && yarn wss"
 
   nginx:
     image: nginx:alpine
@@ -113,6 +109,4 @@ volumes:
   redis-volume:
     driver: local
   clickhouse-volume:
-    driver: local
-  yarn-cache:
     driver: local
