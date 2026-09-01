@@ -17,10 +17,10 @@ export class TemplatesService {
         const whereClauses: string[] = []
     
         if (ids.length > 0) {
-            whereClauses.push('id in {ids:Array(UInt32)}')
+            whereClauses.push('t.id IN {ids:Array(UInt32)}')
         }
         if (query.length > 0) {
-            whereClauses.push('positionCaseInsensitive(templates.name, {query:String}) > 0')
+            whereClauses.push('positionCaseInsensitive(t.name, {query:String}) > 0')
         }
     
         const where = whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''
@@ -31,15 +31,23 @@ export class TemplatesService {
     
         const sql = `
             SELECT 
-                min(t.id) as id,
-                t.name,
-                SUM(t_stats.games_count) as games_count,
-                SUM(t_stats.games_duration) as games_duration,
-                uniqMerge(t_stats.players_uniq) AS players_count
+                min(t.id) AS id,
+                t.name AS name,
+                toUInt64(coalesce(SUM(stats.games_count), 0)) AS games_count,
+                toUInt64(coalesce(SUM(stats.games_duration), 0)) AS games_duration,
+                toUInt64(coalesce(uniqMerge(stats.players_uniq), 0)) AS players_count
             FROM templates AS t
-            LEFT JOIN templates_mv_stats_table AS t_stats ON t.id = t_stats.id
+            LEFT JOIN (
+                SELECT 
+                    id,
+                    SUM(games_count) AS games_count,
+                    SUM(games_duration) AS games_duration,
+                    players_uniq
+                FROM templates_mv_stats_table
+                GROUP BY id, players_uniq
+            ) AS stats ON t.id = stats.id
             ${where}
-            GROUP by templates.name
+            GROUP BY t.name
             ${orderBy}
             LIMIT {limit:UInt32} OFFSET {offset:UInt32}
         `
@@ -48,35 +56,35 @@ export class TemplatesService {
             query: sql,
             query_params: { limit, offset, ids, query },
             format: 'JSONEachRow',
-        })).json<TemplateWithInfo>()
+        })).json<any>()
     
         const totalResult = await (await this.clickhouse.query({
             query: `
             SELECT count() as total
             FROM (
                 SELECT 1
-                FROM templates
+                FROM templates AS t
                 ${where}
-                GROUP BY templates.name
+                GROUP BY t.name
             )
             `,
             query_params: { ids, query },
             format: 'JSONEachRow',
-        })).json<{ total: number }>()
+        })).json<{ total: string | number }>()
     
         return {
-            total: Number(totalResult[0].total),
+            total: Number(totalResult?.[0]?.total || 0),
             limit,
             offset,
             items: items.map(i => ({
-                id: i.id,
-                name: i.name,
+                id: Number(i.id),
+                name: String(i.name),
                 games_count: Number(i.games_count),
                 games_duration: Number(i.games_duration),
                 players_count: Number(i.players_count),
             })),
         }
-    }
+    }    
 
     async getTemplate(id: number): Promise<Template|null> {
         const templates = await (await this.clickhouse.query({
